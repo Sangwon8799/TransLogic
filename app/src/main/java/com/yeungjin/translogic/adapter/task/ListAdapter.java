@@ -1,4 +1,4 @@
 package com.yeungjin.translogic.adapter.task;
 
-public class TaskList {
+public class ListAdapter {
 }
