@@ -9,7 +9,7 @@
     android:focusable="true">
 
     <ImageView
-        android:id="@+id/adapter_user_list__image"
+        android:id="@+id/adapter_chat_chat__image"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
@@ -19,43 +19,61 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/adapter_user_list__image"
+        android:layout_toEndOf="@id/adapter_chat_chat__image"
         android:layout_centerVertical="true"
         android:orientation="vertical"
         android:gravity="center_vertical">
 
         <TextView
-            android:id="@+id/adapter_user_list__name"
+            android:id="@+id/adapter_chat_chat__title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="14sp"
-            android:text="이름" />
+            android:text="채팅방 제목" />
 
         <TextView
-            android:id="@+id/adapter_user_list__company"
+            android:id="@+id/adapter_chat_chat__content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/gray"
             android:textStyle="bold"
             android:textSize="12sp"
-            android:text="회사" />
+            android:text="마지막으로 입력된 내용" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/adapter_user_list__contact_number"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
-        android:paddingVertical="4dp"
-        android:paddingHorizontal="8dp"
-        android:background="@drawable/adapter_user_list__contact_number_background"
-        android:textColor="@color/light_black"
-        android:textSize="13sp"
-        android:text="010-0000-0000" />
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/adapter_chat_chat__time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:textColor="@color/light_black"
+            android:textSize="12sp"
+            android:text="오후 2:00" />
+
+        <TextView
+            android:id="@+id/adapter_chat_chat__unread_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:paddingHorizontal="6dp"
+            android:background="@drawable/adapter_chat_chat__unread_count_background"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:text="10" />
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -8,23 +8,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yeungjin.translogic.R;
-import com.yeungjin.translogic.adapter.user.GroupAdapter;
-import com.yeungjin.translogic.adapter.user.ListAdapter;
 
 public class Layout extends Fragment {
-   private ListAdapter listAdapter;
-   private GroupAdapter groupAdapter;
+   private com.yeungjin.translogic.adapter.user.User user;
+   private com.yeungjin.translogic.adapter.user.Group group;
 
+   @Nullable
    @Override
-   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
       View view = inflater.inflate(R.layout.display_user_layout, container, false);
 
-      EditText search = (EditText) view.findViewById(R.id.display_user_user__search);
+      EditText search = (EditText) view.findViewById(R.id.display_user_layout__search);
       search.addTextChangedListener(new TextWatcher() {
          @Override
          public void beforeTextChanged(CharSequence content, int start, int count, int after) { }
@@ -38,15 +39,15 @@ public class Layout extends Fragment {
          public void afterTextChanged(Editable content) { }
       });
 
-      listAdapter = new ListAdapter();
-      RecyclerView list = (RecyclerView) view.findViewById(R.id.display_user_user__list);
-      list.setLayoutManager(new LinearLayoutManager(view.getContext()));
-      list.setAdapter(listAdapter);
+      user = new com.yeungjin.translogic.adapter.user.User();
+      RecyclerView userList = (RecyclerView) view.findViewById(R.id.display_user_layout__list);
+      userList.setLayoutManager(new LinearLayoutManager(view.getContext()));
+      userList.setAdapter(user);
 
-      RecyclerView group = (RecyclerView) view.findViewById(R.id.display_user_user__group);
-      group.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
-      groupAdapter = new GroupAdapter(); // 람다 함수 적용해야 함
-      group.setAdapter(groupAdapter);
+      RecyclerView groupList = (RecyclerView) view.findViewById(R.id.display_user_layout__group);
+      groupList.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
+      group = new com.yeungjin.translogic.adapter.user.Group(); // 람다 함수 적용해야 함
+      groupList.setAdapter(group);
 
       return view;
    }

@@ -11,7 +11,7 @@
     <item
         android:id="@+id/display_main_layout__menu_icon__chat"
         android:icon="@drawable/display_main_layout__menu_icon__chat"
-        android:title="대화"
+        android:title="채팅"
         app:showAsAction="always" />
 
     <item

@@ -6,7 +6,7 @@
     android:background="@color/white">
 
     <RelativeLayout
-        android:id="@+id/display_user_user__TOP_BAR"
+        android:id="@+id/display_user_layout__TOP_BAR"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true">
@@ -23,7 +23,7 @@
             android:text="직원" />
 
         <TextView
-            android:id="@+id/display_user_user__create_group"
+            android:id="@+id/display_user_layout__create_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -41,10 +41,10 @@
     </RelativeLayout>
 
     <EditText
-        android:id="@+id/display_user_user__search"
+        android:id="@+id/display_user_layout__search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/display_user_user__TOP_BAR"
+        android:layout_below="@id/display_user_layout__TOP_BAR"
         android:layout_marginBottom="10dp"
         android:layout_marginHorizontal="15dp"
         android:background="@drawable/common_search_background"
@@ -56,10 +56,10 @@
         android:hint="검색" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/display_user_user__group"
+        android:id="@+id/display_user_layout__group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/display_user_user__search"
+        android:layout_below="@id/display_user_layout__search"
         android:layout_marginBottom="5dp"
         android:layout_marginHorizontal="15dp"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -67,11 +67,11 @@
         tools:listitem="@layout/adapter_user_group" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/display_user_user__list"
+        android:id="@+id/display_user_layout__list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/display_user_user__group"
+        android:layout_below="@id/display_user_layout__group"
         android:scrollbars="vertical"
-        tools:listitem="@layout/adapter_user_list" />
+        tools:listitem="@layout/adapter_user_user" />
 
 </RelativeLayout>
