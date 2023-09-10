@@ -1,0 +1,4 @@
+<resources>
+    <style name="Base.Theme.TransLogic" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="Theme.TransLogic" parent="Base.Theme.TransLogic" />
+</resources>
