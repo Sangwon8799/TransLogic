@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="60dp"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/common_translogic_icon" />
+
+    <ImageView
+        android:layout_width="280dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="60dp"
+        android:src="@drawable/common_translogic_logo" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:text="아이디" />
+
+    <EditText
+        android:id="@+id/layout_login_login__username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:singleLine="true"
+        android:textSize="18sp"
+        android:hint="아이디 입력" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:text="비밀번호" />
+
+    <EditText
+        android:id="@+id/layout_login_login__password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:singleLine="true"
+        android:textSize="18sp"
+        android:hint="비밀번호 입력" />
+
+    <TextView
+        android:id="@+id/layout_login_login__find_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginBottom="60dp"
+        android:paddingHorizontal="6dp"
+        android:background="@drawable/common_ripple_round_rectangle"
+        android:clickable="true"
+        android:focusable="true"
+        android:textSize="14sp"
+        android:text="아이디/비밀번호 찾기" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/layout_login_login__login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="15dp"
+            android:paddingVertical="10dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:stateListAnimator="@null"
+            android:background="@drawable/common_ripple_round_rectangle"
+            android:foreground="@drawable/common_button_background"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="로그인" />
+
+        <Button
+            android:id="@+id/layout_login_login__signup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="15dp"
+            android:paddingVertical="10dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:stateListAnimator="@null"
+            android:background="@drawable/common_ripple_round_rectangle"
+            android:foreground="@drawable/common_button_background"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="회원가입" />
+
+    </LinearLayout>
+
+</LinearLayout>

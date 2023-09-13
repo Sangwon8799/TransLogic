@@ -32,7 +32,7 @@ public class Connector extends Thread {
 
          if (http != null) {
             http.setConnectTimeout(10000);
-            http.setRequestMethod("GET");
+            http.setRequestMethod("POST");
             http.setDoInput(true);
 
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
