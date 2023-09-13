@@ -17,7 +17,6 @@ import com.yeungjin.translogic.adapter.task.Employee;
 
 public class Task extends Fragment {
    private Employee user;
-   private com.yeungjin.translogic.adapter.task.Filter filter;
 
    @Override
    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,11 +40,6 @@ public class Task extends Fragment {
       RecyclerView userList = (RecyclerView) view.findViewById(R.id.layout_task_task__list);
       userList.setLayoutManager(new LinearLayoutManager(view.getContext()));
       userList.setAdapter(user);
-
-      RecyclerView filterList = (RecyclerView) view.findViewById(R.id.layout_task_task__filter);
-      filterList.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
-      filter = new com.yeungjin.translogic.adapter.task.Filter(); // 람다 함수 적용해야 함
-      filterList.setAdapter(filter);
 
       return view;
    }

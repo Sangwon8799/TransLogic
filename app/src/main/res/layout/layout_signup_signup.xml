@@ -1,8 +1,262 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingHorizontal="60dp"
+    android:background="@color/white">
 
+    <LinearLayout
+        android:id="@+id/layout_signup_signup__TITLE"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginVertical="60dp"
+        android:orientation="vertical"
+        android:gravity="center">
 
+        <ImageView
+            android:layout_width="240dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/common_translogic_logo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:text="회원가입" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/layout_signup_signup__information"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_below="@id/layout_signup_signup__TITLE">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="이름" />
+
+            <EditText
+                android:id="@+id/layout_signup_signup__name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:hint="이름을 입력해주세요" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="아이디" />
+
+            <EditText
+                android:id="@+id/layout_signup_signup__username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:hint="아이디를 입력해주세요" />
+
+            <TextView
+                android:id="@+id/layout_signup_signup__username_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/red"
+                android:textSize="12sp"
+                android:text="해당 아이디는 이미 사용 중입니다." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="비밀번호" />
+
+            <EditText
+                android:id="@+id/layout_signup_signup__password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:inputType="textPassword"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:hint="비밀번호를 입력해주세요" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="비밀번호 확인" />
+
+            <EditText
+                android:id="@+id/layout_signup_signup__password_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:hint="입력했던 비밀번호를 다시 입력해주세요" />
+
+            <TextView
+                android:id="@+id/layout_signup_signup__password_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/red"
+                android:textSize="12sp"
+                android:text="비밀번호가 일치하지 않습니다." />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="이메일 주소" />
+
+            <EditText
+                android:id="@+id/layout_signup_signup__email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:hint="이메일 주소를 입력해주세요" />
+
+            <TextView
+                android:id="@+id/layout_signup_signup__email_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/red"
+                android:textSize="12sp"
+                android:text="해당 이메일 주소는 이미 사용 중입니다" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="회사" />
+
+            <EditText
+                android:id="@+id/layout_signup_signup__company"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:hint="회사명을 입력해주세요" />
+
+            <TextView
+                android:id="@+id/layout_signup_signup__company_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/red"
+                android:textSize="12sp"
+                android:text="테스트 "/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="직위" />
+
+            <EditText
+                android:id="@+id/layout_signup_signup__degree"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:hint="직위를 입력해주세요" />
+
+            <TextView
+                android:id="@+id/layout_signup_signup__degree_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/red"
+                android:textSize="12sp"
+                android:text="테스트 "/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_signup_signup__information"
+        android:layout_marginTop="60dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/layout_signup_signup__submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="15dp"
+            android:paddingVertical="10dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:stateListAnimator="@null"
+            android:background="@drawable/common_ripple_round_rectangle"
+            android:foreground="@drawable/common_button_background"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="가입" />
+
+        <Button
+            android:id="@+id/layout_signup_signup__cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="15dp"
+            android:paddingVertical="10dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:stateListAnimator="@null"
+            android:background="@drawable/common_ripple_round_rectangle"
+            android:foreground="@drawable/common_button_background"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="취소" />
+
+    </LinearLayout>
 
 </RelativeLayout>

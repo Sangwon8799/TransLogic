@@ -1,4 +1,13 @@
 <resources>
     <style name="Base.Theme.TransLogic" parent="Theme.AppCompat.Light.NoActionBar" />
-    <style name="Theme.TransLogic" parent="Base.Theme.TransLogic" />
+    <style name="Theme.TransLogic" parent="Base.Theme.TransLogic">
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+    </style>
+
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/common_round_layout</item>
+    </style>
 </resources>

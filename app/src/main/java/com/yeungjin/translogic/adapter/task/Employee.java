@@ -17,7 +17,17 @@ import com.yeungjin.translogic.R;
 public class Employee extends RecyclerView.Adapter<Employee.ViewHolder> implements Filterable {
    @Override
    public Filter getFilter() {
-      return null;
+      return new Filter() {
+         @Override
+         protected FilterResults performFiltering(CharSequence constraint) {
+            return null;
+         }
+
+         @Override
+         protected void publishResults(CharSequence constraint, FilterResults results) {
+
+         }
+      };
    }
 
    @NonNull
@@ -37,7 +47,7 @@ public class Employee extends RecyclerView.Adapter<Employee.ViewHolder> implemen
       return 0;
    }
 
-   public class ViewHolder extends RecyclerView.ViewHolder {
+   public static class ViewHolder extends RecyclerView.ViewHolder {
       public ImageView image;
       public TextView name;
       public TextView company;

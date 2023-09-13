@@ -1,5 +1,6 @@
 package com.yeungjin.translogic.adapter.task;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -14,7 +15,8 @@ public class Content extends RecyclerView.Adapter<Content.ViewHolder> {
    @NonNull
    @Override
    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-      return null;
+      View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_task_content, parent, false);
+      return new ViewHolder(view);
    }
 
    @Override
@@ -27,19 +29,15 @@ public class Content extends RecyclerView.Adapter<Content.ViewHolder> {
       return 0;
    }
 
-   public class ViewHolder extends RecyclerView.ViewHolder {
+   public static class ViewHolder extends RecyclerView.ViewHolder {
       public TextView content;
-      public TextView date;
       public Button request;
-      public Button moveToChat;
 
       public ViewHolder(View view) {
          super(view);
 
          content = (TextView) view.findViewById(R.id.adapter_task_content__content);
-         date = (TextView) view.findViewById(R.id.adapter_task_content__date);
          request = (Button) view.findViewById(R.id.adapter_task_content__request);
-         moveToChat = (Button) view.findViewById(R.id.adapter_task_content__move_to_chat);
       }
    }
 }

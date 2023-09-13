@@ -22,6 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".layout.signup.Signup" />
+        <activity android:name=".layout.find_account.FindAccount" />
         <activity android:name=".layout.main.Main" />
 
     </application>
