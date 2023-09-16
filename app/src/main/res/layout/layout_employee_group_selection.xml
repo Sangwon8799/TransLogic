@@ -31,7 +31,7 @@
             android:layout_centerVertical="true"
             android:paddingVertical="4dp"
             android:paddingHorizontal="8dp"
-            android:background="@drawable/common_ripple_round_rectangle"
+            android:background="@drawable/common_button_ripple"
             android:clickable="true"
             android:focusable="true"
             android:textColor="@color/app_color"

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/adapter_chat_message_myself__wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="10dp"
+        android:gravity="end"
+        android:paddingVertical="10dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/adapter_chat_message_myself__message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/adapter_chat_message_myself__time"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="6dp"
+                android:background="@drawable/adapter_chat_room_myself__message_background"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:text="메시지" />
+
+            <TextView
+                android:id="@+id/adapter_chat_message_myself__time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/adapter_chat_message_myself__message"
+                android:layout_marginEnd="4dp"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:text="10:00" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

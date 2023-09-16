@@ -17,8 +17,14 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.layout.find_account.FindAccountLayout;
 import com.yeungjin.translogic.layout.main.MainLayout;
 import com.yeungjin.translogic.layout.signup.SignupLayout;
+import com.yeungjin.translogic.object.database.EMPLOYEE;
 import com.yeungjin.translogic.request.Request;
 import com.yeungjin.translogic.request.login.LoginRequest;
+import com.yeungjin.translogic.request.session.GetSession;
+import com.yeungjin.translogic.utility.DateFormat;
+import com.yeungjin.translogic.utility.Session;
+
+import org.json.JSONObject;
 
 public class LoginLayout extends AppCompatActivity {
     private EditText username;
@@ -40,6 +46,7 @@ public class LoginLayout extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,6 +67,34 @@ public class LoginLayout extends AppCompatActivity {
                         public void onResponse(String response) {
                             if (response.contains("true")) {
                                 Toast.makeText(getApplicationContext(), "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show();
+                                GetSession sessionRequest = new GetSession(_username, new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        try {
+                                            JSONObject json = new JSONObject(response);
+                                            JSONObject object = json.getJSONObject("user");
+
+                                            EMPLOYEE user = new EMPLOYEE();
+                                            user.EMPLOYEE_NUMBER = object.getLong("EMPLOYEE_NUMBER");
+                                            user.EMPLOYEE_NAME = object.getString("EMPLOYEE_NAME");
+                                            user.EMPLOYEE_USERNAME = object.getString("EMPLOYEE_USERNAME");
+                                            user.EMPLOYEE_PASSWORD = object.getString("EMPLOYEE_PASSWORD");
+                                            user.EMPLOYEE_CONTACT_NUMBER = object.getString("EMPLOYEE_CONTACT_NUMBER");
+                                            user.EMPLOYEE_EMAIL = object.getString("EMPLOYEE_EMAIL");
+                                            user.EMPLOYEE_COMPANY_NUMBER = object.getLong("EMPLOYEE_COMPANY_NUMBER");
+                                            user.EMPLOYEE_DEGREE = object.getString("EMPLOYEE_DEGREE");
+                                            user.EMPLOYEE_IMAGE = object.getString("EMPLOYEE_IMAGE");
+                                            user.EMPLOYEE_REGISTER_DATE = DateFormat.getInstance().DATE.parse(object.getString("EMPLOYEE_REGISTER_DATE"));
+
+                                            Session.user = user;
+                                        } catch (Exception error) {
+                                            error.printStackTrace();
+                                        }
+                                    }
+                                });
+                                Request.queue = Volley.newRequestQueue(getApplicationContext());
+                                Request.queue.add(sessionRequest);
+
                                 Intent intent = new Intent(getApplicationContext(), MainLayout.class);
                                 startActivity(intent);
                                 finish();
@@ -73,6 +108,7 @@ public class LoginLayout extends AppCompatActivity {
                 }
             }
         });
+
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -4,7 +4,7 @@
     android:layout_height="70dp"
     android:paddingVertical="10dp"
     android:paddingHorizontal="15dp"
-    android:background="@drawable/common_ripple_rectangle"
+    android:background="@drawable/common_rectangle_ripple"
     android:clickable="true"
     android:focusable="true">
 

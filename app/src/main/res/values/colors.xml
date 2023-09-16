@@ -13,5 +13,6 @@
     <color name="green">#47C800</color>
     <color name="red">#FF0000</color>
 
+    <color name="chat_room">#54709C</color>
     <color name="app_color">#4FAD9A</color>
 </resources>

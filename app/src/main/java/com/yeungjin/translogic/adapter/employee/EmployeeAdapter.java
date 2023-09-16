@@ -36,11 +36,11 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
     }
 
     public void getEmployee(int index) {
-        load(new GetEmployeeRequest(index, new Listener()), index);
+        load(new GetEmployeeRequest(index, new ResponseListener()), index);
     }
 
     public void getSearchedEmployee(String content, int index) {
-        load(new GetSearchedEmployeeRequest(content, index, new Listener()), index);
+        load(new GetSearchedEmployeeRequest(content, index, new ResponseListener()), index);
     }
 
     private void load(Request request, int index) {
@@ -86,7 +86,7 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
         }
     }
 
-    private class Listener implements Response.Listener<String> {
+    private class ResponseListener implements Response.Listener<String> {
         @Override
         public void onResponse(String response) {
             if (index == 0) {

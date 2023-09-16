@@ -9,8 +9,8 @@ import java.util.Map;
 
 public class Request extends StringRequest {
     private static final String URL = "http://152.70.237.174/";
-    protected Map<String, String> parameters = new HashMap<>();
 
+    protected Map<String, String> parameters = new HashMap<>();
     public static RequestQueue queue;
 
     public Request(String URI, Response.Listener<String> listener, Response.ErrorListener errorListener) {
@@ -19,10 +19,6 @@ public class Request extends StringRequest {
 
     public Request(String URI, Response.Listener<String> listener) {
         this(URI, listener, null);
-    }
-
-    public Request(String URI) {
-        this(URI, null);
     }
 
     @Override

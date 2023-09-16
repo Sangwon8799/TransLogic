@@ -36,6 +36,10 @@ dependencies {
     // HTTP 통신을 간결하게 해주는 라이브러리
     implementation("com.android.volley:volley:1.2.1")
 
+    // 채팅에 사용하는 Socket 통신
+    implementation("io.socket:socket.io-client:2.0.0")
+    implementation("com.google.code.gson:gson:2.8.9")
+
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")

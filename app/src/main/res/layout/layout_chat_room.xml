@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/chat_room">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/layout_chat_room__message_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/layout_chat_room__MESSAGE"
+        tools:listitem="@layout/adapter_chat_message_opponent" />
+
+
+    <RelativeLayout
+        android:id="@+id/layout_chat_room__MESSAGE"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="6dp"
+        android:background="@drawable/layout_chat_room__message_background">
+
+        <EditText
+            android:id="@+id/layout_chat_room__message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/layout_chat_room__send"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:hint="내용" />
+
+        <Button
+            android:id="@+id/layout_chat_room__send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="8dp"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="20dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:stateListAnimator="@null"
+            android:background="@drawable/layout_chat_room__send_ripple"
+            android:foreground="@drawable/layout_chat_room__send_background"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:text="보내기" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

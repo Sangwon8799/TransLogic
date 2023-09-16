@@ -25,6 +25,7 @@
         <activity android:name=".layout.signup.SignupLayout" />
         <activity android:name=".layout.find_account.FindAccountLayout" />
         <activity android:name=".layout.main.MainLayout" />
+        <activity android:name=".layout.chat.RoomLayout" />
 
     </application>
 
