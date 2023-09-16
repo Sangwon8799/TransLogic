@@ -10,7 +10,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="2dp"
-        android:src="@drawable/common_default_image" />
+        android:src="@drawable/image_default_image" />
 
     <ImageButton
         android:id="@+id/adapter_employee_group_selected__remove"

@@ -19,7 +19,7 @@
         android:layout_height="50dp"
         android:layout_toEndOf="@id/adapter_employee_group_unselected__checkbox"
         android:layout_marginEnd="10dp"
-        android:src="@drawable/common_default_image" />
+        android:src="@drawable/image_default_image" />
 
     <LinearLayout
         android:layout_width="wrap_content"

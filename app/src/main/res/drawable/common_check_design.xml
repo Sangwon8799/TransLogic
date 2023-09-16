@@ -8,7 +8,7 @@
             <corners android:radius="6dp" />
         </shape>
     </item>
-    <item android:drawable="@drawable/common_check_icon"
+    <item android:drawable="@drawable/image_check_icon"
         android:width="20dp"
         android:height="20dp"
         android:gravity="center" />

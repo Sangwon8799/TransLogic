@@ -6,7 +6,7 @@
     android:background="@color/white">
 
     <RelativeLayout
-        android:id="@+id/layout_employee_employee__TOP_BAR"
+        android:id="@+id/layout_employee_employee__TITLE"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true">
@@ -40,26 +40,46 @@
 
     </RelativeLayout>
 
-    <EditText
-        android:id="@+id/layout_employee_employee__search"
+    <RelativeLayout
+        android:id="@+id/layout_employee_employee__SEARCH"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/layout_employee_employee__TOP_BAR"
-        android:layout_marginBottom="10dp"
-        android:layout_marginHorizontal="15dp"
-        android:background="@drawable/common_search_background"
-        android:drawableStart="@drawable/common_search_icon"
-        android:drawablePadding="8dp"
-        android:singleLine="true"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:hint="검색" />
+        android:layout_below="@id/layout_employee_employee__TITLE"
+        android:layout_marginBottom="10dp">
+
+        <EditText
+            android:id="@+id/layout_employee_employee__search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:background="@drawable/common_search_background"
+            android:drawableStart="@drawable/common_search_icon"
+            android:drawablePadding="8dp"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:hint="검색" />
+
+        <ImageButton
+            android:id="@+id/layout_employee_employee__clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/layout_employee_employee__search"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="6dp"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="10dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/common_search_clear_icon"
+            android:visibility="gone" />
+
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/layout_employee_employee__group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/layout_employee_employee__search"
+        android:layout_below="@id/layout_employee_employee__SEARCH"
         android:layout_marginBottom="5dp"
         android:layout_marginHorizontal="15dp"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

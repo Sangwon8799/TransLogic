@@ -16,15 +16,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
-        <activity android:name=".layout.login.Login" android:exported="true">
-            <intent-filter>
+        <activity android:name=".layout.login.LoginLayout" android:exported="true">
+            <intent-filterLayout>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filterLayout>
         </activity>
-        <activity android:name=".layout.signup.Signup" />
-        <activity android:name=".layout.find_account.FindAccount" />
-        <activity android:name=".layout.main.Main" />
+        <activity android:name=".layout.signup.SignupLayout" />
+        <activity android:name=".layout.find_account.FindAccountLayout" />
+        <activity android:name=".layout.main.MainLayout" />
 
     </application>
 
