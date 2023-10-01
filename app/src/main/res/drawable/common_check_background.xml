@@ -7,5 +7,5 @@
         </shape>
     </item>
     <item android:state_checked="true"
-        android:drawable="@drawable/common_check_design" />
+        android:drawable="@drawable/design_check_icon" />
 </selector>

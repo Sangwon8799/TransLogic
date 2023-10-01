@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,21 +23,18 @@
             android:textSize="26sp"
             android:text="업무 목록" />
 
-        <TextView
+        <ImageButton
             android:id="@+id/layout_task_task__set_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
-            android:paddingVertical="4dp"
+            android:layout_marginEnd="5dp"
+            android:paddingVertical="5dp"
             android:paddingHorizontal="10dp"
             android:background="@drawable/common_button_ripple"
-            android:clickable="true"
-            android:focusable="true"
-            android:textColor="@color/app_color"
-            android:textSize="20sp"
-            android:text="필터 설정" />
+            android:src="@drawable/design_filter_icon"
+            app:tint="@color/app_color" />
 
     </RelativeLayout>
 

@@ -76,7 +76,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return data.size();
     }
 
-    public class NoticeViewHolder extends RecyclerView.ViewHolder {
+    public static class NoticeViewHolder extends RecyclerView.ViewHolder {
         public TextView notice;
 
         public NoticeViewHolder(View view) {
@@ -86,7 +86,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    public class OpponentViewHolder extends RecyclerView.ViewHolder {
+    public static class OpponentViewHolder extends RecyclerView.ViewHolder {
         public ImageView image;
         public TextView name;
         public TextView message;
@@ -102,7 +102,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    public class MyselfViewHolder extends RecyclerView.ViewHolder {
+    public static class MyselfViewHolder extends RecyclerView.ViewHolder {
         public TextView message;
         public TextView time;
 

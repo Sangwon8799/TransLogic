@@ -25,31 +25,46 @@ import com.yeungjin.translogic.utility.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
-    private Context context;
-    private OnItemClickListener listener;
-    private int index;
+    private final Context context;
+    private final ArrayList<CHAT> data = new ArrayList<>();
 
-    private ArrayList<CHAT> data;
+    private final SimpleDateFormat time = new SimpleDateFormat("a hh:mm");
+    private OnItemClickListener listener;
 
     public ChatAdapter(Context context) {
         this.context = context;
-        data = new ArrayList<>();
     }
 
-    public void getChat(int index) {
-        load(new GetChatRequest(index, new ResponseListener()), index);
+    public void reload() {
+        reload(null);
     }
 
-    public void getSearchedChat(String content, int index) {
-        load(new GetSearchedChatRequest(content, index, new ResponseListener()), index);
+    public void reload(String content) {
+        Request request;
+        if (content == null) {
+            request = new GetChatRequest(0, new ReloadListener());
+        } else {
+            request = new GetSearchedChatRequest(content, 0, new ReloadListener());
+        }
+        Request.queue = Volley.newRequestQueue(context);
+        Request.queue.add(request);
     }
 
-    private void load(Request request, int index) {
-        this.index = index;
+    public void load() {
+        load(null);
+    }
 
+    public void load(String content) {
+        Request request;
+        if (content == null) {
+            request = new GetChatRequest(data.size(), new LoadListener());
+        } else {
+            request = new GetSearchedChatRequest(content, data.size(), new LoadListener());
+        }
         Request.queue = Volley.newRequestQueue(context);
         Request.queue.add(request);
     }
@@ -70,6 +85,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         CHAT chat = data.get(position);
 
         holder.title.setText(chat.CHAT_TITLE);
+        holder.content.setText(chat.CHAT_LAST_CONTENT.equals("null") ? "" : chat.CHAT_LAST_CONTENT);
+        holder.time.setText(time.format(chat.CHAT_ENROLL_DATE));
     }
 
     @Override
@@ -98,8 +115,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 public void onClick(View v) {
                     if (listener != null) {
                         Intent intent = new Intent(view.getContext(), RoomLayout.class);
-                        intent.putExtra("username", Session.user.EMPLOYEE_USERNAME);
-                        intent.putExtra("roomNumber", String.valueOf(data.get(getAdapterPosition()).CHAT_NUMBER));
+                        intent.putExtra("name", Session.user.EMPLOYEE_NAME);
+                        intent.putExtra("number", String.valueOf(data.get(getAdapterPosition()).CHAT_NUMBER));
+                        intent.putExtra("title", data.get(getAdapterPosition()).CHAT_TITLE);
 
                         listener.execute(intent);
                     }
@@ -108,46 +126,59 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         }
     }
 
-    private class ResponseListener implements Response.Listener<String> {
+    public interface OnItemClickListener {
+        public void execute(Intent intent);
+    }
+
+    private class ReloadListener implements Response.Listener<String> {
         @Override
         public void onResponse(String response) {
-            if (index == 0) {
-                data = new ArrayList<>();
-            }
+            notifyItemRangeRemoved(0, data.size());
+            data.clear();
 
             try {
-                JSONObject json = new JSONObject(response);
-
-                JSONObject object;
-                JSONArray array;
-
-                array = json.getJSONArray("chat");
-                for (int step = 0; step < array.length(); step++) {
-                    object = array.getJSONObject(step);
-
-                    CHAT chat = new CHAT();
-                    chat.CHAT_NUMBER = object.getLong("CHAT_NUMBER");
-                    chat.CHAT_TITLE = object.getString("CHAT_TITLE");
-                    chat.CHAT_LAST_ACCESS = DateFormat.getInstance().DATETIME.parse(object.getString("CHAT_LAST_ACCESS"));
-                    chat.CHAT_LAST_CONTENT = object.getString("CHAT_LAST_CONTENT");
-                    chat.CHAT_IMAGE = object.getString("CHAT_IMAGE");
-                    chat.CHAT_ENROLL_DATE = DateFormat.getInstance().DATETIME.parse(object.getString("CHAT_ENROLL_DATE"));
-
-                    data.add(chat);
-                }
+                notifyItemRangeInserted(0, getResponse(response));
             } catch (Exception error) {
                 error.printStackTrace();
-            }
-
-            if (index == 0) {
-                notifyDataSetChanged();
-            } else {
-                notifyItemRangeInserted(index * 20, 20);
             }
         }
     }
 
-    public interface OnItemClickListener {
-        public void execute(Intent intent);
+    private class LoadListener implements Response.Listener<String> {
+        @Override
+        public void onResponse(String response) {
+            int position = data.size();
+
+            try {
+                notifyItemRangeInserted(position, getResponse(response));
+            } catch (Exception error) {
+                error.printStackTrace();
+            }
+        }
+    }
+
+    private int getResponse(String response) throws Exception {
+        JSONObject json = new JSONObject(response);
+
+        JSONObject object;
+        JSONArray array;
+
+        array = json.getJSONArray("chat");
+        for (int step = 0; step < array.length(); step++) {
+            object = array.getJSONObject(step);
+
+            CHAT chat = new CHAT();
+            chat.CHAT_NUMBER = object.getLong("CHAT_NUMBER");
+            chat.CHAT_EMPLOYEE_NUMBER = object.getLong("CHAT_EMPLOYEE_NUMBER");
+            chat.CHAT_TITLE = object.getString("CHAT_TITLE");
+            chat.CHAT_LAST_ACCESS = DateFormat.getInstance().DATETIME.parse(object.getString("CHAT_LAST_ACCESS"));
+            chat.CHAT_LAST_CONTENT = object.getString("CHAT_LAST_CONTENT");
+            chat.CHAT_IMAGE = object.getString("CHAT_IMAGE");
+            chat.CHAT_ENROLL_DATE = DateFormat.getInstance().DATETIME.parse(object.getString("CHAT_ENROLL_DATE"));
+
+            data.add(chat);
+        }
+
+        return array.length();
     }
 }

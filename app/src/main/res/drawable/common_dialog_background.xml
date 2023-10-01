@@ -2,8 +2,8 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <solid android:color="@color/myself_chat_color" />
-            <corners android:radius="10dp" />
+            <solid android:color="@color/white" />
+            <corners android:radius="30dp" />
         </shape>
     </item>
 </layer-list>

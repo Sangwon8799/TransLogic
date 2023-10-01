@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingTop="15dp"
     android:paddingHorizontal="20dp"
-    android:background="@drawable/common_round_layout">
+    android:background="@drawable/common_bottom_sheet_background">
 
     <RelativeLayout
         android:id="@+id/layout_employee_group_selection__TITLE"

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,21 +23,18 @@
             android:textSize="26sp"
             android:text="직원" />
 
-        <TextView
+        <ImageButton
             android:id="@+id/layout_employee_employee__create_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
-            android:paddingVertical="4dp"
+            android:layout_marginEnd="5dp"
+            android:paddingVertical="5dp"
             android:paddingHorizontal="10dp"
             android:background="@drawable/common_button_ripple"
-            android:clickable="true"
-            android:focusable="true"
-            android:textColor="@color/app_color"
-            android:textSize="20sp"
-            android:text="그룹 생성" />
+            android:src="@drawable/design_create_group_icon"
+            app:tint="@color/app_color" />
 
     </RelativeLayout>
 
@@ -80,18 +78,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/layout_employee_employee__SEARCH"
-        android:layout_marginBottom="5dp"
         android:layout_marginHorizontal="15dp"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:orientation="horizontal"
         tools:listitem="@layout/adapter_employee_group" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/layout_employee_employee__list"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/layout_employee_employee__refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_employee_employee__group"
-        android:scrollbars="vertical"
-        tools:listitem="@layout/adapter_employee_employee" />
+        android:layout_below="@id/layout_employee_employee__group">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/layout_employee_employee__list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            tools:listitem="@layout/adapter_employee_employee" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

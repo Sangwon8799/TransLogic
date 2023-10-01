@@ -19,10 +19,11 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.signup.CheckUniqueRequest;
+import com.yeungjin.translogic.request.signup.IsUniqueRequest;
 import com.yeungjin.translogic.request.signup.SubmitRequest;
 
 public class SignupLayout extends AppCompatActivity {
+    private ScrollView information;
     private EditText name;
     private EditText username;
     private EditText password;
@@ -42,8 +43,7 @@ public class SignupLayout extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_signup_signup);
-        setLayoutRatio();
-        setId();
+        init();
 
         username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -58,7 +58,7 @@ public class SignupLayout extends AppCompatActivity {
                         username.setLayoutParams(params);
                     }
 
-                    CheckUniqueRequest request = new CheckUniqueRequest(username, new Response.Listener<String>() {
+                    IsUniqueRequest request = new IsUniqueRequest(username, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             if (response.contains("true")) {
@@ -181,18 +181,8 @@ public class SignupLayout extends AppCompatActivity {
         });
     }
 
-    private void setLayoutRatio() {
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                metrics.heightPixels * 5 / 10);
-        params.addRule(RelativeLayout.BELOW, R.id.layout_signup_signup__TITLE);
-
-        ScrollView information = (ScrollView) findViewById(R.id.layout_signup_signup__information);
-        information.setLayoutParams(params);
-    }
-
-    private void setId() {
+    private void init() {
+        information = (ScrollView) findViewById(R.id.layout_signup_signup__information);
         name = (EditText) findViewById(R.id.layout_signup_signup__name);
         username = (EditText) findViewById(R.id.layout_signup_signup__username);
         password = (EditText) findViewById(R.id.layout_signup_signup__password);
@@ -204,5 +194,13 @@ public class SignupLayout extends AppCompatActivity {
         passwordNote = (TextView) findViewById(R.id.layout_signup_signup__password_note);
         submit = (Button) findViewById(R.id.layout_signup_signup__submit);
         cancel = (Button) findViewById(R.id.layout_signup_signup__cancel);
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                metrics.heightPixels * 5 / 10);
+        params.addRule(RelativeLayout.BELOW, R.id.layout_signup_signup__TITLE);
+
+        information.setLayoutParams(params);
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,6 +22,19 @@
             android:textStyle="bold"
             android:textSize="26sp"
             android:text="채팅" />
+
+        <ImageButton
+            android:id="@+id/layout_chat_chat__create_room"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="5dp"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="10dp"
+            android:background="@drawable/common_button_ripple"
+            android:src="@drawable/design_create_chat_icon"
+            app:tint="@color/app_color" />
 
     </RelativeLayout>
 
@@ -59,12 +73,19 @@
 
     </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/layout_chat_chat__list"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/layout_chat_chat__refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_chat_chat__SEARCH"
-        android:scrollbars="vertical"
-        tools:listitem="@layout/adapter_chat_chat" />
+        android:layout_below="@id/layout_chat_chat__SEARCH">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/layout_chat_chat__list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            tools:listitem="@layout/adapter_chat_chat" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

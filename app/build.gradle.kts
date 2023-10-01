@@ -36,9 +36,14 @@ dependencies {
     // HTTP 통신을 간결하게 해주는 라이브러리
     implementation("com.android.volley:volley:1.2.1")
 
-    // 채팅에 사용하는 Socket 통신
+    // 채팅에 사용하는 Socket 통신 라이브러리
     implementation("io.socket:socket.io-client:2.0.0")
+
+    // JSON 파일 변환을 쉽게 도와주는 라이브러리
     implementation("com.google.code.gson:gson:2.8.9")
+
+    // 당겨서 새로고침 애니메이션을 지원하는 라이브러리
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")

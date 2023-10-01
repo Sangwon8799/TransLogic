@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,7 +22,7 @@ public class TaskLayout extends Fragment {
 
     private EditText search;
     private ImageButton clear;
-    private TextView setFilter;
+    private ImageButton setFilter;
     private RecyclerView userList;
 
     @Override
@@ -62,8 +61,8 @@ public class TaskLayout extends Fragment {
             public void onClick(View v) {
                 DisplayMetrics metrics = getResources().getDisplayMetrics();
 
-                FilterLayout filterLayout = new FilterLayout(v.getContext(), metrics.widthPixels, metrics.heightPixels);
-                filterLayout.show();
+                FilterLayout dialog = new FilterLayout(v.getContext(), metrics.widthPixels, metrics.heightPixels);
+                dialog.show();
             }
         });
 
@@ -76,7 +75,7 @@ public class TaskLayout extends Fragment {
     private void init(View view) {
         search = (EditText) view.findViewById(R.id.layout_task_task__search);
         clear = (ImageButton) view.findViewById(R.id.layout_task_task__clear);
-        setFilter = (TextView) view.findViewById(R.id.layout_task_task__set_filter);
+        setFilter = (ImageButton) view.findViewById(R.id.layout_task_task__set_filter);
         userList = (RecyclerView) view.findViewById(R.id.layout_task_task__list);
 
         user = new EmployeeAdapter();

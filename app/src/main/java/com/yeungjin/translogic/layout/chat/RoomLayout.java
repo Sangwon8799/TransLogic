@@ -3,11 +3,14 @@ package com.yeungjin.translogic.layout.chat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,15 +32,21 @@ import io.socket.emitter.Emitter;
 public class RoomLayout extends AppCompatActivity {
     private MessageAdapter messageAdapter;
 
+    private DrawerLayout layout;
     private RecyclerView messageList;
+    private ImageButton previous;
+    private TextView title;
+    private ImageButton menu;
+    private ImageButton upload;
     private EditText message;
-    private Button send;
+    private ImageButton send;
 
     private Gson gson;
     private Socket socket;
 
-    private String username;
+    private String name;
     private String roomNumber;
+    private String roomTitle;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,20 +54,70 @@ public class RoomLayout extends AppCompatActivity {
         setContentView(R.layout.layout_chat_room);
         init();
 
-        messageList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        messageList.setAdapter(messageAdapter);
+        previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        title.setText(roomTitle);
+
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!layout.isDrawerOpen(GravityCompat.END)) {
+                    layout.openDrawer(GravityCompat.END);
+                }
+            }
+        });
+
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 코드 추가
+            }
+        });
+
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!message.getText().toString().isEmpty()) {
+                    sendMessage();
+                }
+            }
+        });
 
         connect();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        socket.emit("left", gson.toJson(new RoomData(name, roomNumber, roomTitle)));
+        socket.disconnect();
+    }
+
     private void init() {
+        layout = (DrawerLayout) findViewById(R.id.layout_chat_room__layout);
         messageList = (RecyclerView) findViewById(R.id.layout_chat_room__message_list);
+        previous = (ImageButton) findViewById(R.id.layout_chat_room__previous);
+        title = (TextView) findViewById(R.id.layout_chat_room__title);
+        menu = (ImageButton) findViewById(R.id.layout_chat_room__menu);
+        upload = (ImageButton) findViewById(R.id.layout_chat_room__upload);
         message = (EditText) findViewById(R.id.layout_chat_room__message);
-        send = (Button) findViewById(R.id.layout_chat_room__send);
+        send = (ImageButton) findViewById(R.id.layout_chat_room__send);
 
         messageAdapter = new MessageAdapter();
+        messageList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        messageList.setAdapter(messageAdapter);
 
         gson = new Gson();
+
+        Intent intent = getIntent();
+        name = intent.getStringExtra("name");
+        roomNumber = intent.getStringExtra("number");
+        roomTitle = intent.getStringExtra("title");
     }
 
     private void connect() {
@@ -68,38 +127,26 @@ public class RoomLayout extends AppCompatActivity {
             error.printStackTrace();
         }
 
-        Intent intent = getIntent();
-        username = intent.getStringExtra("username");
-        roomNumber = intent.getStringExtra("roomNumber");
+        socket.connect();
+
+        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                socket.emit("enter", gson.toJson(new RoomData(name, roomNumber, roomTitle)));
+            }
+        });
 
         socket.on("update", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 MessageData data = gson.fromJson(args[0].toString(), MessageData.class);
-                System.out.println(args[0].toString());
                 addChat(data);
             }
         });
-
-        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                socket.emit("enter", gson.toJson(new RoomData(username, roomNumber)));
-            }
-        });
-
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendMessage();
-            }
-        });
-
-        socket.connect();
     }
 
     private void sendMessage() {
-        MessageData data = new MessageData("MESSAGE", username, roomNumber, message.getText().toString(), System.currentTimeMillis());
+        MessageData data = new MessageData("MESSAGE", name, roomNumber, message.getText().toString(), System.currentTimeMillis());
         socket.emit("newMessage", gson.toJson(data));
         messageAdapter.addItem(new MessageInfo(data.from, data.content, toDate(data.time), MessageType.MYSELF));
         message.setText("");
@@ -121,12 +168,5 @@ public class RoomLayout extends AppCompatActivity {
 
     private String toDate(long currentMillis) {
         return new SimpleDateFormat("a hh:mm").format(new Date(currentMillis));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        socket.emit("left", gson.toJson(new RoomData(username, roomNumber)));
-        socket.disconnect();
     }
 }
