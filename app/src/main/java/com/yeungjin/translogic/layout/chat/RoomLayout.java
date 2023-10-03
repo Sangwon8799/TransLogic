@@ -8,7 +8,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,36 +16,34 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.chat.MessageAdapter;
-import com.yeungjin.translogic.object.chat.MessageData;
-import com.yeungjin.translogic.object.chat.MessageInfo;
-import com.yeungjin.translogic.object.chat.MessageType;
-import com.yeungjin.translogic.object.chat.RoomData;
+import com.yeungjin.translogic.layout.CommonActivity;
+import com.yeungjin.translogic.object.chat.Message;
+import com.yeungjin.translogic.object.chat.Room;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
-public class RoomLayout extends AppCompatActivity {
-    private MessageAdapter messageAdapter;
+public class RoomLayout extends CommonActivity {
+    private DrawerLayout side;        // 메뉴창
+    private RecyclerView messageList; // 메시지 목록
+    private ImageButton previous;     // 뒤로가기
+    private TextView title;           // 채팅방 제목
+    private ImageButton menu;         // 메뉴 버튼
+    private ImageButton upload;       // 업로드 버튼
+    private EditText message;         // 메시지 입력창
+    private ImageButton send;         // 전송 버튼
 
-    private DrawerLayout layout;
-    private RecyclerView messageList;
-    private ImageButton previous;
-    private TextView title;
-    private ImageButton menu;
-    private ImageButton upload;
-    private EditText message;
-    private ImageButton send;
+    private MessageAdapter messageAdapter; // 메시지 목록 어댑터
 
-    private Gson gson;
-    private Socket socket;
+    private Gson gson;     // JSON 변환용 필드
+    private Socket socket; // 소켓 통신용 필드
 
-    private String name;
-    private String roomNumber;
-    private String roomTitle;
+    private String name;      // 사용자 이름
+    private int roomNumber;   // 채팅방 번호
+    private String roomTitle; // 채팅방 제목
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,39 +51,14 @@ public class RoomLayout extends AppCompatActivity {
         setContentView(R.layout.layout_chat_room);
         init();
 
-        previous.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        gson = new Gson();
+
+        Intent intent = getIntent();
+        name = intent.getStringExtra("name");
+        roomNumber = intent.getIntExtra("number", 0);
+        roomTitle = intent.getStringExtra("title");
 
         title.setText(roomTitle);
-
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!layout.isDrawerOpen(GravityCompat.END)) {
-                    layout.openDrawer(GravityCompat.END);
-                }
-            }
-        });
-
-        upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 코드 추가
-            }
-        });
-
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!message.getText().toString().isEmpty()) {
-                    sendMessage();
-                }
-            }
-        });
 
         connect();
     }
@@ -94,30 +66,65 @@ public class RoomLayout extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        socket.emit("left", gson.toJson(new RoomData(name, roomNumber, roomTitle)));
+
+        socket.emit("LEAVE", gson.toJson(new Room(name, roomNumber, roomTitle)));
         socket.disconnect();
     }
 
-    private void init() {
-        layout = (DrawerLayout) findViewById(R.id.layout_chat_room__layout);
-        messageList = (RecyclerView) findViewById(R.id.layout_chat_room__message_list);
-        previous = (ImageButton) findViewById(R.id.layout_chat_room__previous);
-        title = (TextView) findViewById(R.id.layout_chat_room__title);
-        menu = (ImageButton) findViewById(R.id.layout_chat_room__menu);
-        upload = (ImageButton) findViewById(R.id.layout_chat_room__upload);
-        message = (EditText) findViewById(R.id.layout_chat_room__message);
-        send = (ImageButton) findViewById(R.id.layout_chat_room__send);
+    @Override
+    protected void setId() {
+        side = findViewById(R.id.layout_chat_room__layout);
+        messageList = findViewById(R.id.layout_chat_room__message_list);
+        previous = findViewById(R.id.layout_chat_room__previous);
+        title = findViewById(R.id.layout_chat_room__title);
+        menu = findViewById(R.id.layout_chat_room__menu);
+        upload = findViewById(R.id.layout_chat_room__upload);
+        message = findViewById(R.id.layout_chat_room__message);
+        send = findViewById(R.id.layout_chat_room__send);
+    }
 
+    @Override
+    protected void setAdapter() {
         messageAdapter = new MessageAdapter();
+
         messageList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         messageList.setAdapter(messageAdapter);
+    }
 
-        gson = new Gson();
+    @Override
+    protected void setListener() {
+        previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!side.isDrawerOpen(GravityCompat.END)) {
+                    side.openDrawer(GravityCompat.END);
+                }
+            }
+        });
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 코드 추가
+            }
+        });
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!message.getText().toString().isEmpty()) {
+                    Message data = new Message(MessageAdapter.MYSELF, roomNumber, name, message.getText().toString(), new Date(System.currentTimeMillis()));
+                    socket.emit("MESSAGE", gson.toJson(data));
 
-        Intent intent = getIntent();
-        name = intent.getStringExtra("name");
-        roomNumber = intent.getStringExtra("number");
-        roomTitle = intent.getStringExtra("title");
+                    messageAdapter.addItem(data);
+                    message.setText("");
+                }
+            }
+        });
     }
 
     private void connect() {
@@ -128,45 +135,28 @@ public class RoomLayout extends AppCompatActivity {
         }
 
         socket.connect();
-
+        // 채팅방 진입시 해당 채팅방에 미리 들어가있는 사람들에게 출력될 문구
         socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                socket.emit("enter", gson.toJson(new RoomData(name, roomNumber, roomTitle)));
+                socket.emit("ENTER", gson.toJson(new Room(name, roomNumber, roomTitle)));
             }
         });
 
-        socket.on("update", new Emitter.Listener() {
+        // 상대방이 채팅을 보내면 해당 채팅을 불러오는 기능
+        socket.on("UPDATE", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                MessageData data = gson.fromJson(args[0].toString(), MessageData.class);
-                addChat(data);
+                Message data = gson.fromJson(args[0].toString(), Message.class);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        messageAdapter.addItem(data);
+                        messageList.scrollToPosition(messageAdapter.getItemCount() - 1);
+                    }
+                });
             }
         });
-    }
-
-    private void sendMessage() {
-        MessageData data = new MessageData("MESSAGE", name, roomNumber, message.getText().toString(), System.currentTimeMillis());
-        socket.emit("newMessage", gson.toJson(data));
-        messageAdapter.addItem(new MessageInfo(data.from, data.content, toDate(data.time), MessageType.MYSELF));
-        message.setText("");
-    }
-
-    private void addChat(MessageData data) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (data.type.equals("ENTER") || data.type.equals("LEFT")) {
-                    messageAdapter.addItem(new MessageInfo(data.from, data.content, toDate(data.time), MessageType.NOTICE));
-                } else {
-                    messageAdapter.addItem(new MessageInfo(data.from, data.content, toDate(data.time), MessageType.OPPONENT));
-                }
-                messageList.scrollToPosition(messageAdapter.getItemCount() - 1);
-            }
-        });
-    }
-
-    private String toDate(long currentMillis) {
-        return new SimpleDateFormat("a hh:mm").format(new Date(currentMillis));
     }
 }

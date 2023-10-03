@@ -8,11 +8,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Response;
-import com.android.volley.toolbox.Volley;
 import com.yeungjin.translogic.R;
+import com.yeungjin.translogic.adapter.CommonAdapter;
+import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.object.database.EMPLOYEE;
 import com.yeungjin.translogic.request.Request;
 import com.yeungjin.translogic.request.employee.GetEmployeeRequest;
@@ -22,44 +21,9 @@ import com.yeungjin.translogic.utility.DateFormat;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
-public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHolder> {
-    private final Context context;
-    private final ArrayList<EMPLOYEE> data = new ArrayList<>();
-
+public class EmployeeAdapter extends CommonAdapter<EmployeeAdapter.ViewHolder> {
     public EmployeeAdapter(Context context) {
-        this.context = context;
-    }
-
-    public void reload() {
-        reload(null);
-    }
-
-    public void reload(String content) {
-        Request request;
-        if (content == null) {
-            request = new GetEmployeeRequest(0, new ReloadListener());
-        } else {
-            request = new GetSearchedEmployeeRequest(content, 0, new ReloadListener());
-        }
-        Request.queue = Volley.newRequestQueue(context);
-        Request.queue.add(request);
-    }
-
-    public void load() {
-        load(null);
-    }
-
-    public void load(String content) {
-        Request request;
-        if (content == null) {
-            request = new GetEmployeeRequest(data.size(), new LoadListener());
-        } else {
-            request = new GetSearchedEmployeeRequest(content, data.size(), new LoadListener());
-        }
-        Request.queue = Volley.newRequestQueue(context);
-        Request.queue.add(request);
+        super(context);
     }
 
     @NonNull
@@ -71,67 +35,41 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EMPLOYEE employee = data.get(position);
+        EMPLOYEE employee = (EMPLOYEE) data.get(position);
 
         holder.name.setText(employee.EMPLOYEE_NAME);
         holder.contactNumber.setText(employee.EMPLOYEE_CONTACT_NUMBER);
     }
 
     @Override
-    public int getItemCount() {
-        return data.size();
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView image;
-        public TextView name;
-        public TextView company;
-        public TextView contactNumber;
-
-        public ViewHolder(View view) {
-            super(view);
-
-            image = (ImageView) view.findViewById(R.id.adapter_employee_employee__image);
-            name = (TextView) view.findViewById(R.id.adapter_employee_employee__name);
-            company = (TextView) view.findViewById(R.id.adapter_employee_employee__company);
-            contactNumber = (TextView) view.findViewById(R.id.adapter_employee_employee__contact_number);
+    public void reload(CharSequence content) {
+        Request request;
+        if (content == null) {
+            request = new GetEmployeeRequest(0, new ReloadListener());
+        } else {
+            request = new GetSearchedEmployeeRequest(content.toString(), 0, new ReloadListener());
         }
+        Request.sendRequest(context, request);
     }
 
-    private class ReloadListener implements Response.Listener<String> {
-        @Override
-        public void onResponse(String response) {
-            notifyItemRangeRemoved(0, data.size());
-            data.clear();
-
-            try {
-                notifyItemRangeInserted(0, getResponse(response));
-            } catch (Exception error) {
-                error.printStackTrace();
-            }
+    @Override
+    public void load(CharSequence content) {
+        Request request;
+        if (content == null) {
+            request = new GetEmployeeRequest(data.size(), new LoadListener());
+        } else {
+            request = new GetSearchedEmployeeRequest(content.toString(), data.size(), new LoadListener());
         }
+        Request.sendRequest(context, request);
     }
 
-    private class LoadListener implements Response.Listener<String> {
-        @Override
-        public void onResponse(String response) {
-            int position = data.size();
-
-            try {
-                notifyItemRangeInserted(position, getResponse(response));
-            } catch (Exception error) {
-                error.printStackTrace();
-            }
-        }
-    }
-
-    private int getResponse(String response) throws Exception {
-        JSONObject json = new JSONObject(response);
-
+    @Override
+    protected int getResponse(String response) throws Exception {
+        JSONObject http = new JSONObject(response);
         JSONObject object;
         JSONArray array;
 
-        array = json.getJSONArray("employee");
+        array = http.getJSONArray("employee");
         for (int step = 0; step < array.length(); step++) {
             object = array.getJSONObject(step);
 
@@ -145,11 +83,31 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
             employee.EMPLOYEE_COMPANY_NUMBER = object.getLong("EMPLOYEE_COMPANY_NUMBER");
             employee.EMPLOYEE_DEGREE = object.getString("EMPLOYEE_DEGREE");
             employee.EMPLOYEE_IMAGE = object.getString("EMPLOYEE_IMAGE");
-            employee.EMPLOYEE_REGISTER_DATE = DateFormat.getInstance().DATE.parse(object.getString("EMPLOYEE_REGISTER_DATE"));
+            employee.EMPLOYEE_REGISTER_DATE = DateFormat.DATE.parse(object.getString("EMPLOYEE_REGISTER_DATE"));
 
             data.add(employee);
         }
 
         return array.length();
+    }
+
+    public static class ViewHolder extends CommonViewHolder {
+        public ImageView image;
+        public TextView name;
+        public TextView company;
+        public TextView contactNumber;
+
+        public ViewHolder(View view) {
+            super(view);
+            init();
+        }
+
+        @Override
+        protected void setId() {
+            image = view.findViewById(R.id.adapter_employee_employee__image);
+            name = view.findViewById(R.id.adapter_employee_employee__name);
+            company = view.findViewById(R.id.adapter_employee_employee__company);
+            contactNumber = view.findViewById(R.id.adapter_employee_employee__contact_number);
+        }
     }
 }

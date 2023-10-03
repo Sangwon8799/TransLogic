@@ -13,16 +13,14 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.android.volley.Response;
-import com.android.volley.toolbox.Volley;
 import com.yeungjin.translogic.R;
+import com.yeungjin.translogic.layout.CommonActivity;
 import com.yeungjin.translogic.request.Request;
 import com.yeungjin.translogic.request.signup.IsUniqueRequest;
 import com.yeungjin.translogic.request.signup.SubmitRequest;
 
-public class SignupLayout extends AppCompatActivity {
+public class SignupLayout extends CommonActivity {
     private ScrollView information;
     private EditText name;
     private EditText username;
@@ -45,6 +43,33 @@ public class SignupLayout extends AppCompatActivity {
         setContentView(R.layout.layout_signup_signup);
         init();
 
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                metrics.heightPixels * 5 / 10);
+        params.addRule(RelativeLayout.BELOW, R.id.layout_signup_signup__TITLE);
+
+        information.setLayoutParams(params);
+    }
+
+    @Override
+    protected void setId() {
+        information = findViewById(R.id.layout_signup_signup__information);
+        name = findViewById(R.id.layout_signup_signup__name);
+        username = findViewById(R.id.layout_signup_signup__username);
+        password = findViewById(R.id.layout_signup_signup__password);
+        passwordConfirm = findViewById(R.id.layout_signup_signup__password_confirm);
+        contactNumber = findViewById(R.id.layout_signup_signup__contact_number);
+        email = findViewById(R.id.layout_signup_signup__email);
+        company = findViewById(R.id.layout_signup_signup__company);
+        usernameNote = findViewById(R.id.layout_signup_signup__username_note);
+        passwordNote = findViewById(R.id.layout_signup_signup__password_note);
+        submit = findViewById(R.id.layout_signup_signup__submit);
+        cancel = findViewById(R.id.layout_signup_signup__cancel);
+    }
+
+    @Override
+    protected void setListener() {
         username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -72,16 +97,13 @@ public class SignupLayout extends AppCompatActivity {
                             }
                         }
                     });
-                    Request.queue = Volley.newRequestQueue(getApplicationContext());
-                    Request.queue.add(request);
+                    Request.sendRequest(getApplicationContext(), request);
                 }
             }
         });
-
         passwordConfirm.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence content, int start, int before, int count) {
@@ -116,10 +138,8 @@ public class SignupLayout extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) { }
         });
-
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,40 +187,15 @@ public class SignupLayout extends AppCompatActivity {
                             }
                         }
                     });
-                    Request.queue = Volley.newRequestQueue(getApplicationContext());
-                    Request.queue.add(request);
+                    Request.sendRequest(getApplicationContext(), request);
                 }
             }
         });
-
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-    }
-
-    private void init() {
-        information = (ScrollView) findViewById(R.id.layout_signup_signup__information);
-        name = (EditText) findViewById(R.id.layout_signup_signup__name);
-        username = (EditText) findViewById(R.id.layout_signup_signup__username);
-        password = (EditText) findViewById(R.id.layout_signup_signup__password);
-        passwordConfirm = (EditText) findViewById(R.id.layout_signup_signup__password_confirm);
-        contactNumber = (EditText) findViewById(R.id.layout_signup_signup__contact_number);
-        email = (EditText) findViewById(R.id.layout_signup_signup__email);
-        company = (EditText) findViewById(R.id.layout_signup_signup__company);
-        usernameNote = (TextView) findViewById(R.id.layout_signup_signup__username_note);
-        passwordNote = (TextView) findViewById(R.id.layout_signup_signup__password_note);
-        submit = (Button) findViewById(R.id.layout_signup_signup__submit);
-        cancel = (Button) findViewById(R.id.layout_signup_signup__cancel);
-
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                metrics.heightPixels * 5 / 10);
-        params.addRule(RelativeLayout.BELOW, R.id.layout_signup_signup__TITLE);
-
-        information.setLayoutParams(params);
     }
 }

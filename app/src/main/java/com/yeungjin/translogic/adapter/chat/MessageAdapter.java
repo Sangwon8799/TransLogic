@@ -10,65 +10,59 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yeungjin.translogic.R;
-import com.yeungjin.translogic.object.chat.MessageInfo;
-import com.yeungjin.translogic.object.chat.MessageType;
+import com.yeungjin.translogic.adapter.CommonViewHolder;
+import com.yeungjin.translogic.object.chat.Message;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final int NOTICE = 0;
-    private static final int OPPONENT = 1;
-    private static final int MYSELF = 2;
+    private static final SimpleDateFormat format = new SimpleDateFormat("a hh:mm", Locale.KOREA);
 
-    private ArrayList<MessageInfo> data = new ArrayList<>();
+    public static final int NOTICE = 0;
+    public static final int OPPONENT = 1;
+    public static final int MYSELF = 2;
 
-    public void addItem(MessageInfo info) {
-        data.add(info);
-        notifyItemInserted(data.size() - 1);
-    }
+    private ArrayList<Message> data = new ArrayList<>();
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == NOTICE) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_chat_message_notice, parent, false);
-            return new NoticeViewHolder(view);
-        } else if (viewType == OPPONENT) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_chat_message_opponent, parent, false);
-            return new OpponentViewHolder(view);
-        } else {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_chat_message_myself, parent, false);
-            return new MyselfViewHolder(view);
+        View view;
+
+        switch (viewType) {
+            case NOTICE:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_chat_message_notice, parent, false);
+                return new NoticeViewHolder(view);
+            case OPPONENT:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_chat_message_opponent, parent, false);
+                return new OpponentViewHolder(view);
+            default:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_chat_message_myself, parent, false);
+                return new MyselfViewHolder(view);
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        MessageInfo info = data.get(position);
+        Message data = this.data.get(position);
 
         if (holder instanceof NoticeViewHolder) {
-            ((NoticeViewHolder) holder).notice.setText(info.message);
+            ((NoticeViewHolder) holder).content.setText(data.content);
         } else if (holder instanceof OpponentViewHolder) {
-            ((OpponentViewHolder) holder).name.setText(info.sender);
-            ((OpponentViewHolder) holder).message.setText(info.message);
-            ((OpponentViewHolder) holder).time.setText(info.time);
+            ((OpponentViewHolder) holder).name.setText(data.name);
+            ((OpponentViewHolder) holder).content.setText(data.content);
+            ((OpponentViewHolder) holder).time.setText(format.format(data.time));
         } else {
-            ((MyselfViewHolder) holder).message.setText(info.message);
-            ((MyselfViewHolder) holder).time.setText(info.time);
+            ((MyselfViewHolder) holder).content.setText(data.content);
+            ((MyselfViewHolder) holder).time.setText(format.format(data.time));
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        MessageType type = data.get(position).type;
-
-        if (type == MessageType.NOTICE) {
-            return NOTICE;
-        } else if (type == MessageType.OPPONENT) {
-            return OPPONENT;
-        } else {
-            return MYSELF;
-        }
+        return data.get(position).type;
     }
 
     @Override
@@ -76,41 +70,58 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return data.size();
     }
 
-    public static class NoticeViewHolder extends RecyclerView.ViewHolder {
-        public TextView notice;
+    public void addItem(Message message) {
+        data.add(message);
+        notifyItemInserted(data.size() - 1);
+    }
+
+    public static class NoticeViewHolder extends CommonViewHolder {
+        public TextView content;
 
         public NoticeViewHolder(View view) {
             super(view);
+            init();
+        }
 
-            notice = (TextView) view.findViewById(R.id.adapter_chat_message_notice__notice);
+        @Override
+        protected void setId() {
+            content = view.findViewById(R.id.adapter_chat_message_notice__notice);
         }
     }
 
-    public static class OpponentViewHolder extends RecyclerView.ViewHolder {
+    public static class OpponentViewHolder extends CommonViewHolder {
         public ImageView image;
         public TextView name;
-        public TextView message;
+        public TextView content;
         public TextView time;
 
         public OpponentViewHolder(View view) {
             super(view);
+            init();
+        }
 
-            image = (ImageView) view.findViewById(R.id.adapter_chat_message_opponent__image);
-            name = (TextView) view.findViewById(R.id.adapter_chat_message_opponent__name);
-            message = (TextView) view.findViewById(R.id.adapter_chat_message_opponent__message);
-            time = (TextView) view.findViewById(R.id.adapter_chat_message_opponent__time);
+        @Override
+        protected void setId() {
+            image = view.findViewById(R.id.adapter_chat_message_opponent__image);
+            name = view.findViewById(R.id.adapter_chat_message_opponent__name);
+            content = view.findViewById(R.id.adapter_chat_message_opponent__message);
+            time = view.findViewById(R.id.adapter_chat_message_opponent__time);
         }
     }
 
-    public static class MyselfViewHolder extends RecyclerView.ViewHolder {
-        public TextView message;
+    public static class MyselfViewHolder extends CommonViewHolder {
+        public TextView content;
         public TextView time;
 
         public MyselfViewHolder(View view) {
             super(view);
+            init();
+        }
 
-            message = (TextView) view.findViewById(R.id.adapter_chat_message_myself__message);
-            time = (TextView) view.findViewById(R.id.adapter_chat_message_myself__time);
+        @Override
+        protected void setId() {
+            content = view.findViewById(R.id.adapter_chat_message_myself__message);
+            time = view.findViewById(R.id.adapter_chat_message_myself__time);
         }
     }
 }
