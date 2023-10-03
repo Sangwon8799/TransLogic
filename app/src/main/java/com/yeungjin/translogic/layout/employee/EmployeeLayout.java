@@ -29,7 +29,7 @@ public class EmployeeLayout extends CommonFragment {
     private EmployeeAdapter employeeAdapter; // 직원 목록 어댑터
     private GroupAdapter groupAdapter;       // 그룹 목록 어댑터
 
-    private GroupSelectionLayout groupSelectionLayout;
+    private GroupSelectionLayout groupSelectionLayout; // 그룹 생성 레이아웃
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
