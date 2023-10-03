@@ -130,11 +130,10 @@ public class ChatAdapter extends CommonAdapter<ChatAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
-                        Intent intent = new Intent(view.getContext(), RoomLayout.class);
-                        intent.putExtra("name", Session.user.EMPLOYEE_NAME);
-                        intent.putExtra("number", ((CHAT) data.get(getAdapterPosition())).CHAT_NUMBER);
-                        intent.putExtra("title", ((CHAT) data.get(getAdapterPosition())).CHAT_TITLE);
+                        Session.chat.CHAT_NUMBER = ((CHAT) data.get(getAdapterPosition())).CHAT_NUMBER;
+                        Session.chat.CHAT_TITLE = ((CHAT) data.get(getAdapterPosition())).CHAT_TITLE;
 
+                        Intent intent = new Intent(view.getContext(), RoomLayout.class);
                         listener.execute(intent);
                     }
                 }

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 // 데이터를 불러오는 RecyclerView.Adapter 클래스의 공통 부분들을 체계화하여 작성하기 위해 만들어진 클래스
 public abstract class CommonAdapter<ViewHolder extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<ViewHolder> {
-    protected final Context context;                     // Adapter를 생성하는 Fragment의 Context를 담아두는 필드 sendRequest() 메소드에서 사용됨
+    protected final Context context;                        // Adapter를 생성하는 Fragment의 Context를 담아두는 필드 sendRequest() 메소드에서 사용됨
     protected ArrayList<DATABASE> data = new ArrayList<>(); // 이 클래스에 사용될 데이터를 담아둘 컨테이너 필드
 
     public CommonAdapter(Context context) {

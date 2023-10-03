@@ -32,18 +32,24 @@ dependencies {
     // HTTP를 통해 이미지를 불러오는 라이브러리
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
-
+    
     // HTTP 통신을 간결하게 해주는 라이브러리
     implementation("com.android.volley:volley:1.2.1")
 
     // 채팅에 사용하는 Socket 통신 라이브러리
     implementation("io.socket:socket.io-client:2.0.0")
 
-    // JSON 파일 변환을 쉽게 도와주는 라이브러리
+    // JSON 파일 변환을 간편하게 지원하는 라이브러리
     implementation("com.google.code.gson:gson:2.8.9")
 
     // 당겨서 새로고침 애니메이션을 지원하는 라이브러리
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    // PhotoPicker 기능을 지원하는 최신 Activity 라이브러리
+    implementation("androidx.activity:activity:1.7.2")
+
+    // 최신 Activity를 설치했을 때 발생하는 Duplicate class 오류 해결을 위해 Kotlin을 최신 버전으로 업데이트 해주는 라이브러리
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")

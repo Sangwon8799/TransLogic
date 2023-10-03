@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,8 +32,9 @@ public class GroupSelectionLayout extends CommonBottomSheetDialogFragment {
     private RecyclerView unselectedList;
     private RecyclerView selectedList;
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_employee_group_selection, container, false);
         init();
 
@@ -52,10 +55,10 @@ public class GroupSelectionLayout extends CommonBottomSheetDialogFragment {
         unselected = new GroupUnselectedAdapter(getActivity().getApplicationContext());
         selected = new GroupSelectedAdapter();
 
-        unselectedList.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        unselectedList.setLayoutManager(new LinearLayoutManager(getContext()));
         unselectedList.setAdapter(unselected);
 
-        selectedList.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
+        selectedList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         selectedList.setAdapter(selected);
     }
 
@@ -79,6 +82,7 @@ public class GroupSelectionLayout extends CommonBottomSheetDialogFragment {
                 } else {
                     clear.setVisibility(View.GONE);
                 }
+                unselected.reload(content);
             }
 
             @Override

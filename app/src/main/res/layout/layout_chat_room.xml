@@ -75,7 +75,7 @@
                 android:src="@drawable/design_upload_icon" />
 
             <EditText
-                android:id="@+id/layout_chat_room__message"
+                android:id="@+id/layout_chat_room__content"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:layout_toStartOf="@id/layout_chat_room__send"

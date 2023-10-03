@@ -43,7 +43,6 @@
                 android:background="@drawable/adapter_chat_room_opponent__message_background"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="6dp"
-                android:text="메시지"
                 android:textColor="@color/black"
                 android:textSize="13sp" />
 

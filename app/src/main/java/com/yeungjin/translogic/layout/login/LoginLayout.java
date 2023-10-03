@@ -16,7 +16,6 @@ import com.yeungjin.translogic.layout.CommonActivity;
 import com.yeungjin.translogic.layout.find_account.FindAccountLayout;
 import com.yeungjin.translogic.layout.main.MainLayout;
 import com.yeungjin.translogic.layout.signup.SignupLayout;
-import com.yeungjin.translogic.object.database.EMPLOYEE;
 import com.yeungjin.translogic.request.Request;
 import com.yeungjin.translogic.request.login.LoginRequest;
 import com.yeungjin.translogic.request.session.GetSession;
@@ -84,19 +83,16 @@ public class LoginLayout extends CommonActivity {
                                             JSONObject http = new JSONObject(response);
                                             JSONObject object = http.getJSONObject("user");
 
-                                            EMPLOYEE user = new EMPLOYEE();
-                                            user.EMPLOYEE_NUMBER = object.getLong("EMPLOYEE_NUMBER");
-                                            user.EMPLOYEE_NAME = object.getString("EMPLOYEE_NAME");
-                                            user.EMPLOYEE_USERNAME = object.getString("EMPLOYEE_USERNAME");
-                                            user.EMPLOYEE_PASSWORD = object.getString("EMPLOYEE_PASSWORD");
-                                            user.EMPLOYEE_CONTACT_NUMBER = object.getString("EMPLOYEE_CONTACT_NUMBER");
-                                            user.EMPLOYEE_EMAIL = object.getString("EMPLOYEE_EMAIL");
-                                            user.EMPLOYEE_COMPANY_NUMBER = object.getLong("EMPLOYEE_COMPANY_NUMBER");
-                                            user.EMPLOYEE_DEGREE = object.getString("EMPLOYEE_DEGREE");
-                                            user.EMPLOYEE_IMAGE = object.getString("EMPLOYEE_IMAGE");
-                                            user.EMPLOYEE_REGISTER_DATE = DateFormat.DATE.parse(object.getString("EMPLOYEE_REGISTER_DATE"));
-
-                                            Session.user = user;
+                                            Session.user.EMPLOYEE_NUMBER = object.getLong("EMPLOYEE_NUMBER");
+                                            Session.user.EMPLOYEE_NAME = object.getString("EMPLOYEE_NAME");
+                                            Session.user.EMPLOYEE_USERNAME = object.getString("EMPLOYEE_USERNAME");
+                                            Session.user.EMPLOYEE_PASSWORD = object.getString("EMPLOYEE_PASSWORD");
+                                            Session.user.EMPLOYEE_CONTACT_NUMBER = object.getString("EMPLOYEE_CONTACT_NUMBER");
+                                            Session.user.EMPLOYEE_EMAIL = object.getString("EMPLOYEE_EMAIL");
+                                            Session.user.EMPLOYEE_COMPANY_NUMBER = object.getLong("EMPLOYEE_COMPANY_NUMBER");
+                                            Session.user.EMPLOYEE_DEGREE = object.getString("EMPLOYEE_DEGREE");
+                                            Session.user.EMPLOYEE_IMAGE = object.getString("EMPLOYEE_IMAGE");
+                                            Session.user.EMPLOYEE_REGISTER_DATE = DateFormat.DATE.parse(object.getString("EMPLOYEE_REGISTER_DATE"));
                                         } catch (Exception error) {
                                             error.printStackTrace();
                                         }

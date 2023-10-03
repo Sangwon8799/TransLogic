@@ -22,9 +22,42 @@ import com.yeungjin.translogic.utility.DateFormat;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class GroupUnselectedAdapter extends CommonAdapter<GroupUnselectedAdapter.ViewHolder> {
+    private final Set<Long> checked = new HashSet<>();
+
     public GroupUnselectedAdapter(Context context) {
         super(context);
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_employee_group_unselected, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        EMPLOYEE employee = (EMPLOYEE) data.get(position);
+
+        holder.checkbox.setChecked(checked.contains(employee.EMPLOYEE_NUMBER));
+        holder.checkbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CheckBox checkbox = (CheckBox) v;
+
+                if (checkbox.isChecked()) {
+                    checked.add(employee.EMPLOYEE_NUMBER);
+                } else {
+                    checked.remove(employee.EMPLOYEE_NUMBER);
+                }
+            }
+        });
+        holder.name.setText(employee.EMPLOYEE_NAME);
+        holder.contactNumber.setText(employee.EMPLOYEE_CONTACT_NUMBER);
     }
 
     @Override
@@ -75,21 +108,6 @@ public class GroupUnselectedAdapter extends CommonAdapter<GroupUnselectedAdapter
         }
 
         return array.length();
-    }
-
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_employee_group_unselected, parent, false);
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EMPLOYEE employee = (EMPLOYEE) data.get(position);
-
-        holder.name.setText(employee.EMPLOYEE_NAME);
-        holder.contactNumber.setText(employee.EMPLOYEE_CONTACT_NUMBER);
     }
 
     public static class ViewHolder extends CommonViewHolder {

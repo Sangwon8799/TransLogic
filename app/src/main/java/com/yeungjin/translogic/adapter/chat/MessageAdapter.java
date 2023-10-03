@@ -1,5 +1,7 @@
 package com.yeungjin.translogic.adapter.chat;
 
+import android.content.res.Resources;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.object.chat.Message;
+import com.yeungjin.translogic.utility.BitmapTranslator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,17 +49,25 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Message data = this.data.get(position);
+        Message message = data.get(position);
 
         if (holder instanceof NoticeViewHolder) {
-            ((NoticeViewHolder) holder).content.setText(data.content);
+            ((NoticeViewHolder) holder).content.setText(message.content);
         } else if (holder instanceof OpponentViewHolder) {
-            ((OpponentViewHolder) holder).name.setText(data.name);
-            ((OpponentViewHolder) holder).content.setText(data.content);
-            ((OpponentViewHolder) holder).time.setText(format.format(data.time));
+            ((OpponentViewHolder) holder).name.setText(message.name);
+            if (BitmapTranslator.isImage(message.content)) {
+                ((OpponentViewHolder) holder).content.setBackground(new BitmapDrawable(Resources.getSystem(), BitmapTranslator.toBitmap(message.content)));
+            } else {
+                ((OpponentViewHolder) holder).content.setText(message.content);
+            }
+            ((OpponentViewHolder) holder).time.setText(format.format(message.time));
         } else {
-            ((MyselfViewHolder) holder).content.setText(data.content);
-            ((MyselfViewHolder) holder).time.setText(format.format(data.time));
+            if (BitmapTranslator.isImage(message.content)) {
+                ((MyselfViewHolder) holder).content.setBackground(new BitmapDrawable(Resources.getSystem(), BitmapTranslator.toBitmap(message.content)));
+            } else {
+                ((MyselfViewHolder) holder).content.setText(message.content);
+            }
+            ((MyselfViewHolder) holder).time.setText(format.format(message.time));
         }
     }
 
@@ -70,7 +81,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return data.size();
     }
 
-    public void addItem(Message message) {
+    public void addMessage(Message message) {
         data.add(message);
         notifyItemInserted(data.size() - 1);
     }

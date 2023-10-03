@@ -1,12 +1,20 @@
 package com.yeungjin.translogic.layout.chat;
 
-import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -19,8 +27,9 @@ import com.yeungjin.translogic.adapter.chat.MessageAdapter;
 import com.yeungjin.translogic.layout.CommonActivity;
 import com.yeungjin.translogic.object.chat.Message;
 import com.yeungjin.translogic.object.chat.Room;
-
-import java.util.Date;
+import com.yeungjin.translogic.object.database.CHAT;
+import com.yeungjin.translogic.utility.BitmapTranslator;
+import com.yeungjin.translogic.utility.Session;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -33,17 +42,16 @@ public class RoomLayout extends CommonActivity {
     private TextView title;           // 채팅방 제목
     private ImageButton menu;         // 메뉴 버튼
     private ImageButton upload;       // 업로드 버튼
-    private EditText message;         // 메시지 입력창
+    private EditText content;         // 메시지 입력창
     private ImageButton send;         // 전송 버튼
 
     private MessageAdapter messageAdapter; // 메시지 목록 어댑터
 
-    private Gson gson;     // JSON 변환용 필드
-    private Socket socket; // 소켓 통신용 필드
+    private final Gson gson = new Gson(); // JSON 변환용 필드
+    private Socket socket;                // 소켓 통신용 필드
 
-    private String name;      // 사용자 이름
-    private int roomNumber;   // 채팅방 번호
-    private String roomTitle; // 채팅방 제목
+    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia; // 이미지 불러오기 라이브러리
+    private static final int MAX_SIZE = 512;                          // 업로드할 이미지의 가장 긴 부분의 길이
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,14 +59,7 @@ public class RoomLayout extends CommonActivity {
         setContentView(R.layout.layout_chat_room);
         init();
 
-        gson = new Gson();
-
-        Intent intent = getIntent();
-        name = intent.getStringExtra("name");
-        roomNumber = intent.getIntExtra("number", 0);
-        roomTitle = intent.getStringExtra("title");
-
-        title.setText(roomTitle);
+        title.setText(Session.chat.CHAT_TITLE);
 
         connect();
     }
@@ -67,8 +68,11 @@ public class RoomLayout extends CommonActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        socket.emit("LEAVE", gson.toJson(new Room(name, roomNumber, roomTitle)));
+        socket.emit("LEAVE", gson.toJson(new Room(Session.user.EMPLOYEE_NAME, Session.chat.CHAT_NUMBER, Session.chat.CHAT_TITLE)));
         socket.disconnect();
+
+        // 새로 생성하여 내용 초기화
+        Session.chat = new CHAT();
     }
 
     @Override
@@ -79,7 +83,7 @@ public class RoomLayout extends CommonActivity {
         title = findViewById(R.id.layout_chat_room__title);
         menu = findViewById(R.id.layout_chat_room__menu);
         upload = findViewById(R.id.layout_chat_room__upload);
-        message = findViewById(R.id.layout_chat_room__message);
+        content = findViewById(R.id.layout_chat_room__content);
         send = findViewById(R.id.layout_chat_room__send);
     }
 
@@ -110,18 +114,42 @@ public class RoomLayout extends CommonActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 코드 추가
+                pickMedia.launch(new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build());
             }
         });
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!message.getText().toString().isEmpty()) {
-                    Message data = new Message(MessageAdapter.MYSELF, roomNumber, name, message.getText().toString(), new Date(System.currentTimeMillis()));
-                    socket.emit("MESSAGE", gson.toJson(data));
+                if (!content.getText().toString().isEmpty()) {
+                    Message message = new Message(Session.chat.CHAT_NUMBER, Session.user.EMPLOYEE_NAME, content.getText().toString());
+                    sendMessage(message);
 
-                    messageAdapter.addItem(data);
-                    message.setText("");
+                    content.setText("");
+                }
+            }
+        });
+        pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), new ActivityResultCallback<Uri>() {
+            @Override
+            public void onActivityResult(Uri uri) {
+                if (uri != null) {
+                    Bitmap image = null;
+
+                    try {
+                        // Android 9 이전 버전에서는 ImageDecoder를 사용하지 못하므로 이를 구분하여 실행
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            image = ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(), uri));
+                        } else {
+                            image = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                        }
+                    } catch (Exception error) {
+                        error.printStackTrace();
+                    }
+
+                    Ratio ratio = Ratio.getRatio(image);
+                    Bitmap resized = Bitmap.createScaledBitmap(image, ratio.width, ratio.height, true);
+
+                    Message message = new Message(Session.chat.CHAT_NUMBER, Session.user.EMPLOYEE_NAME, BitmapTranslator.toBase64(resized));
+                    sendMessage(message);
                 }
             }
         });
@@ -135,11 +163,12 @@ public class RoomLayout extends CommonActivity {
         }
 
         socket.connect();
+
         // 채팅방 진입시 해당 채팅방에 미리 들어가있는 사람들에게 출력될 문구
         socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                socket.emit("ENTER", gson.toJson(new Room(name, roomNumber, roomTitle)));
+                socket.emit("ENTER", gson.toJson(new Room(Session.user.EMPLOYEE_NAME, Session.chat.CHAT_NUMBER, Session.chat.CHAT_TITLE)));
             }
         });
 
@@ -147,16 +176,48 @@ public class RoomLayout extends CommonActivity {
         socket.on("UPDATE", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Message data = gson.fromJson(args[0].toString(), Message.class);
+                Message message = gson.fromJson(args[0].toString(), Message.class);
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        messageAdapter.addItem(data);
+                        messageAdapter.addMessage(message);
                         messageList.scrollToPosition(messageAdapter.getItemCount() - 1);
                     }
                 });
             }
         });
+    }
+
+    // 메시지 전송
+    private void sendMessage(Message message) {
+        socket.emit("MESSAGE", gson.toJson(message));
+
+        messageAdapter.addMessage(message);
+        messageList.scrollToPosition(messageAdapter.getItemCount() - 1);
+    }
+
+    // 이미지 비율 계산용 클래스
+    private static class Ratio {
+        public int width;
+        public int height;
+
+        private Ratio() { }
+
+        public static Ratio getRatio(Bitmap image) {
+            Ratio ratio = new Ratio();
+
+            int result = Math.min(image.getWidth(), image.getHeight()) * MAX_SIZE / Math.max(image.getWidth(), image.getHeight());
+
+            if (image.getWidth() >= image.getHeight()) {
+                ratio.width = MAX_SIZE;
+                ratio.height = result;
+            } else {
+                ratio.width = result;
+                ratio.height = MAX_SIZE;
+            }
+
+            return ratio;
+        }
     }
 }

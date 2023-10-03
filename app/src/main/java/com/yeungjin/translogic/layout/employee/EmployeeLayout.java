@@ -29,7 +29,7 @@ public class EmployeeLayout extends CommonFragment {
     private EmployeeAdapter employeeAdapter; // 직원 목록 어댑터
     private GroupAdapter groupAdapter;       // 그룹 목록 어댑터
 
-    private GroupSelectionLayout groupSelectionLayout; // 그룹 생성 레이아웃
+    private GroupSelectionLayout groupSelectionLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -91,7 +91,9 @@ public class EmployeeLayout extends CommonFragment {
         createGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                groupSelectionLayout.show(getParentFragmentManager(), groupSelectionLayout.getTag());
+                if (!groupSelectionLayout.isAdded()) {
+                    groupSelectionLayout.show(getParentFragmentManager(), groupSelectionLayout.getTag());
+                }
             }
         });
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
