@@ -27,6 +27,21 @@
         <activity android:name=".layout.main.MainLayout" />
         <activity android:name=".layout.chat.RoomLayout" />
 
+        <!-- 구글 플레이 서비스를 통해 백포팅된 PhotoPicker 기능 다운로드 및 추가 (Android 4.4 ~ 10, Google Play Service 앱이 최신 버전이어야 함)
+             Android 13 이상부터 사용 가능한 기능을 아래 코드 추가로 이전 버전에서도 실행 가능하도록 함
+             Android 11과 12는 실행이 안되거나 특정 조건을 만족해야 실행됨 (PhotoPicker가 아닌 기존 문서 선택기 실행), 링크 참조 : https://developer.android.com/training/data-storage/shared/photopicker?hl=ko#device-availability -->
+        <!--suppress AndroidDomInspection -->
+        <service android:name="com.google.android.gms.metadata.ModuleDependencies"
+            android:enabled="false"
+            android:exported="false"
+            tools:ignore="MissingClass">
+            <intent-filter>
+                <action android:name="com.google.android.gms.metadata.MODULE_DEPENDENCIES" />
+            </intent-filter>
+
+            <meta-data android:name="photopicker_activity:0:required" android:value="" />
+        </service>
+
     </application>
 
 </manifest>

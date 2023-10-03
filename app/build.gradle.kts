@@ -45,6 +45,12 @@ dependencies {
     // 당겨서 새로고침 애니메이션을 지원하는 라이브러리
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
+    // PhotoPicker 기능을 지원하는 최신 Activity 라이브러리
+    implementation ("androidx.activity:activity:1.7.2")
+
+    // 최신 Activity를 설치했을 때 발생하는 Duplicate class 오류 해결을 위해 코틀린을 최신 버전으로 업테이트 해주는 라이브러리
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")

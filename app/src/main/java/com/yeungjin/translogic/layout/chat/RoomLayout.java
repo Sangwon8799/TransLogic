@@ -1,12 +1,24 @@
 package com.yeungjin.translogic.layout.chat;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.ext.SdkExtensions;
+import android.provider.MediaStore;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -22,6 +34,8 @@ import com.yeungjin.translogic.object.chat.MessageInfo;
 import com.yeungjin.translogic.object.chat.MessageType;
 import com.yeungjin.translogic.object.chat.RoomData;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -47,6 +61,8 @@ public class RoomLayout extends AppCompatActivity {
     private String name;
     private String roomNumber;
     private String roomTitle;
+
+    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,7 +91,8 @@ public class RoomLayout extends AppCompatActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 코드 추가
+                // 이미지 선택 창 실행
+                pickMedia.launch(new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build());
             }
         });
 
@@ -118,6 +135,28 @@ public class RoomLayout extends AppCompatActivity {
         name = intent.getStringExtra("name");
         roomNumber = intent.getStringExtra("number");
         roomTitle = intent.getStringExtra("title");
+
+        // 이미지 선택 창 생성
+        pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+            if (uri != null) {
+                Log.d("PhotoPicker", "Selected URI: " + uri);
+                Bitmap uploadImage = null;
+                // Android 9 이전 버전에서는 ImageDecoder를 사용하지 못하므로 이를 구분하여 실행
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    try {
+                        uploadImage = ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(), uri));
+                    } catch (IOException e) {}
+                }
+                else {
+                    try {
+                        uploadImage = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                    } catch (IOException e) {}
+                }
+                sendMessage(uploadImage);
+            } else {
+                Log.d("pickMedia", "이미지 선택 안됨");
+            }
+        });
     }
 
     private void connect() {
@@ -152,6 +191,15 @@ public class RoomLayout extends AppCompatActivity {
         message.setText("");
     }
 
+    //이미지를 전송할 때 사용하기 위해 중복 정의된 메소드
+    private void sendMessage(Bitmap uploadImage) {
+        String bitmapBase64 = BitmapToStringBase64(uploadImage);
+
+        MessageData data = new MessageData("MESSAGE", name, roomNumber, bitmapBase64, System.currentTimeMillis());
+        socket.emit("newMessage", gson.toJson(data));
+        messageAdapter.addItem(new MessageInfo(data.from, data.content, toDate(data.time), MessageType.MYSELF));
+    }
+
     private void addChat(MessageData data) {
         runOnUiThread(new Runnable() {
             @Override
@@ -168,5 +216,13 @@ public class RoomLayout extends AppCompatActivity {
 
     private String toDate(long currentMillis) {
         return new SimpleDateFormat("a hh:mm").format(new Date(currentMillis));
+    }
+
+    // 비트맵 -> Base64 인코딩으로 변경하는 메소드
+    private String BitmapToStringBase64(Bitmap bitmap) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream);
+        byte[] bytes = outputStream.toByteArray();
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 }
