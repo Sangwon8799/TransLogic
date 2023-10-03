@@ -74,7 +74,7 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/layout_employee_employee__group"
+        android:id="@+id/layout_employee_employee__group_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/layout_employee_employee__SEARCH"
@@ -87,10 +87,10 @@
         android:id="@+id/layout_employee_employee__refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_employee_employee__group">
+        android:layout_below="@id/layout_employee_employee__group_list">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/layout_employee_employee__list"
+            android:id="@+id/layout_employee_employee__employee_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"

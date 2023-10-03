@@ -80,7 +80,7 @@
         android:layout_below="@id/layout_chat_chat__SEARCH">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/layout_chat_chat__list"
+            android:id="@+id/layout_chat_chat__chat_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"

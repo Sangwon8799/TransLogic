@@ -9,11 +9,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Response;
-import com.android.volley.toolbox.Volley;
 import com.yeungjin.translogic.R;
+import com.yeungjin.translogic.layout.CommonActivity;
 import com.yeungjin.translogic.layout.find_account.FindAccountLayout;
 import com.yeungjin.translogic.layout.main.MainLayout;
 import com.yeungjin.translogic.layout.signup.SignupLayout;
@@ -26,7 +25,7 @@ import com.yeungjin.translogic.utility.Session;
 
 import org.json.JSONObject;
 
-public class LoginLayout extends AppCompatActivity {
+public class LoginLayout extends CommonActivity {
     private EditText username;
     private EditText password;
     private TextView findAccount;
@@ -37,8 +36,20 @@ public class LoginLayout extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_login_login);
-        setId();
+        init();
+    }
 
+    @Override
+    protected void setId() {
+        username = findViewById(R.id.layout_login_login__username);
+        password = findViewById(R.id.layout_login_login__password);
+        findAccount = findViewById(R.id.layout_login_login__find_account);
+        login = findViewById(R.id.layout_login_login__login);
+        signup = findViewById(R.id.layout_login_login__signup);
+    }
+
+    @Override
+    protected void setListener() {
         findAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,7 +57,6 @@ public class LoginLayout extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,8 +81,8 @@ public class LoginLayout extends AppCompatActivity {
                                     @Override
                                     public void onResponse(String response) {
                                         try {
-                                            JSONObject json = new JSONObject(response);
-                                            JSONObject object = json.getJSONObject("user");
+                                            JSONObject http = new JSONObject(response);
+                                            JSONObject object = http.getJSONObject("user");
 
                                             EMPLOYEE user = new EMPLOYEE();
                                             user.EMPLOYEE_NUMBER = object.getLong("EMPLOYEE_NUMBER");
@@ -84,7 +94,7 @@ public class LoginLayout extends AppCompatActivity {
                                             user.EMPLOYEE_COMPANY_NUMBER = object.getLong("EMPLOYEE_COMPANY_NUMBER");
                                             user.EMPLOYEE_DEGREE = object.getString("EMPLOYEE_DEGREE");
                                             user.EMPLOYEE_IMAGE = object.getString("EMPLOYEE_IMAGE");
-                                            user.EMPLOYEE_REGISTER_DATE = DateFormat.getInstance().DATE.parse(object.getString("EMPLOYEE_REGISTER_DATE"));
+                                            user.EMPLOYEE_REGISTER_DATE = DateFormat.DATE.parse(object.getString("EMPLOYEE_REGISTER_DATE"));
 
                                             Session.user = user;
                                         } catch (Exception error) {
@@ -92,8 +102,7 @@ public class LoginLayout extends AppCompatActivity {
                                         }
                                     }
                                 });
-                                Request.queue = Volley.newRequestQueue(getApplicationContext());
-                                Request.queue.add(sessionRequest);
+                                Request.sendRequest(getApplicationContext(), sessionRequest);
 
                                 Intent intent = new Intent(getApplicationContext(), MainLayout.class);
                                 startActivity(intent);
@@ -103,12 +112,10 @@ public class LoginLayout extends AppCompatActivity {
                             }
                         }
                     });
-                    Request.queue = Volley.newRequestQueue(getApplicationContext());
-                    Request.queue.add(request);
+                    Request.sendRequest(getApplicationContext(), request);
                 }
             }
         });
-
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,13 +123,5 @@ public class LoginLayout extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
-
-    private void setId() {
-        username = (EditText) findViewById(R.id.layout_login_login__username);
-        password = (EditText) findViewById(R.id.layout_login_login__password);
-        findAccount = (TextView) findViewById(R.id.layout_login_login__find_account);
-        login = (Button) findViewById(R.id.layout_login_login__login);
-        signup = (Button) findViewById(R.id.layout_login_login__signup);
     }
 }

@@ -11,28 +11,50 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.chat.ChatAdapter;
+import com.yeungjin.translogic.layout.CommonFragment;
 
-public class ChatLayout extends Fragment {
-    private ChatAdapter chatAdapter;
+public class ChatLayout extends CommonFragment {
+    private EditText search;            // 검색창
+    private ImageButton clear;          // 검색어 지우기
+    private ImageButton createRoom;     // 채팅 생성
+    private RecyclerView chatList;      // 채팅 목록
+    private SwipeRefreshLayout refresh; // 갱신
 
-    private ImageButton createRoom;
-    private EditText search;
-    private ImageButton clear;
-    private RecyclerView chatList;
-    private SwipeRefreshLayout refresh;
+    private ChatAdapter chatAdapter; // 채팅 목록 어댑터
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_chat_chat, container, false);
-        init(view);
+        view = inflater.inflate(R.layout.layout_chat_chat, container, false);
+        init();
 
+        return view;
+    }
+
+    @Override
+    protected void setId() {
+        search = view.findViewById(R.id.layout_chat_chat__search);
+        clear = view.findViewById(R.id.layout_chat_chat__clear);
+        createRoom = view.findViewById(R.id.layout_chat_chat__create_room);
+        chatList = view.findViewById(R.id.layout_chat_chat__chat_list);
+        refresh = view.findViewById(R.id.layout_chat_chat__refresh);
+    }
+
+    @Override
+    protected void setAdapter() {
+        chatAdapter = new ChatAdapter(getActivity().getApplicationContext());
+
+        chatList.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        chatList.setAdapter(chatAdapter);
+    }
+
+    @Override
+    protected void setListener() {
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence content, int start, int count, int after) { }
@@ -50,14 +72,12 @@ public class ChatLayout extends Fragment {
             @Override
             public void afterTextChanged(Editable content) { }
         });
-
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 search.setText("");
             }
         });
-
         createRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,14 +87,12 @@ public class ChatLayout extends Fragment {
                 dialog.show();
             }
         });
-
         chatAdapter.setOnItemClickListener(new ChatAdapter.OnItemClickListener() {
             @Override
             public void execute(Intent intent) {
                 startActivity(intent);
             }
         });
-
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -82,22 +100,5 @@ public class ChatLayout extends Fragment {
                 refresh.setRefreshing(false);
             }
         });
-
-        return view;
-    }
-
-    private void init(View view) {
-        createRoom = (ImageButton) view.findViewById(R.id.layout_chat_chat__create_room);
-        search = (EditText) view.findViewById(R.id.layout_chat_chat__search);
-        clear = (ImageButton) view.findViewById(R.id.layout_chat_chat__clear);
-        chatList = (RecyclerView) view.findViewById(R.id.layout_chat_chat__list);
-        refresh = (SwipeRefreshLayout) view.findViewById(R.id.layout_chat_chat__refresh);
-
-        chatAdapter = new ChatAdapter(getActivity().getApplicationContext());
-
-        chatList.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        chatList.setAdapter(chatAdapter);
-
-        chatAdapter.load();
     }
 }

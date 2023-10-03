@@ -1,10 +1,9 @@
 package com.yeungjin.translogic.adapter.task;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,21 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yeungjin.translogic.R;
+import com.yeungjin.translogic.adapter.CommonAdapter;
+import com.yeungjin.translogic.adapter.CommonViewHolder;
 
-public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHolder> implements Filterable {
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                return null;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-
-            }
-        };
+public class EmployeeAdapter extends CommonAdapter<EmployeeAdapter.ViewHolder> {
+    public EmployeeAdapter(Context context) {
+        super(context);
     }
 
     @NonNull
@@ -43,11 +33,21 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
     }
 
     @Override
-    public int getItemCount() {
+    public void reload(CharSequence content) {
+
+    }
+
+    @Override
+    public void load(CharSequence content) {
+
+    }
+
+    @Override
+    public int getResponse(String response) throws Exception {
         return 0;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends CommonViewHolder {
         public ImageView image;
         public TextView name;
         public TextView company;
@@ -55,12 +55,17 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
 
         public ViewHolder(View view) {
             super(view);
+            init();
 
-            image = (ImageView) view.findViewById(R.id.adapter_task_employee__image);
-            name = (TextView) view.findViewById(R.id.adapter_task_employee__name);
-            company = (TextView) view.findViewById(R.id.adapter_task_employee__company);
-            content = (RecyclerView) view.findViewById(R.id.adapter_task_employee__content);
             content.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        }
+
+        @Override
+        protected void setId() {
+            image = view.findViewById(R.id.adapter_task_employee__image);
+            name = view.findViewById(R.id.adapter_task_employee__name);
+            company = view.findViewById(R.id.adapter_task_employee__company);
+            content = view.findViewById(R.id.adapter_task_employee__content);
         }
     }
 }
