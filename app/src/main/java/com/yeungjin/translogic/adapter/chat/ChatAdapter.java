@@ -10,25 +10,27 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
 import com.yeungjin.translogic.R;
-import com.yeungjin.translogic.adapter.CommonAdapter;
+import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.layout.chat.RoomLayout;
 import com.yeungjin.translogic.object.database.CHAT;
 import com.yeungjin.translogic.request.Request;
+import com.yeungjin.translogic.request.Server;
 import com.yeungjin.translogic.request.chat.GetChatRequest;
 import com.yeungjin.translogic.request.chat.GetSearchedChatRequest;
 import com.yeungjin.translogic.utility.DateFormat;
 import com.yeungjin.translogic.utility.Session;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class ChatAdapter extends CommonAdapter<ChatAdapter.ViewHolder> {
-    private final SimpleDateFormat time = new SimpleDateFormat("a hh:mm", Locale.KOREA);
+public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder> {
+    private static final SimpleDateFormat time = new SimpleDateFormat("a hh:mm", Locale.KOREA);
+
     private OnItemClickListener listener;
 
     public ChatAdapter(Context context) {
@@ -44,45 +46,21 @@ public class ChatAdapter extends CommonAdapter<ChatAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CHAT chat = (CHAT) data.get(position);
+        CHAT chat = data.get(position);
 
+        Glide.with(holder.image.getContext()).load(Server.ImageURL + chat.CHAT_IMAGE).into(holder.image);
         holder.title.setText(chat.CHAT_TITLE);
         holder.content.setText(chat.CHAT_LAST_CONTENT.equals("null") ? "" : chat.CHAT_LAST_CONTENT);
         holder.time.setText(time.format(chat.CHAT_ENROLL_DATE));
     }
 
     @Override
-    public void reload(CharSequence content) {
-        Request request;
-        if (content == null) {
-            request = new GetChatRequest(0, new ReloadListener());
-        } else {
-            request = new GetSearchedChatRequest(content.toString(), 0, new ReloadListener());
-        }
-        Request.sendRequest(context, request);
-    }
-
-    @Override
-    public void load(CharSequence content) {
-        Request request;
-        if (content == null) {
-            request = new GetChatRequest(data.size(), new LoadListener());
-        } else {
-            request = new GetSearchedChatRequest(content.toString(), data.size(), new LoadListener());
-        }
-        Request.sendRequest(context, request);
-    }
-
-    @Override
     protected int getResponse(String response) throws Exception {
         JSONObject json = new JSONObject(response);
 
-        JSONObject object;
-        JSONArray array;
-
         array = json.getJSONArray("chat");
-        for (int step = 0; step < array.length(); step++) {
-            object = array.getJSONObject(step);
+        for (int index = 0; index < array.length(); index++) {
+            object = array.getJSONObject(index);
 
             CHAT chat = new CHAT();
             chat.CHAT_NUMBER = object.getLong("CHAT_NUMBER");
@@ -99,6 +77,28 @@ public class ChatAdapter extends CommonAdapter<ChatAdapter.ViewHolder> {
         return array.length();
     }
 
+    @Override
+    public void reload() {
+        Request request = new GetChatRequest(0, new ReloadListener());
+        Request.sendRequest(context, request);
+    }
+
+    @Override
+    public void load() {
+        Request request = new GetChatRequest(data.size(), new LoadListener());
+        Request.sendRequest(context, request);
+    }
+
+    public void reload(CharSequence search) {
+        Request request = new GetSearchedChatRequest(0, search.toString(), new ReloadListener());
+        Request.sendRequest(context, request);
+    }
+
+    public void load(CharSequence search) {
+        Request request = new GetSearchedChatRequest(data.size(), search.toString(), new LoadListener());
+        Request.sendRequest(context, request);
+    }
+
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
@@ -113,6 +113,8 @@ public class ChatAdapter extends CommonAdapter<ChatAdapter.ViewHolder> {
         public ViewHolder(View view) {
             super(view);
             init();
+
+            image.setClipToOutline(true);
         }
 
         @Override
@@ -130,11 +132,11 @@ public class ChatAdapter extends CommonAdapter<ChatAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
-                        Session.chat.CHAT_NUMBER = ((CHAT) data.get(getAdapterPosition())).CHAT_NUMBER;
-                        Session.chat.CHAT_TITLE = ((CHAT) data.get(getAdapterPosition())).CHAT_TITLE;
+                        Session.chat.CHAT_NUMBER = data.get(getAdapterPosition()).CHAT_NUMBER;
+                        Session.chat.CHAT_TITLE = data.get(getAdapterPosition()).CHAT_TITLE;
 
                         Intent intent = new Intent(view.getContext(), RoomLayout.class);
-                        listener.execute(intent);
+                        listener.click(intent);
                     }
                 }
             });
@@ -142,6 +144,6 @@ public class ChatAdapter extends CommonAdapter<ChatAdapter.ViewHolder> {
     }
 
     public interface OnItemClickListener {
-        public void execute(Intent intent);
+        void click(Intent intent);
     }
 }

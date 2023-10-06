@@ -12,10 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yeungjin.translogic.R;
-import com.yeungjin.translogic.adapter.CommonAdapter;
+import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
+import com.yeungjin.translogic.object.database.EMPLOYEE;
 
-public class EmployeeAdapter extends CommonAdapter<EmployeeAdapter.ViewHolder> {
+public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter.ViewHolder> {
     public EmployeeAdapter(Context context) {
         super(context);
     }
@@ -33,18 +34,18 @@ public class EmployeeAdapter extends CommonAdapter<EmployeeAdapter.ViewHolder> {
     }
 
     @Override
-    public void reload(CharSequence content) {
-
-    }
-
-    @Override
-    public void load(CharSequence content) {
-
-    }
-
-    @Override
     public int getResponse(String response) throws Exception {
         return 0;
+    }
+
+    @Override
+    public void reload() {
+
+    }
+
+    @Override
+    public void load() {
+
     }
 
     public static class ViewHolder extends CommonViewHolder {

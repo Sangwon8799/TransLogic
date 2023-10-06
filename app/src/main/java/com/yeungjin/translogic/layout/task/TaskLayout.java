@@ -3,7 +3,6 @@ package com.yeungjin.translogic.layout.task;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,9 +75,7 @@ public class TaskLayout extends CommonFragment {
         setFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DisplayMetrics metrics = getResources().getDisplayMetrics();
-
-                FilterLayout dialog = new FilterLayout(v.getContext(), metrics.widthPixels, metrics.heightPixels);
+                FilterLayout dialog = new FilterLayout(v.getContext());
                 dialog.show();
             }
         });

@@ -1,5 +1,6 @@
 package com.yeungjin.translogic.adapter.chat;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
@@ -12,22 +13,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yeungjin.translogic.R;
+import com.yeungjin.translogic.adapter.CommonAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.object.chat.Message;
 import com.yeungjin.translogic.utility.BitmapTranslator;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Locale;
 
-public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MessageAdapter extends CommonAdapter<Message, RecyclerView.ViewHolder> {
     private static final SimpleDateFormat format = new SimpleDateFormat("a hh:mm", Locale.KOREA);
 
     public static final int NOTICE = 0;
     public static final int OPPONENT = 1;
     public static final int MYSELF = 2;
 
-    private ArrayList<Message> data = new ArrayList<>();
+    public MessageAdapter(Context context) {
+        super(context);
+    }
 
     @NonNull
     @Override
@@ -76,11 +79,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return data.get(position).type;
     }
 
-    @Override
-    public int getItemCount() {
-        return data.size();
-    }
-
     public void addMessage(Message message) {
         data.add(message);
         notifyItemInserted(data.size() - 1);
@@ -109,6 +107,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public OpponentViewHolder(View view) {
             super(view);
             init();
+
+            image.setClipToOutline(true);
         }
 
         @Override

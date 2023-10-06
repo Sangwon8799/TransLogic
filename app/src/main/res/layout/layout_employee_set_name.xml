@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="20dp"
+    android:paddingHorizontal="20dp"
+    android:background="@drawable/common_dialog_background"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="그룹명 설정" />
+
+        <TextView
+            android:id="@+id/layout_employee_set_name__create"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:paddingVertical="4dp"
+            android:paddingHorizontal="10dp"
+            android:background="@drawable/common_button_ripple"
+            android:clickable="true"
+            android:focusable="true"
+            android:textColor="@color/app_color"
+            android:textSize="16sp"
+            android:text="생성" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:text="이름" />
+
+    <EditText
+        android:id="@+id/layout_employee_set_name__name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:hint="생성할 그룹명을 설정해주세요." />
+
+</LinearLayout>

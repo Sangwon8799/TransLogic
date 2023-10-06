@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="20dp"
+    android:paddingHorizontal="20dp">
+
+    <TextView
+        android:id="@+id/adapter_employee_group_edit_list__name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="이름" />
+
+    <ImageButton
+        android:id="@+id/adapter_employee_group_edit_list__rename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@id/adapter_employee_group_edit_list__remove"
+        android:layout_marginEnd="30dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/adapter_employee_group_edit_list__rename_background" />
+
+    <ImageButton
+        android:id="@+id/adapter_employee_group_edit_list__remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/adapter_employee_group_edit_list__remove_background" />
+
+</RelativeLayout>

@@ -71,7 +71,6 @@ public class RoomLayout extends CommonActivity {
         socket.emit("LEAVE", gson.toJson(new Room(Session.user.EMPLOYEE_NAME, Session.chat.CHAT_NUMBER, Session.chat.CHAT_TITLE)));
         socket.disconnect();
 
-        // 새로 생성하여 내용 초기화
         Session.chat = new CHAT();
     }
 
@@ -89,7 +88,7 @@ public class RoomLayout extends CommonActivity {
 
     @Override
     protected void setAdapter() {
-        messageAdapter = new MessageAdapter();
+        messageAdapter = new MessageAdapter(getApplicationContext());
 
         messageList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         messageList.setAdapter(messageAdapter);
@@ -135,7 +134,6 @@ public class RoomLayout extends CommonActivity {
                     Bitmap image = null;
 
                     try {
-                        // Android 9 이전 버전에서는 ImageDecoder를 사용하지 못하므로 이를 구분하여 실행
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                             image = ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(), uri));
                         } else {
@@ -164,7 +162,6 @@ public class RoomLayout extends CommonActivity {
 
         socket.connect();
 
-        // 채팅방 진입시 해당 채팅방에 미리 들어가있는 사람들에게 출력될 문구
         socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -172,7 +169,6 @@ public class RoomLayout extends CommonActivity {
             }
         });
 
-        // 상대방이 채팅을 보내면 해당 채팅을 불러오는 기능
         socket.on("UPDATE", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -189,7 +185,6 @@ public class RoomLayout extends CommonActivity {
         });
     }
 
-    // 메시지 전송
     private void sendMessage(Message message) {
         socket.emit("MESSAGE", gson.toJson(message));
 
@@ -197,7 +192,6 @@ public class RoomLayout extends CommonActivity {
         messageList.scrollToPosition(messageAdapter.getItemCount() - 1);
     }
 
-    // 이미지 비율 계산용 클래스
     private static class Ratio {
         public int width;
         public int height;

@@ -3,7 +3,6 @@ package com.yeungjin.translogic.layout.signup;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,8 +16,9 @@ import com.android.volley.Response;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.layout.CommonActivity;
 import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.signup.IsUniqueRequest;
+import com.yeungjin.translogic.request.signup.IsUsernameUniqueRequest;
 import com.yeungjin.translogic.request.signup.SubmitRequest;
+import com.yeungjin.translogic.utility.Session;
 
 public class SignupLayout extends CommonActivity {
     private ScrollView information;
@@ -43,10 +43,9 @@ public class SignupLayout extends CommonActivity {
         setContentView(R.layout.layout_signup_signup);
         init();
 
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
-                metrics.heightPixels * 5 / 10);
+                Session.height * 5 / 10);
         params.addRule(RelativeLayout.BELOW, R.id.layout_signup_signup__TITLE);
 
         information.setLayoutParams(params);
@@ -83,7 +82,7 @@ public class SignupLayout extends CommonActivity {
                         username.setLayoutParams(params);
                     }
 
-                    IsUniqueRequest request = new IsUniqueRequest(username, new Response.Listener<String>() {
+                    IsUsernameUniqueRequest request = new IsUsernameUniqueRequest(username, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             if (response.contains("true")) {

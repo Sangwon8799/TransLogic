@@ -15,12 +15,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingVertical="6dp"
         android:background="@drawable/layout_main_main__menu_background"
         app:itemPaddingBottom="6dp"
         app:itemIconTint="@drawable/layout_main_main__menu_color"
         app:itemTextColor="@drawable/layout_main_main__menu_color"
-        app:labelVisibilityMode="labeled"
+        app:labelVisibilityMode="unlabeled"
         app:menu="@menu/layout_main_main__menu_icon" />
 
 </RelativeLayout>

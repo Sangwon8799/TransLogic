@@ -1,8 +1,6 @@
 package com.yeungjin.translogic.layout.chat;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -24,17 +22,11 @@ public class CreateRoomLayout extends CommonDialog {
 
     private ChatAdapter chatAdapter;
 
-    public CreateRoomLayout(@NonNull Context context, ChatAdapter chatAdapter, int width) {
+    public CreateRoomLayout(@NonNull Context context, ChatAdapter chatAdapter) {
         super(context);
         setContentView(R.layout.layout_chat_create_room);
         this.chatAdapter = chatAdapter;
-        init();
-
-        WindowManager.LayoutParams params = getWindow().getAttributes();
-        params.width = width * 8 / 10;
-        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        getWindow().setAttributes(params);
-        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        init(8, WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
     @Override

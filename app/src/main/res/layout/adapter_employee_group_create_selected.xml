@@ -4,7 +4,7 @@
     android:layout_height="90dp">
 
     <ImageView
-        android:id="@+id/adapter_employee_group_selected__image"
+        android:id="@+id/adapter_employee_group_create_selected__image"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
@@ -13,7 +13,7 @@
         android:src="@drawable/image_default_image" />
 
     <ImageButton
-        android:id="@+id/adapter_employee_group_selected__remove"
+        android:id="@+id/adapter_employee_group_create_selected__remove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -22,11 +22,12 @@
         android:background="@drawable/design_remove_icon" />
 
     <TextView
-        android:id="@+id/adapter_employee_group_selected__name"
+        android:id="@+id/adapter_employee_group_create_selected__name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/adapter_employee_group_selected__image"
+        android:layout_below="@id/adapter_employee_group_create_selected__image"
         android:paddingHorizontal="10dp"
+        android:maxLines="1"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="14sp"

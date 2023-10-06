@@ -1,11 +1,10 @@
 package com.yeungjin.translogic.request.session;
 
-import com.android.volley.Response;
-import com.yeungjin.translogic.request.Request;
+import com.yeungjin.translogic.request.ThreadRequest;
 
-public class GetSession extends Request {
-    public GetSession(String username, Response.Listener<String> listener) {
-        super("GetSession.db", listener);
+public class GetSession extends ThreadRequest {
+    public GetSession(String username) {
+        super("GetSession");
 
         parameters.put("username", username);
     }

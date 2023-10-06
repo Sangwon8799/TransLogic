@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/layout_employee_employee__menu_icon__add"
+        android:title="그룹 추가" />
+
+    <item
+        android:id="@+id/layout_employee_employee__menu_icon__edit"
+        android:title="그룹 편집" />
+
+</menu>

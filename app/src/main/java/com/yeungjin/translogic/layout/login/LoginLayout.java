@@ -2,6 +2,7 @@ package com.yeungjin.translogic.layout.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +18,7 @@ import com.yeungjin.translogic.layout.find_account.FindAccountLayout;
 import com.yeungjin.translogic.layout.main.MainLayout;
 import com.yeungjin.translogic.layout.signup.SignupLayout;
 import com.yeungjin.translogic.request.Request;
+import com.yeungjin.translogic.request.ThreadRequest;
 import com.yeungjin.translogic.request.login.LoginRequest;
 import com.yeungjin.translogic.request.session.GetSession;
 import com.yeungjin.translogic.utility.DateFormat;
@@ -36,6 +38,10 @@ public class LoginLayout extends CommonActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_login_login);
         init();
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        Session.width = metrics.widthPixels;
+        Session.height = metrics.heightPixels;
     }
 
     @Override
@@ -71,34 +77,33 @@ public class LoginLayout extends CommonActivity {
                         password.requestFocus();
                     }
                 } else {
-                    LoginRequest request = new LoginRequest(username, password, new Response.Listener<String>() {
+                    Request request = new LoginRequest(username, password, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             if (response.contains("true")) {
                                 Toast.makeText(getApplicationContext(), "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show();
-                                GetSession sessionRequest = new GetSession(_username, new Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String response) {
-                                        try {
-                                            JSONObject http = new JSONObject(response);
-                                            JSONObject object = http.getJSONObject("user");
 
-                                            Session.user.EMPLOYEE_NUMBER = object.getLong("EMPLOYEE_NUMBER");
-                                            Session.user.EMPLOYEE_NAME = object.getString("EMPLOYEE_NAME");
-                                            Session.user.EMPLOYEE_USERNAME = object.getString("EMPLOYEE_USERNAME");
-                                            Session.user.EMPLOYEE_PASSWORD = object.getString("EMPLOYEE_PASSWORD");
-                                            Session.user.EMPLOYEE_CONTACT_NUMBER = object.getString("EMPLOYEE_CONTACT_NUMBER");
-                                            Session.user.EMPLOYEE_EMAIL = object.getString("EMPLOYEE_EMAIL");
-                                            Session.user.EMPLOYEE_COMPANY_NUMBER = object.getLong("EMPLOYEE_COMPANY_NUMBER");
-                                            Session.user.EMPLOYEE_DEGREE = object.getString("EMPLOYEE_DEGREE");
-                                            Session.user.EMPLOYEE_IMAGE = object.getString("EMPLOYEE_IMAGE");
-                                            Session.user.EMPLOYEE_REGISTER_DATE = DateFormat.DATE.parse(object.getString("EMPLOYEE_REGISTER_DATE"));
-                                        } catch (Exception error) {
-                                            error.printStackTrace();
-                                        }
-                                    }
-                                });
-                                Request.sendRequest(getApplicationContext(), sessionRequest);
+                                ThreadRequest request = new GetSession(_username);
+                                request.start();
+                                try {
+                                    request.join();
+
+                                    JSONObject http = new JSONObject(request.getResponse());
+                                    JSONObject object = http.getJSONObject("user");
+
+                                    Session.user.EMPLOYEE_NUMBER = object.getLong("EMPLOYEE_NUMBER");
+                                    Session.user.EMPLOYEE_NAME = object.getString("EMPLOYEE_NAME");
+                                    Session.user.EMPLOYEE_USERNAME = object.getString("EMPLOYEE_USERNAME");
+                                    Session.user.EMPLOYEE_PASSWORD = object.getString("EMPLOYEE_PASSWORD");
+                                    Session.user.EMPLOYEE_CONTACT_NUMBER = object.getString("EMPLOYEE_CONTACT_NUMBER");
+                                    Session.user.EMPLOYEE_EMAIL = object.getString("EMPLOYEE_EMAIL");
+                                    Session.user.EMPLOYEE_COMPANY_NUMBER = object.getLong("EMPLOYEE_COMPANY_NUMBER");
+                                    Session.user.EMPLOYEE_DEGREE = object.getString("EMPLOYEE_DEGREE");
+                                    Session.user.EMPLOYEE_IMAGE = object.getString("EMPLOYEE_IMAGE");
+                                    Session.user.EMPLOYEE_REGISTER_DATE = DateFormat.DATE.parse(object.getString("EMPLOYEE_REGISTER_DATE"));
+                                } catch (Exception error) {
+                                    error.printStackTrace();
+                                }
 
                                 Intent intent = new Intent(getApplicationContext(), MainLayout.class);
                                 startActivity(intent);

@@ -7,7 +7,7 @@ import com.yeungjin.translogic.request.Request;
 
 public class SubmitRequest extends Request {
     public SubmitRequest(EditText name, EditText username, EditText password, EditText contact_number, EditText email, EditText company, Response.Listener<String> listener) {
-        super("Signup.db", listener);
+        super("Signup", listener);
 
         parameters.put("name", name.getText().toString());
         parameters.put("username", username.getText().toString());

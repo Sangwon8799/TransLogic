@@ -4,39 +4,42 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.android.volley.Response;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.employee.EmployeeAdapter;
 import com.yeungjin.translogic.adapter.employee.GroupAdapter;
 import com.yeungjin.translogic.layout.CommonFragment;
+import com.yeungjin.translogic.request.Request;
+import com.yeungjin.translogic.request.employee.IsGroupMaxRequest;
+import com.yeungjin.translogic.utility.Session;
 
 public class EmployeeLayout extends CommonFragment {
-    private EditText search;            // 검색창
-    private ImageButton clear;          // 검색어 지우기
-    private ImageButton createGroup;    // 그룹 생성
-    private RecyclerView employeeList;  // 직원 목록
-    private RecyclerView groupList;     // 그룹 목록
-    private SwipeRefreshLayout refresh; // 갱신
+    private EditText search;
+    private ImageButton clear;
+    private ImageButton create_group;
+    private RecyclerView employee_list;
+    private RecyclerView group_list;
+    private SwipeRefreshLayout refresh;
 
-    private EmployeeAdapter employeeAdapter; // 직원 목록 어댑터
-    private GroupAdapter groupAdapter;       // 그룹 목록 어댑터
-
-    private GroupSelectionLayout groupSelectionLayout; // 그룹 생성 레이아웃
+    private EmployeeAdapter employee_adapter;
+    private GroupAdapter group_adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_employee_employee, container, false);
         init();
-
-        groupSelectionLayout = new GroupSelectionLayout();
 
         return view;
     }
@@ -45,22 +48,22 @@ public class EmployeeLayout extends CommonFragment {
     protected void setId() {
         search = view.findViewById(R.id.layout_employee_employee__search);
         clear = view.findViewById(R.id.layout_employee_employee__clear);
-        createGroup = view.findViewById(R.id.layout_employee_employee__create_group);
-        employeeList = view.findViewById(R.id.layout_employee_employee__employee_list);
-        groupList = view.findViewById(R.id.layout_employee_employee__group_list);
+        create_group = view.findViewById(R.id.layout_employee_employee__create_group);
+        employee_list = view.findViewById(R.id.layout_employee_employee__employee_list);
+        group_list = view.findViewById(R.id.layout_employee_employee__group_list);
         refresh = view.findViewById(R.id.layout_employee_employee__refresh);
     }
 
     @Override
     protected void setAdapter() {
-        employeeAdapter = new EmployeeAdapter(getActivity().getApplicationContext());
-        groupAdapter = new GroupAdapter();
+        employee_adapter = new EmployeeAdapter(requireActivity().getApplicationContext());
+        group_adapter = new GroupAdapter(requireActivity().getApplicationContext());
 
-        employeeList.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        employeeList.setAdapter(employeeAdapter);
+        employee_list.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        employee_list.setAdapter(employee_adapter);
 
-        groupList.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        groupList.setAdapter(groupAdapter);
+        group_list.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
+        group_list.setAdapter(group_adapter);
     }
 
     @Override
@@ -76,7 +79,12 @@ public class EmployeeLayout extends CommonFragment {
                 } else {
                     clear.setVisibility(View.GONE);
                 }
-                employeeAdapter.reload(content.toString());
+
+                if (group_adapter.isSelected()) {
+                    employee_adapter.reload(group_adapter.getNumber(), content.toString());
+                } else {
+                    employee_adapter.reload(content.toString());
+                }
             }
 
             @Override
@@ -85,22 +93,85 @@ public class EmployeeLayout extends CommonFragment {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                search.setText("");
+                search.setText(null);
             }
         });
-        createGroup.setOnClickListener(new View.OnClickListener() {
+        create_group.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (!groupSelectionLayout.isAdded()) {
-                    groupSelectionLayout.show(getParentFragmentManager(), groupSelectionLayout.getTag());
-                }
+            public void onClick(View view) {
+                PopupMenu menu = new PopupMenu(getContext(), view);
+                requireActivity().getMenuInflater().inflate(R.menu.layout_employee_employee__menu_icon, menu.getMenu());
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId() == R.id.layout_employee_employee__menu_icon__add) {
+                            Request request = new IsGroupMaxRequest(Session.user.EMPLOYEE_NUMBER, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    if (response.contains("true")) {
+                                        GroupCreateLayout layout = new GroupCreateLayout();
+                                        layout.setOnLoadListener(new GroupCreateLayout.OnLoadListener() {
+                                            @Override
+                                            public void load() {
+                                                group_adapter.reload();
+                                            }
+                                        });
+                                        layout.show(getParentFragmentManager(), layout.getTag());
+                                    } else {
+                                        Toast.makeText(getContext(), "생성 가능한 그룹 최대 개수(10개)에 도달하여 그룹을 생성할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                            Request.sendRequest(getContext(), request);
+                        } else if (item.getItemId() == R.id.layout_employee_employee__menu_icon__edit) {
+                            GroupEditLayout dialog = new GroupEditLayout(getContext());
+                            dialog.show();
+                        } else {
+                            return false;
+                        }
+
+                        return true;
+                    }
+                });
+                menu.show();
             }
         });
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                employeeAdapter.reload();
+                employee_adapter.reload();
                 refresh.setRefreshing(false);
+            }
+        });
+        group_adapter.setOnSelectListener(new GroupAdapter.OnSelectListener() {
+            @Override
+            public void select(long group_number) {
+                String _search = search.getText().toString();
+
+                if (!_search.isEmpty()) {
+                    employee_adapter.reload(group_number, _search);
+                } else {
+                    employee_adapter.reload(group_number);
+                }
+            }
+
+            @Override
+            public void unselect() {
+                String _search = search.getText().toString();
+
+                if (!_search.isEmpty()) {
+                    employee_adapter.reload(_search);
+                } else {
+                    employee_adapter.reload();
+                }
+            }
+        });
+        group_adapter.setOnShowListener(new GroupAdapter.OnShowListener() {
+            @Override
+            public void show() {
+                if (group_list.getVisibility() == View.GONE) {
+                    group_list.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

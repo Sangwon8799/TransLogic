@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,15 +80,13 @@ public class ChatLayout extends CommonFragment {
         createRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DisplayMetrics metrics = getResources().getDisplayMetrics();
-
-                CreateRoomLayout dialog = new CreateRoomLayout(v.getContext(), chatAdapter, metrics.widthPixels);
+                CreateRoomLayout dialog = new CreateRoomLayout(v.getContext(), chatAdapter);
                 dialog.show();
             }
         });
         chatAdapter.setOnItemClickListener(new ChatAdapter.OnItemClickListener() {
             @Override
-            public void execute(Intent intent) {
+            public void click(Intent intent) {
                 startActivity(intent);
             }
         });

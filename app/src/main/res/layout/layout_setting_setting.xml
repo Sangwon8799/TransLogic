@@ -30,26 +30,43 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/layout_setting_setting__TITLE"
         android:paddingVertical="20dp"
-        android:paddingHorizontal="20dp"
-        android:background="@drawable/layout_setting_setting__profile_background">
+        android:paddingHorizontal="20dp">
 
         <RelativeLayout
             android:id="@+id/layout_setting_setting__INFORMATION"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp">
+            android:layout_marginBottom="40dp">
 
-            <ImageView
-                android:id="@+id/layout_setting_setting__image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginEnd="20dp"
-                android:src="@drawable/image_default_image" />
+            <RelativeLayout
+                android:id="@+id/layout_setting_setting__IMAGE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp">
+
+                <ImageView
+                    android:id="@+id/layout_setting_setting__image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/common_image_background"
+                    android:src="@drawable/image_default_image" />
+
+                <ImageButton
+                    android:id="@+id/layout_setting_setting__edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@id/layout_setting_setting__image"
+                    android:layout_alignBottom="@id/layout_setting_setting__image"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/design_edit_icon" />
+
+
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/layout_setting_setting__image"
+                android:layout_toEndOf="@id/layout_setting_setting__IMAGE"
                 android:layout_centerVertical="true"
                 android:orientation="vertical"
                 android:gravity="center_vertical">
