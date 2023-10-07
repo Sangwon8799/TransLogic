@@ -16,7 +16,7 @@ import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.object.database.EMPLOYEE;
 import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.Server;
+import com.yeungjin.translogic.utility.Server;
 import com.yeungjin.translogic.request.employee.GetEmployeeRequest;
 import com.yeungjin.translogic.request.employee.GetSearchedEmployeeRequest;
 import com.yeungjin.translogic.utility.ContactNumber;

@@ -15,22 +15,22 @@ import com.yeungjin.translogic.request.employee.CreateGroupRequest;
 import com.yeungjin.translogic.request.employee.IsGroupNameUniqueRequest;
 import com.yeungjin.translogic.utility.Session;
 
-public class SetNameLayout extends CommonDialog {
+public class GroupCreateSetNameLayout extends CommonDialog {
     private OnCreateListener listener;
 
     private TextView create;
     private EditText name;
 
-    public SetNameLayout(Context context) {
+    public GroupCreateSetNameLayout(Context context) {
         super(context);
-        setContentView(R.layout.layout_employee_set_name);
+        setContentView(R.layout.layout_employee_group_create_set_name);
         init(9, WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
     @Override
     protected void setId() {
-        create = findViewById(R.id.layout_employee_set_name__create);
-        name = findViewById(R.id.layout_employee_set_name__name);
+        create = findViewById(R.id.layout_employee_group_create_set_name__create);
+        name = findViewById(R.id.layout_employee_group_create_set_name__name);
     }
 
     @Override

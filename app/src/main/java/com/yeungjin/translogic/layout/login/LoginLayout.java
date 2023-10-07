@@ -14,11 +14,11 @@ import androidx.annotation.Nullable;
 import com.android.volley.Response;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.layout.CommonActivity;
-import com.yeungjin.translogic.layout.main.MainLayout;
+import com.yeungjin.translogic.layout.MainLayout;
 import com.yeungjin.translogic.request.Request;
 import com.yeungjin.translogic.request.ThreadRequest;
 import com.yeungjin.translogic.request.login.LoginRequest;
-import com.yeungjin.translogic.request.session.GetSession;
+import com.yeungjin.translogic.request.login.GetSession;
 import com.yeungjin.translogic.utility.DateFormat;
 import com.yeungjin.translogic.utility.Session;
 

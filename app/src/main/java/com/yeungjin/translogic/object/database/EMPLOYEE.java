@@ -1,10 +1,8 @@
 package com.yeungjin.translogic.object.database;
 
-import com.yeungjin.translogic.object.DATABASE;
-
 import java.util.Date;
 
-public class EMPLOYEE implements DATABASE {
+public class EMPLOYEE {
     public long EMPLOYEE_NUMBER;
     public String EMPLOYEE_NAME;
     public String EMPLOYEE_USERNAME;

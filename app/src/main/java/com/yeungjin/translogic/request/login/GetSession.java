@@ -1,4 +1,4 @@
-package com.yeungjin.translogic.request.session;
+package com.yeungjin.translogic.request.login;
 
 import com.yeungjin.translogic.request.ThreadRequest;
 

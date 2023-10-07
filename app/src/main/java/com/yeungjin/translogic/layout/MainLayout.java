@@ -1,4 +1,4 @@
-package com.yeungjin.translogic.layout.main;
+package com.yeungjin.translogic.layout;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -20,10 +20,10 @@ import com.yeungjin.translogic.layout.task.TaskLayout;
 
 public class MainLayout extends AppCompatActivity {
     private final Layout[] layouts = {
-            new Layout(new EmployeeLayout(), R.id.layout_main_main__menu_icon__user),
-            new Layout(new ChatLayout(), R.id.layout_main_main__menu_icon__chat),
-            new Layout(new TaskLayout(), R.id.layout_main_main__menu_icon__task),
-            new Layout(new SettingLayout(), R.id.layout_main_main__menu_icon__setting)
+            new Layout(new EmployeeLayout(), R.id.layout_main__menu_icon__user),
+            new Layout(new ChatLayout(), R.id.layout_main__menu_icon__chat),
+            new Layout(new TaskLayout(), R.id.layout_main__menu_icon__task),
+            new Layout(new SettingLayout(), R.id.layout_main__menu_icon__setting)
     };
     private final FragmentManager manager = getSupportFragmentManager();
     private FragmentTransaction transaction = manager.beginTransaction();
@@ -31,15 +31,15 @@ public class MainLayout extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_main_main);
+        setContentView(R.layout.layout_main);
 
         for (Layout layout : layouts) {
-            transaction.add(R.id.layout_main_main__screen, layout.layout);
+            transaction.add(R.id.layout_main_screen, layout.layout);
             transaction.hide(layout.layout);
         }
         transaction.show(layouts[0].layout).commit();
 
-        BottomNavigationView menu = (BottomNavigationView) findViewById(R.id.layout_main_main__menu);
+        BottomNavigationView menu = (BottomNavigationView) findViewById(R.id.layout_main__menu);
         menu.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

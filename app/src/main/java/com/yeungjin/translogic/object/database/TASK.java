@@ -1,10 +1,8 @@
 package com.yeungjin.translogic.object.database;
 
-import com.yeungjin.translogic.object.DATABASE;
-
 import java.util.Date;
 
-public class TASK implements DATABASE {
+public class TASK {
     public long TASK_NUMBER;
     public long TASK_EMPLOYEE_NUMBER;
     public String TASK_STATUS;

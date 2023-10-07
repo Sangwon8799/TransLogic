@@ -75,8 +75,8 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
             @Override
             public void onClick(View view) {
                 if (selected.getItemCount() != 0) {
-                    SetNameLayout dialog = new SetNameLayout(view.getContext());
-                    dialog.setOnCreateListener(new SetNameLayout.OnCreateListener() {
+                    GroupCreateSetNameLayout dialog = new GroupCreateSetNameLayout(view.getContext());
+                    dialog.setOnCreateListener(new GroupCreateSetNameLayout.OnCreateListener() {
                         @Override
                         public void create(long group_number) {
                             try {

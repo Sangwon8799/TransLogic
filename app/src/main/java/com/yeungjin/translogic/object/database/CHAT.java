@@ -1,10 +1,8 @@
 package com.yeungjin.translogic.object.database;
 
-import com.yeungjin.translogic.object.DATABASE;
-
 import java.util.Date;
 
-public class CHAT implements DATABASE {
+public class CHAT {
     public long CHAT_NUMBER;
     public long CHAT_EMPLOYEE_NUMBER;
     public String CHAT_TITLE;

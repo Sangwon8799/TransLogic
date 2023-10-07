@@ -1,4 +1,4 @@
-package com.yeungjin.translogic.request;
+package com.yeungjin.translogic.utility;
 
 public class Server {
     public static final String URL = "http://152.70.237.174/";
