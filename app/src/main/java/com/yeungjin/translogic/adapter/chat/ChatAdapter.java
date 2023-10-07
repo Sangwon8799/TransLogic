@@ -31,7 +31,7 @@ import java.util.Locale;
 public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder> {
     private static final SimpleDateFormat time = new SimpleDateFormat("a hh:mm", Locale.KOREA);
 
-    private OnItemClickListener listener;
+    private OnClickListener listener;
 
     public ChatAdapter(Context context) {
         super(context);
@@ -99,7 +99,7 @@ public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder>
         Request.sendRequest(context, request);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    public void setOnClickListener(OnClickListener listener) {
         this.listener = listener;
     }
 
@@ -143,7 +143,7 @@ public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder>
         }
     }
 
-    public interface OnItemClickListener {
+    public interface OnClickListener {
         void click(Intent intent);
     }
 }

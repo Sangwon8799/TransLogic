@@ -1,4 +1,4 @@
-package com.yeungjin.translogic.request.signup;
+package com.yeungjin.translogic.request.login;
 
 import android.widget.EditText;
 

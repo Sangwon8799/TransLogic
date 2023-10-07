@@ -28,7 +28,7 @@ import com.yeungjin.translogic.utility.Session;
 public class EmployeeLayout extends CommonFragment {
     private EditText search;
     private ImageButton clear;
-    private ImageButton create_group;
+    private ImageButton group_management;
     private RecyclerView employee_list;
     private RecyclerView group_list;
     private SwipeRefreshLayout refresh;
@@ -48,7 +48,7 @@ public class EmployeeLayout extends CommonFragment {
     protected void setId() {
         search = view.findViewById(R.id.layout_employee_employee__search);
         clear = view.findViewById(R.id.layout_employee_employee__clear);
-        create_group = view.findViewById(R.id.layout_employee_employee__create_group);
+        group_management = view.findViewById(R.id.layout_employee_employee__group_management);
         employee_list = view.findViewById(R.id.layout_employee_employee__employee_list);
         group_list = view.findViewById(R.id.layout_employee_employee__group_list);
         refresh = view.findViewById(R.id.layout_employee_employee__refresh);
@@ -96,7 +96,7 @@ public class EmployeeLayout extends CommonFragment {
                 search.setText(null);
             }
         });
-        create_group.setOnClickListener(new View.OnClickListener() {
+        group_management.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 PopupMenu menu = new PopupMenu(getContext(), view);

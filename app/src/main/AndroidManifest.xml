@@ -23,8 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".layout.signup.SignupLayout" />
-        <activity android:name=".layout.find_account.FindAccountLayout" />
+        <activity android:name=".layout.login.SignupLayout" />
+        <activity android:name=".layout.login.FindAccountLayout" />
         <activity android:name=".layout.main.MainLayout" />
         <activity android:name=".layout.chat.RoomLayout" />
 

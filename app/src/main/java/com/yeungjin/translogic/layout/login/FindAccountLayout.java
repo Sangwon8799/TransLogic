@@ -1,4 +1,4 @@
-package com.yeungjin.translogic.layout.find_account;
+package com.yeungjin.translogic.layout.login;
 
 import android.os.Bundle;
 import android.view.View;
@@ -16,14 +16,14 @@ public class FindAccountLayout extends CommonActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_find_account_find_account);
+        setContentView(R.layout.layout_login_find_account);
         init();
     }
 
     @Override
     protected void setId() {
-        username = findViewById(R.id.layout_find_account_find_account__username);
-        password = findViewById(R.id.layout_find_account_find_account__password);
+        username = findViewById(R.id.layout_login_find_account__username);
+        password = findViewById(R.id.layout_login_find_account__password);
     }
 
     @Override

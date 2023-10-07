@@ -6,7 +6,7 @@
     android:background="@color/white">
 
     <LinearLayout
-        android:id="@+id/layout_signup_signup__TITLE"
+        android:id="@+id/layout_login_signup__TITLE"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -32,10 +32,10 @@
     </LinearLayout>
 
     <ScrollView
-        android:id="@+id/layout_signup_signup__information"
+        android:id="@+id/layout_login_signup__information"
         android:layout_width="match_parent"
         android:layout_height="350dp"
-        android:layout_below="@id/layout_signup_signup__TITLE">
+        android:layout_below="@id/layout_login_signup__TITLE">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                 android:text="이름" />
 
             <EditText
-                android:id="@+id/layout_signup_signup__name"
+                android:id="@+id/layout_login_signup__name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -69,7 +69,7 @@
                 android:text="아이디" />
 
             <EditText
-                android:id="@+id/layout_signup_signup__username"
+                android:id="@+id/layout_login_signup__username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -79,7 +79,7 @@
                 android:hint="아이디를 입력해주세요" />
 
             <TextView
-                android:id="@+id/layout_signup_signup__username_note"
+                android:id="@+id/layout_login_signup__username_note"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -96,7 +96,7 @@
                 android:text="비밀번호" />
 
             <EditText
-                android:id="@+id/layout_signup_signup__password"
+                android:id="@+id/layout_login_signup__password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -115,7 +115,7 @@
                 android:text="비밀번호 확인" />
 
             <EditText
-                android:id="@+id/layout_signup_signup__password_confirm"
+                android:id="@+id/layout_login_signup__password_confirm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -126,7 +126,7 @@
                 android:hint="입력했던 비밀번호를 다시 입력해주세요" />
 
             <TextView
-                android:id="@+id/layout_signup_signup__password_note"
+                android:id="@+id/layout_login_signup__password_note"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -143,7 +143,7 @@
                 android:text="전화번호" />
 
             <EditText
-                android:id="@+id/layout_signup_signup__contact_number"
+                android:id="@+id/layout_login_signup__contact_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -162,7 +162,7 @@
                 android:text="이메일" />
 
             <EditText
-                android:id="@+id/layout_signup_signup__email"
+                android:id="@+id/layout_login_signup__email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -181,7 +181,7 @@
                 android:text="회사" />
 
             <EditText
-                android:id="@+id/layout_signup_signup__company"
+                android:id="@+id/layout_login_signup__company"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
@@ -197,7 +197,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/layout_signup_signup__information"
+        android:layout_below="@id/layout_login_signup__information"
         android:textColor="@color/gray"
         android:textSize="14sp"
         android:text="아래로 스크롤하여 계속 작성해주세요" />
@@ -205,13 +205,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/layout_signup_signup__information"
+        android:layout_below="@id/layout_login_signup__information"
         android:layout_marginTop="60dp"
         android:orientation="horizontal"
         android:gravity="center">
 
         <Button
-            android:id="@+id/layout_signup_signup__submit"
+            android:id="@+id/layout_login_signup__submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -228,7 +228,7 @@
             android:text="가입" />
 
         <Button
-            android:id="@+id/layout_signup_signup__cancel"
+            android:id="@+id/layout_login_signup__cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

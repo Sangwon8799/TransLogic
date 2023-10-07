@@ -1,4 +1,4 @@
-package com.yeungjin.translogic.layout.signup;
+package com.yeungjin.translogic.layout.login;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,8 +16,8 @@ import com.android.volley.Response;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.layout.CommonActivity;
 import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.signup.IsUsernameUniqueRequest;
-import com.yeungjin.translogic.request.signup.SubmitRequest;
+import com.yeungjin.translogic.request.login.IsUsernameUniqueRequest;
+import com.yeungjin.translogic.request.login.SubmitRequest;
 import com.yeungjin.translogic.utility.Session;
 
 public class SignupLayout extends CommonActivity {
@@ -40,31 +40,31 @@ public class SignupLayout extends CommonActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_signup_signup);
+        setContentView(R.layout.layout_login_signup);
         init();
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
                 Session.height * 5 / 10);
-        params.addRule(RelativeLayout.BELOW, R.id.layout_signup_signup__TITLE);
+        params.addRule(RelativeLayout.BELOW, R.id.layout_login_signup__TITLE);
 
         information.setLayoutParams(params);
     }
 
     @Override
     protected void setId() {
-        information = findViewById(R.id.layout_signup_signup__information);
-        name = findViewById(R.id.layout_signup_signup__name);
-        username = findViewById(R.id.layout_signup_signup__username);
-        password = findViewById(R.id.layout_signup_signup__password);
-        passwordConfirm = findViewById(R.id.layout_signup_signup__password_confirm);
-        contactNumber = findViewById(R.id.layout_signup_signup__contact_number);
-        email = findViewById(R.id.layout_signup_signup__email);
-        company = findViewById(R.id.layout_signup_signup__company);
-        usernameNote = findViewById(R.id.layout_signup_signup__username_note);
-        passwordNote = findViewById(R.id.layout_signup_signup__password_note);
-        submit = findViewById(R.id.layout_signup_signup__submit);
-        cancel = findViewById(R.id.layout_signup_signup__cancel);
+        information = findViewById(R.id.layout_login_signup__information);
+        name = findViewById(R.id.layout_login_signup__name);
+        username = findViewById(R.id.layout_login_signup__username);
+        password = findViewById(R.id.layout_login_signup__password);
+        passwordConfirm = findViewById(R.id.layout_login_signup__password_confirm);
+        contactNumber = findViewById(R.id.layout_login_signup__contact_number);
+        email = findViewById(R.id.layout_login_signup__email);
+        company = findViewById(R.id.layout_login_signup__company);
+        usernameNote = findViewById(R.id.layout_login_signup__username_note);
+        passwordNote = findViewById(R.id.layout_login_signup__password_note);
+        submit = findViewById(R.id.layout_login_signup__submit);
+        cancel = findViewById(R.id.layout_login_signup__cancel);
     }
 
     @Override
