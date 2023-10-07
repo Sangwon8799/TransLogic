@@ -15,6 +15,7 @@ import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.object.database.EMPLOYEE_GROUP;
 import com.yeungjin.translogic.request.Request;
 import com.yeungjin.translogic.request.employee.GetGroupRequest;
+import com.yeungjin.translogic.request.employee.FirstGetGroupRequest;
 import com.yeungjin.translogic.utility.DateFormat;
 import com.yeungjin.translogic.utility.Session;
 
@@ -22,7 +23,7 @@ import org.json.JSONObject;
 
 public class GroupEditAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupEditAdapter.ViewHolder> {
     public GroupEditAdapter(Context context) {
-        super(context);
+        super(context, new FirstGetGroupRequest(Session.user.EMPLOYEE_NUMBER));
     }
 
     @NonNull

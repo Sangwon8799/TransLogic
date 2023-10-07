@@ -13,6 +13,7 @@ import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.object.database.EMPLOYEE_GROUP;
 import com.yeungjin.translogic.request.Request;
+import com.yeungjin.translogic.request.employee.FirstGetGroupRequest;
 import com.yeungjin.translogic.request.employee.GetGroupRequest;
 import com.yeungjin.translogic.utility.DateFormat;
 import com.yeungjin.translogic.utility.Session;
@@ -24,10 +25,9 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
     private int currentPosition = UNSELECT;
 
     private OnSelectListener selectListener;
-    private OnShowListener showListener;
 
     public GroupAdapter(Context context) {
-        super(context);
+        super(context, new FirstGetGroupRequest(Session.user.EMPLOYEE_NUMBER));
     }
 
     @NonNull
@@ -88,10 +88,6 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
             data.add(group);
         }
 
-        if (!data.isEmpty()) {
-            showListener.show();
-        }
-
         return array.length();
     }
 
@@ -120,10 +116,6 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
         this.selectListener = listener;
     }
 
-    public void setOnShowListener(OnShowListener listener) {
-        this.showListener = listener;
-    }
-
     public static class ViewHolder extends CommonViewHolder {
         public RadioButton group;
 
@@ -141,9 +133,5 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
     public interface OnSelectListener {
         void select(long group_number);
         void unselect();
-    }
-
-    public interface OnShowListener {
-        void show();
     }
 }

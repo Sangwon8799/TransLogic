@@ -16,6 +16,7 @@ import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.object.database.EMPLOYEE;
 import com.yeungjin.translogic.request.Request;
+import com.yeungjin.translogic.request.employee.FirstGetEmployeeRequest;
 import com.yeungjin.translogic.utility.Server;
 import com.yeungjin.translogic.request.employee.GetEmployeeRequest;
 import com.yeungjin.translogic.request.employee.GetSearchedEmployeeRequest;
@@ -32,7 +33,7 @@ public class GroupCreateUnselectedAdapter extends CommonListAdapter<EMPLOYEE, Gr
     private OnCheckListener listener;
 
     public GroupCreateUnselectedAdapter(Context context) {
-        super(context);
+        super(context, new FirstGetEmployeeRequest());
     }
 
     @NonNull
@@ -67,7 +68,7 @@ public class GroupCreateUnselectedAdapter extends CommonListAdapter<EMPLOYEE, Gr
             }
         });
         holder.name.setText(employee.EMPLOYEE_NAME);
-        holder.contactNumber.setText(ContactNumber.parse(employee.EMPLOYEE_CONTACT_NUMBER));
+        holder.contact_number.setText(ContactNumber.parse(employee.EMPLOYEE_CONTACT_NUMBER));
     }
 
     @Override
@@ -118,11 +119,11 @@ public class GroupCreateUnselectedAdapter extends CommonListAdapter<EMPLOYEE, Gr
         Request.sendRequest(context, request);
     }
 
-    public void remove(long number) {
-        checked.remove(number);
+    public void remove(long employee_number) {
+        checked.remove(employee_number);
 
         for (int index = 0; index < data.size(); index++) {
-            if (data.get(index).EMPLOYEE_NUMBER == number) {
+            if (data.get(index).EMPLOYEE_NUMBER == employee_number) {
                 notifyItemChanged(index);
                 break;
             }
@@ -138,7 +139,7 @@ public class GroupCreateUnselectedAdapter extends CommonListAdapter<EMPLOYEE, Gr
         public ImageView image;
         public TextView name;
         public TextView company;
-        public TextView contactNumber;
+        public TextView contact_number;
 
         public ViewHolder(View view) {
             super(view);
@@ -153,7 +154,7 @@ public class GroupCreateUnselectedAdapter extends CommonListAdapter<EMPLOYEE, Gr
             image = view.findViewById(R.id.adapter_employee_group_create_unselected__image);
             name = view.findViewById(R.id.adapter_employee_group_create_unselected__name);
             company = view.findViewById(R.id.adapter_employee_group_create_unselected__company);
-            contactNumber = view.findViewById(R.id.adapter_employee_group_create_unselected__contact_number);
+            contact_number = view.findViewById(R.id.adapter_employee_group_create_unselected__contact_number);
         }
     }
 

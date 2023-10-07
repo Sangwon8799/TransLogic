@@ -17,6 +17,7 @@ import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.layout.chat.RoomLayout;
 import com.yeungjin.translogic.object.database.CHAT;
 import com.yeungjin.translogic.request.Request;
+import com.yeungjin.translogic.request.chat.FirstGetChatRequest;
 import com.yeungjin.translogic.utility.Server;
 import com.yeungjin.translogic.request.chat.GetChatRequest;
 import com.yeungjin.translogic.request.chat.GetSearchedChatRequest;
@@ -34,7 +35,7 @@ public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder>
     private OnClickListener listener;
 
     public ChatAdapter(Context context) {
-        super(context);
+        super(context, new FirstGetChatRequest());
     }
 
     @NonNull

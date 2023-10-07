@@ -18,7 +18,7 @@ import com.yeungjin.translogic.layout.MainLayout;
 import com.yeungjin.translogic.request.Request;
 import com.yeungjin.translogic.request.ThreadRequest;
 import com.yeungjin.translogic.request.login.LoginRequest;
-import com.yeungjin.translogic.request.login.GetSession;
+import com.yeungjin.translogic.request.login.GetSessionRequest;
 import com.yeungjin.translogic.utility.DateFormat;
 import com.yeungjin.translogic.utility.Session;
 
@@ -81,7 +81,7 @@ public class LoginLayout extends CommonActivity {
                             if (response.contains("true")) {
                                 Toast.makeText(getApplicationContext(), "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show();
 
-                                ThreadRequest request = new GetSession(_username);
+                                ThreadRequest request = new GetSessionRequest(_username);
                                 request.start();
                                 try {
                                     request.join();

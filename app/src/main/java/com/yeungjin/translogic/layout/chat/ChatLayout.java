@@ -5,10 +5,13 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,10 +25,10 @@ public class ChatLayout extends CommonFragment {
     private EditText search;
     private ImageButton clear;
     private ImageButton chat_management;
-    private RecyclerView chatList;
+    private RecyclerView chat_list;
     private SwipeRefreshLayout refresh;
 
-    private ChatAdapter chatAdapter;
+    private ChatAdapter chat_adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,16 +43,16 @@ public class ChatLayout extends CommonFragment {
         search = view.findViewById(R.id.layout_chat_chat__search);
         clear = view.findViewById(R.id.layout_chat_chat__clear);
         chat_management = view.findViewById(R.id.layout_chat_chat__create_room);
-        chatList = view.findViewById(R.id.layout_chat_chat__chat_list);
+        chat_list = view.findViewById(R.id.layout_chat_chat__chat_list);
         refresh = view.findViewById(R.id.layout_chat_chat__refresh);
     }
 
     @Override
     protected void setAdapter() {
-        chatAdapter = new ChatAdapter(requireActivity().getApplicationContext());
+        chat_adapter = new ChatAdapter(requireActivity().getApplicationContext());
 
-        chatList.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        chatList.setAdapter(chatAdapter);
+        chat_list.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        chat_list.setAdapter(chat_adapter);
     }
 
     @Override
@@ -65,7 +68,7 @@ public class ChatLayout extends CommonFragment {
                 } else {
                     clear.setVisibility(View.GONE);
                 }
-                chatAdapter.reload(content.toString());
+                chat_adapter.reload(content.toString());
             }
 
             @Override
@@ -74,17 +77,39 @@ public class ChatLayout extends CommonFragment {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                search.setText("");
+                search.setText(null);
             }
         });
         chat_management.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                CreateRoomLayout dialog = new CreateRoomLayout(v.getContext(), chatAdapter);
-                dialog.show();
+            public void onClick(View view) {
+                PopupMenu menu = new PopupMenu(getContext(), view);
+                requireActivity().getMenuInflater().inflate(R.menu.layout_chat_chat__menu_icon, menu.getMenu());
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId() == R.id.layout_chat_chat__menu_icon__create) {
+                            ChatCreateLayout layout = new ChatCreateLayout();
+                            layout.setOnLoadListener(new ChatCreateLayout.OnLoadListener() {
+                                @Override
+                                public void load() {
+                                    chat_adapter.reload();
+                                }
+                            });
+                            layout.show(getParentFragmentManager(), layout.getTag());
+                        } else if (item.getItemId() == R.id.layout_chat_chat__menu_icon__edit) {
+                            Toast.makeText(view.getContext(), "개발중", Toast.LENGTH_SHORT).show();
+                        } else {
+                            return false;
+                        }
+
+                        return true;
+                    }
+                });
+                menu.show();
             }
         });
-        chatAdapter.setOnClickListener(new ChatAdapter.OnClickListener() {
+        chat_adapter.setOnClickListener(new ChatAdapter.OnClickListener() {
             @Override
             public void click(Intent intent) {
                 startActivity(intent);
@@ -93,7 +118,7 @@ public class ChatLayout extends CommonFragment {
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                chatAdapter.reload();
+                chat_adapter.reload();
                 refresh.setRefreshing(false);
             }
         });

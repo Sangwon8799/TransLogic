@@ -4,9 +4,9 @@ import com.android.volley.Response;
 import com.yeungjin.translogic.request.Request;
 
 public class GetGroupRequest extends Request {
-    public GetGroupRequest(long number, Response.Listener<String> listener) {
+    public GetGroupRequest(long employee_number, Response.Listener<String> listener) {
         super("GetGroup", listener);
 
-        parameters.put("number", String.valueOf(number));
+        parameters.put("employee_number", String.valueOf(employee_number));
     }
 }

@@ -41,6 +41,9 @@ public class EmployeeLayout extends CommonFragment {
         view = inflater.inflate(R.layout.layout_employee_employee, container, false);
         init();
 
+        if (group_adapter.getItemCount() != 0) {
+            group_list.setVisibility(View.VISIBLE);
+        }
         return view;
     }
 
@@ -104,7 +107,7 @@ public class EmployeeLayout extends CommonFragment {
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.layout_employee_employee__menu_icon__add) {
+                        if (item.getItemId() == R.id.layout_employee_employee__menu_icon__create) {
                             Request request = new IsGroupMaxRequest(Session.user.EMPLOYEE_NUMBER, new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
@@ -163,14 +166,6 @@ public class EmployeeLayout extends CommonFragment {
                     employee_adapter.reload(_search);
                 } else {
                     employee_adapter.reload();
-                }
-            }
-        });
-        group_adapter.setOnShowListener(new GroupAdapter.OnShowListener() {
-            @Override
-            public void show() {
-                if (group_list.getVisibility() == View.GONE) {
-                    group_list.setVisibility(View.VISIBLE);
                 }
             }
         });

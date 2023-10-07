@@ -15,10 +15,11 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.object.database.EMPLOYEE;
+import com.yeungjin.translogic.request.employee.FirstGetEmployeeRequest;
 
 public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter.ViewHolder> {
     public EmployeeAdapter(Context context) {
-        super(context);
+        super(context, new FirstGetEmployeeRequest());
     }
 
     @NonNull

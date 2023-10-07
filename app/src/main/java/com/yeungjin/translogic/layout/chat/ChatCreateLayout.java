@@ -1,4 +1,4 @@
-package com.yeungjin.translogic.layout.employee;
+package com.yeungjin.translogic.layout.chat;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -19,16 +19,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yeungjin.translogic.R;
-import com.yeungjin.translogic.adapter.employee.GroupCreateSelectedAdapter;
-import com.yeungjin.translogic.adapter.employee.GroupCreateUnselectedAdapter;
+import com.yeungjin.translogic.adapter.chat.ChatCreateSelectedAdapter;
+import com.yeungjin.translogic.adapter.chat.ChatCreateUnselectedAdapter;
 import com.yeungjin.translogic.layout.CommonBottomSheetDialogFragment;
 import com.yeungjin.translogic.object.database.EMPLOYEE;
-import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.employee.InsertGroupMemberRequest;
 
-public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
-    private GroupCreateSelectedAdapter selected_adapter;
-    private GroupCreateUnselectedAdapter unselected_adapter;
+public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
+    private ChatCreateSelectedAdapter selected_adapter;
+    private ChatCreateUnselectedAdapter unselected_adapter;
 
     private TextView create;
     private EditText search;
@@ -41,7 +39,7 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.layout_employee_group_create, container, false);
+        view = inflater.inflate(R.layout.layout_chat_chat_create, container, false);
         init();
 
         return view;
@@ -49,17 +47,17 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
 
     @Override
     protected void setId() {
-        create = view.findViewById(R.id.layout_employee_group_create__create);
-        search = view.findViewById(R.id.layout_employee_group_create__search);
-        clear = view.findViewById(R.id.layout_employee_group_create__clear);
-        selected_list = view.findViewById(R.id.layout_employee_group_create__selected);
-        unselected_list = view.findViewById(R.id.layout_employee_group_create__unselected);
+        create = view.findViewById(R.id.layout_chat_chat_create__create);
+        search = view.findViewById(R.id.layout_chat_chat_create__search);
+        clear = view.findViewById(R.id.layout_chat_chat_create__clear);
+        selected_list = view.findViewById(R.id.layout_chat_chat_create__selected);
+        unselected_list = view.findViewById(R.id.layout_chat_chat_create__unselected);
     }
 
     @Override
     protected void setAdapter() {
-        selected_adapter = new GroupCreateSelectedAdapter(requireActivity().getApplicationContext());
-        unselected_adapter = new GroupCreateUnselectedAdapter(requireActivity().getApplicationContext());
+        selected_adapter = new ChatCreateSelectedAdapter(requireActivity().getApplicationContext());
+        unselected_adapter = new ChatCreateUnselectedAdapter(requireActivity().getApplicationContext());
 
         selected_list.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         selected_list.setAdapter(selected_adapter);
@@ -75,31 +73,9 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
             @Override
             public void onClick(View view) {
                 if (selected_adapter.getItemCount() != 0) {
-                    GroupCreateCreateLayout dialog = new GroupCreateCreateLayout(view.getContext());
-                    dialog.setOnCreateListener(new GroupCreateCreateLayout.OnCreateListener() {
-                        @Override
-                        public void create(long group_number) {
-                            try {
-                                for (long employee_number : selected_adapter.getNumbers()) {
-                                    Request request = new InsertGroupMemberRequest(group_number, employee_number);
-                                    Request.sendRequest(view.getContext(), request);
-                                }
-
-                                Toast.makeText(view.getContext(), "그룹이 생성되었습니다!", Toast.LENGTH_SHORT).show();
-                                if (listener != null) {
-                                    listener.load();
-                                }
-
-                                dismiss();
-                                dialog.dismiss();
-                            } catch (Exception error) {
-                                error.printStackTrace();
-                            }
-                        }
-                    });
-                    dialog.show();
+                    Toast.makeText(view.getContext(), "개발중", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(view.getContext(), "그룹으로 추가할 사람을 선택해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), "채팅방에 추가할 인원을 선택해주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -126,7 +102,7 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
                 search.setText(null);
             }
         });
-        selected_adapter.setOnRemoveListener(new GroupCreateSelectedAdapter.OnRemoveListener() {
+        selected_adapter.setOnRemoveListener(new ChatCreateSelectedAdapter.OnRemoveListener() {
             @Override
             public void remove(long number) {
                 if (selected_adapter.getItemCount() == 0) {
@@ -135,13 +111,13 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
                 unselected_adapter.remove(number);
             }
         });
-        selected_adapter.setOnScrollListener(new GroupCreateSelectedAdapter.OnScrollListener() {
+        selected_adapter.setOnScrollListener(new ChatCreateSelectedAdapter.OnScrollListener() {
             @Override
             public void scroll() {
                 selected_list.scrollToPosition(0);
             }
         });
-        unselected_adapter.setOnCheckListener(new GroupCreateUnselectedAdapter.OnCheckListener() {
+        unselected_adapter.setOnCheckListener(new ChatCreateUnselectedAdapter.OnCheckListener() {
             @Override
             public void check(EMPLOYEE employee) {
                 if (selected_list.getVisibility() == View.GONE) {

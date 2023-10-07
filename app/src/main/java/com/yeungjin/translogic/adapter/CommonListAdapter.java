@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Response;
+import com.yeungjin.translogic.request.ThreadRequest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,9 +14,16 @@ public abstract class CommonListAdapter<OBJECT, ViewHolder extends RecyclerView.
     protected JSONObject object;
     protected JSONArray array;
 
-    public CommonListAdapter(Context context) {
+    public CommonListAdapter(Context context, ThreadRequest request) {
         super(context);
-        reload();
+
+        request.start();
+        try {
+            request.join();
+            getResponse(request.getResponse());
+        } catch (Exception error) {
+            error.printStackTrace();
+        }
     }
 
     protected abstract int getResponse(String response) throws Exception;

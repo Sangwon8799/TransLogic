@@ -9,7 +9,7 @@
     android:background="@drawable/common_bottom_sheet_background">
 
     <RelativeLayout
-        android:id="@+id/layout_employee_group_create__TITLE"
+        android:id="@+id/layout_chat_chat_create__TITLE"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp">
@@ -21,10 +21,10 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="26sp"
-            android:text="그룹 인원 선택" />
+            android:text="채팅 인원 선택" />
 
         <TextView
-            android:id="@+id/layout_employee_group_create__create"
+            android:id="@+id/layout_chat_chat_create__create"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -42,14 +42,14 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/layout_employee_group_create__SEARCH"
+        android:id="@+id/layout_chat_chat_create__SEARCH"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/layout_employee_group_create__TITLE"
+        android:layout_below="@id/layout_chat_chat_create__TITLE"
         android:layout_marginBottom="10dp">
 
         <EditText
-            android:id="@+id/layout_employee_group_create__search"
+            android:id="@+id/layout_chat_chat_create__search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/common_search_background"
@@ -61,10 +61,10 @@
             android:hint="검색" />
 
         <ImageButton
-            android:id="@+id/layout_employee_group_create__clear"
+            android:id="@+id/layout_chat_chat_create__clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@id/layout_employee_group_create__search"
+            android:layout_alignEnd="@id/layout_chat_chat_create__search"
             android:layout_centerVertical="true"
             android:layout_marginEnd="6dp"
             android:paddingVertical="10dp"
@@ -76,10 +76,10 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/layout_employee_group_create__selected"
+        android:id="@+id/layout_chat_chat_create__selected"
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:layout_below="@id/layout_employee_group_create__SEARCH"
+        android:layout_below="@id/layout_chat_chat_create__SEARCH"
         android:layout_marginVertical="5dp"
         android:scrollbars="horizontal"
         android:visibility="gone"
@@ -88,10 +88,10 @@
         tools:listitem="@layout/adapter_employee_group_create_selected" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/layout_employee_group_create__unselected"
+        android:id="@+id/layout_chat_chat_create__unselected"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_employee_group_create__selected"
+        android:layout_below="@id/layout_chat_chat_create__selected"
         android:scrollbars="vertical"
         tools:listitem="@layout/adapter_employee_group_create_unselected" />
 
