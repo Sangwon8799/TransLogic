@@ -13,23 +13,32 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yeungjin.translogic.R;
-import com.yeungjin.translogic.adapter.CommonAdapter;
+import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
-import com.yeungjin.translogic.object.chat.Message;
+import com.yeungjin.translogic.object.MESSAGE;
+import com.yeungjin.translogic.request.Request;
+import com.yeungjin.translogic.request.chat.GetMessageRequest;
+import com.yeungjin.translogic.request.chat.GetMessageThread;
 import com.yeungjin.translogic.utility.BitmapTranslator;
+import com.yeungjin.translogic.utility.Json;
+import com.yeungjin.translogic.utility.Session;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class MessageAdapter extends CommonAdapter<Message, RecyclerView.ViewHolder> {
-    private static final SimpleDateFormat format = new SimpleDateFormat("a hh:mm", Locale.KOREA);
+public class RoomMessageAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHolder> {
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("a hh:mm", Locale.KOREA);
 
     public static final int NOTICE = 0;
     public static final int OPPONENT = 1;
     public static final int MYSELF = 2;
 
-    public MessageAdapter(Context context) {
-        super(context);
+    private OnScrollListener listener;
+
+    public RoomMessageAdapter(Context context) {
+        super(context, new GetMessageThread(Session.entered_chat.CHAT_NUMBER));
     }
 
     @NonNull
@@ -52,36 +61,78 @@ public class MessageAdapter extends CommonAdapter<Message, RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Message message = data.get(position);
+        MESSAGE message = data.get(position);
 
         if (holder instanceof NoticeViewHolder) {
-            ((NoticeViewHolder) holder).content.setText(message.content);
+            NoticeViewHolder notice = (NoticeViewHolder) holder;
+
+            notice.content.setText(message.MESSAGE_CONTENT);
         } else if (holder instanceof OpponentViewHolder) {
-            ((OpponentViewHolder) holder).name.setText(message.name);
-            if (BitmapTranslator.isImage(message.content)) {
-                ((OpponentViewHolder) holder).content.setBackground(new BitmapDrawable(Resources.getSystem(), BitmapTranslator.toBitmap(message.content)));
+            OpponentViewHolder opponent = (OpponentViewHolder) holder;
+
+            opponent.name.setText(message.MESSAGE_EMPLOYEE_NAME);
+            if (BitmapTranslator.isImage(message.MESSAGE_CONTENT)) {
+                opponent.content.setBackground(new BitmapDrawable(Resources.getSystem(), BitmapTranslator.toBitmap(message.MESSAGE_CONTENT)));
             } else {
-                ((OpponentViewHolder) holder).content.setText(message.content);
+                opponent.content.setText(message.MESSAGE_CONTENT);
             }
-            ((OpponentViewHolder) holder).time.setText(format.format(message.time));
+            opponent.time.setText(FORMAT.format(message.MESSAGE_ENROLL_DATE));
         } else {
-            if (BitmapTranslator.isImage(message.content)) {
-                ((MyselfViewHolder) holder).content.setBackground(new BitmapDrawable(Resources.getSystem(), BitmapTranslator.toBitmap(message.content)));
+            MyselfViewHolder myself = (MyselfViewHolder) holder;
+
+            if (BitmapTranslator.isImage(message.MESSAGE_CONTENT)) {
+                myself.content.setBackground(new BitmapDrawable(Resources.getSystem(), BitmapTranslator.toBitmap(message.MESSAGE_CONTENT)));
             } else {
-                ((MyselfViewHolder) holder).content.setText(message.content);
+                myself.content.setText(message.MESSAGE_CONTENT);
             }
-            ((MyselfViewHolder) holder).time.setText(format.format(message.time));
+            myself.time.setText(FORMAT.format(message.MESSAGE_ENROLL_DATE));
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        return data.get(position).type;
+        long employee_number = data.get(position).MESSAGE_EMPLOYEE_NUMBER;
+
+        if (employee_number == Session.user.EMPLOYEE_NUMBER) {
+            return MYSELF;
+        } else {
+            return OPPONENT;
+        }
     }
 
-    public void addMessage(Message message) {
+    @Override
+    protected int getResponse(String response) throws Exception {
+        array = new JSONObject(response).getJSONArray("message");
+        for (int index = 0; index < array.length(); index++) {
+            object = array.getJSONObject(index);
+            data.add(Json.from(object, MESSAGE.class));
+        }
+
+        return array.length();
+    }
+
+    @Override
+    public void reload() {
+        load();
+    }
+
+    @Override
+    public void load() {
+        Request request = new GetMessageRequest(Session.entered_chat.CHAT_NUMBER, data.size(), new LoadListener());
+        Request.sendRequest(context, request);
+    }
+
+    public void addMessage(MESSAGE message) {
         data.add(message);
         notifyItemInserted(data.size() - 1);
+
+        if (listener != null) {
+            listener.scroll(data.size() - 1);
+        }
+    }
+
+    public void setOnScrollListener(OnScrollListener listener) {
+        this.listener = listener;
     }
 
     public static class NoticeViewHolder extends CommonViewHolder {
@@ -134,5 +185,9 @@ public class MessageAdapter extends CommonAdapter<Message, RecyclerView.ViewHold
             content = view.findViewById(R.id.adapter_chat_message_myself__message);
             time = view.findViewById(R.id.adapter_chat_message_myself__time);
         }
+    }
+
+    public interface OnScrollListener {
+        void scroll(int position);
     }
 }

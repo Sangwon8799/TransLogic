@@ -24,7 +24,7 @@ public class GroupCreateCreateLayout extends CommonDialog {
     public GroupCreateCreateLayout(Context context) {
         super(context);
         setContentView(R.layout.layout_employee_group_create_create);
-        init(9, WindowManager.LayoutParams.WRAP_CONTENT);
+        init(8, WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
     @Override

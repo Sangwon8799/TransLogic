@@ -2,8 +2,8 @@ package com.yeungjin.translogic.request.employee;
 
 import com.yeungjin.translogic.request.ThreadRequest;
 
-public class FirstGetEmployeeRequest extends ThreadRequest {
-    public FirstGetEmployeeRequest() {
+public class GetEmployeeThread extends ThreadRequest {
+    public GetEmployeeThread() {
         super("GetEmployee");
 
         parameters.put("index", 0);

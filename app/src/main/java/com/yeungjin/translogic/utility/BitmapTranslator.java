@@ -36,7 +36,7 @@ public class BitmapTranslator {
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
-    public static boolean isImage(String content) {
+    public static boolean isImage(@NonNull String content) {
         Pattern pattern = Pattern.compile("/9j/4AAQSkZJRgABAQAAAQABAAD/[A-Za-z0-9]", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(content);
 

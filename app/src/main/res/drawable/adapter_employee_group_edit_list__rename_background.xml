@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape>
-            <solid android:color="@color/app_color" />
-            <corners android:radius="10dp" />
-        </shape>
-    </item>
-    <item android:drawable="@drawable/image_edit_icon"
-        android:width="36dp"
-        android:height="36dp"
-        android:top="2dp"
-        android:bottom="2dp"
-        android:start="2dp"
-        android:end="2dp" />
-</layer-list>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/adapter_employee_group_edit_list__rename_unpressed"
+        android:state_pressed="false" />
+    <item android:drawable="@drawable/adapter_employee_group_edit_list__rename_pressed"
+        android:state_pressed="true" />
+</selector>

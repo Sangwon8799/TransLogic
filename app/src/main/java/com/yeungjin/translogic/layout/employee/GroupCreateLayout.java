@@ -22,7 +22,7 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.employee.GroupCreateSelectedAdapter;
 import com.yeungjin.translogic.adapter.employee.GroupCreateUnselectedAdapter;
 import com.yeungjin.translogic.layout.CommonBottomSheetDialogFragment;
-import com.yeungjin.translogic.object.database.EMPLOYEE;
+import com.yeungjin.translogic.object.EMPLOYEE;
 import com.yeungjin.translogic.request.Request;
 import com.yeungjin.translogic.request.employee.InsertGroupMemberRequest;
 

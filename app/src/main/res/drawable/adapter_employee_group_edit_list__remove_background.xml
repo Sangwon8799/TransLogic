@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape>
-            <solid android:color="@color/red" />
-            <corners android:radius="10dp" />
-        </shape>
-    </item>
-    <item android:drawable="@drawable/image_remove_icon"
-        android:width="24dp"
-        android:height="24dp"
-        android:top="8dp"
-        android:bottom="8dp"
-        android:start="8dp"
-        android:end="8dp" />
-</layer-list>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/adapter_employee_group_edit_list__remove_unpressed"
+        android:state_pressed="false" />
+    <item android:drawable="@drawable/adapter_employee_group_edit_list__remove_pressed"
+        android:state_pressed="true" />
+</selector>

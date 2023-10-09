@@ -20,6 +20,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.chat.ChatAdapter;
 import com.yeungjin.translogic.layout.CommonFragment;
+import com.yeungjin.translogic.object.MESSAGE;
+import com.yeungjin.translogic.utility.Json;
+import com.yeungjin.translogic.utility.Session;
+
+import io.socket.emitter.Emitter;
 
 public class ChatLayout extends CommonFragment {
     private EditText search;
@@ -34,6 +39,20 @@ public class ChatLayout extends CommonFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_chat_chat, container, false);
         init();
+
+        Session.socket.on("GET_MESSAGE", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                MESSAGE message = Json.from(args[0], MESSAGE.class);
+
+                requireActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        chat_adapter.refresh(message);
+                    }
+                });
+            }
+        });
 
         return view;
     }
@@ -111,8 +130,9 @@ public class ChatLayout extends CommonFragment {
         });
         chat_adapter.setOnClickListener(new ChatAdapter.OnClickListener() {
             @Override
-            public void click(Intent intent) {
+            public void click(Intent intent, int position) {
                 startActivity(intent);
+                chat_adapter.notifyItemChanged(position);
             }
         });
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

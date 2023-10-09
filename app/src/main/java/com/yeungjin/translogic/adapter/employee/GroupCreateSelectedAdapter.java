@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.CommonAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
-import com.yeungjin.translogic.object.database.EMPLOYEE;
+import com.yeungjin.translogic.object.EMPLOYEE;
 import com.yeungjin.translogic.utility.Server;
 
 import java.util.ArrayList;

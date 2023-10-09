@@ -17,6 +17,7 @@ import com.yeungjin.translogic.layout.chat.ChatLayout;
 import com.yeungjin.translogic.layout.employee.EmployeeLayout;
 import com.yeungjin.translogic.layout.setting.SettingLayout;
 import com.yeungjin.translogic.layout.task.TaskLayout;
+import com.yeungjin.translogic.utility.Session;
 
 public class MainLayout extends AppCompatActivity {
     private final Layout[] layouts = {
@@ -57,6 +58,15 @@ public class MainLayout extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        for (long chat_number : Session.joined_chat) {
+            Session.socket.emit("LEAVE", chat_number);
+        }
     }
 
     private static class Layout {

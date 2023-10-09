@@ -20,7 +20,7 @@ public abstract class CommonListAdapter<OBJECT, ViewHolder extends RecyclerView.
         request.start();
         try {
             request.join();
-            getResponse(request.getResponse());
+            notifyItemRangeInserted(0, getResponse(request.getResponse()));
         } catch (Exception error) {
             error.printStackTrace();
         }

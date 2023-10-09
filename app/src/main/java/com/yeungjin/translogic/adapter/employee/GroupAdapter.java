@@ -11,11 +11,11 @@ import androidx.annotation.NonNull;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
-import com.yeungjin.translogic.object.database.EMPLOYEE_GROUP;
+import com.yeungjin.translogic.object.EMPLOYEE_GROUP;
 import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.employee.FirstGetGroupRequest;
+import com.yeungjin.translogic.request.employee.GetGroupThread;
 import com.yeungjin.translogic.request.employee.GetGroupRequest;
-import com.yeungjin.translogic.utility.DateFormat;
+import com.yeungjin.translogic.utility.Json;
 import com.yeungjin.translogic.utility.Session;
 
 import org.json.JSONObject;
@@ -27,7 +27,7 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
     private OnSelectListener selectListener;
 
     public GroupAdapter(Context context) {
-        super(context, new FirstGetGroupRequest(Session.user.EMPLOYEE_NUMBER));
+        super(context, new GetGroupThread(Session.user.EMPLOYEE_NUMBER));
     }
 
     @NonNull
@@ -73,19 +73,10 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
 
     @Override
     protected int getResponse(String response) throws Exception {
-        JSONObject http = new JSONObject(response);
-
-        array = http.getJSONArray("group");
+        array = new JSONObject(response).getJSONArray("group");
         for (int index = 0; index < array.length(); index++) {
             object = array.getJSONObject(index);
-
-            EMPLOYEE_GROUP group = new EMPLOYEE_GROUP();
-            group.EMPLOYEE_GROUP_NUMBER = object.getLong("EMPLOYEE_GROUP_NUMBER");
-            group.EMPLOYEE_GROUP_NAME = object.getString("EMPLOYEE_GROUP_NAME");
-            group.EMPLOYEE_GROUP_EMPLOYEE_NUMBER = object.getLong("EMPLOYEE_GROUP_EMPLOYEE_NUMBER");
-            group.EMPLOYEE_GROUP_ENROLL_DATE = DateFormat.DATETIME.parse(object.getString("EMPLOYEE_GROUP_ENROLL_DATE"));
-
-            data.add(group);
+            data.add(Json.from(object, EMPLOYEE_GROUP.class));
         }
 
         return array.length();

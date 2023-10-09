@@ -14,13 +14,13 @@ import com.bumptech.glide.Glide;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
-import com.yeungjin.translogic.object.database.EMPLOYEE;
+import com.yeungjin.translogic.object.EMPLOYEE;
 import com.yeungjin.translogic.request.Request;
 import com.yeungjin.translogic.request.employee.GetEmployeeRequest;
-import com.yeungjin.translogic.request.employee.FirstGetEmployeeRequest;
+import com.yeungjin.translogic.request.employee.GetEmployeeThread;
 import com.yeungjin.translogic.request.employee.GetSearchedEmployeeRequest;
 import com.yeungjin.translogic.utility.ContactNumber;
-import com.yeungjin.translogic.utility.DateFormat;
+import com.yeungjin.translogic.utility.Json;
 import com.yeungjin.translogic.utility.Server;
 
 import org.json.JSONObject;
@@ -33,7 +33,7 @@ public class ChatCreateUnselectedAdapter extends CommonListAdapter<EMPLOYEE, Cha
     private OnCheckListener listener;
 
     public ChatCreateUnselectedAdapter(Context context) {
-        super(context, new FirstGetEmployeeRequest());
+        super(context, new GetEmployeeThread());
     }
 
     @NonNull
@@ -73,25 +73,10 @@ public class ChatCreateUnselectedAdapter extends CommonListAdapter<EMPLOYEE, Cha
 
     @Override
     protected int getResponse(String response) throws Exception {
-        JSONObject http = new JSONObject(response);
-
-        array = http.getJSONArray("employee");
-        for (int step = 0; step < array.length(); step++) {
-            object = array.getJSONObject(step);
-
-            EMPLOYEE employee = new EMPLOYEE();
-            employee.EMPLOYEE_NUMBER = object.getLong("EMPLOYEE_NUMBER");
-            employee.EMPLOYEE_NAME = object.getString("EMPLOYEE_NAME");
-            employee.EMPLOYEE_USERNAME = object.getString("EMPLOYEE_USERNAME");
-            employee.EMPLOYEE_PASSWORD = object.getString("EMPLOYEE_PASSWORD");
-            employee.EMPLOYEE_CONTACT_NUMBER = object.getString("EMPLOYEE_CONTACT_NUMBER");
-            employee.EMPLOYEE_EMAIL = object.getString("EMPLOYEE_EMAIL");
-            employee.EMPLOYEE_COMPANY_NUMBER = object.getLong("EMPLOYEE_COMPANY_NUMBER");
-            employee.EMPLOYEE_DEGREE = object.getString("EMPLOYEE_DEGREE");
-            employee.EMPLOYEE_IMAGE = object.getString("EMPLOYEE_IMAGE");
-            employee.EMPLOYEE_REGISTER_DATE = DateFormat.DATE.parse(object.getString("EMPLOYEE_REGISTER_DATE"));
-
-            data.add(employee);
+        array = new JSONObject(response).getJSONArray("employee");
+        for (int index = 0; index < array.length(); index++) {
+            object = array.getJSONObject(index);
+            data.add(Json.from(object, EMPLOYEE.class));
         }
 
         return array.length();

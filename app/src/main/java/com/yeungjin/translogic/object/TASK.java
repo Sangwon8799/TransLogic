@@ -1,4 +1,4 @@
-package com.yeungjin.translogic.object.database;
+package com.yeungjin.translogic.object;
 
 import java.util.Date;
 

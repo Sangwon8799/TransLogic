@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Request extends StringRequest {
+    protected final Map<String, String> parameters = new HashMap<>();
     public static RequestQueue queue;
-    protected Map<String, String> parameters = new HashMap<>();
 
     public Request(String URI, Response.Listener<String> listener, Response.ErrorListener errorListener) {
         super(Method.POST, Server.URL + URI + ".db", listener, errorListener);

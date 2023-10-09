@@ -149,23 +149,27 @@ public class EmployeeLayout extends CommonFragment {
         group_adapter.setOnSelectListener(new GroupAdapter.OnSelectListener() {
             @Override
             public void select(long group_number) {
-                String _search = search.getText().toString();
+                if (employee_list.getScrollState() != RecyclerView.SCROLL_STATE_DRAGGING) {
+                    String _search = search.getText().toString();
 
-                if (!_search.isEmpty()) {
-                    employee_adapter.reload(group_number, _search);
-                } else {
-                    employee_adapter.reload(group_number);
+                    if (!_search.isEmpty()) {
+                        employee_adapter.reload(group_number, _search);
+                    } else {
+                        employee_adapter.reload(group_number);
+                    }
                 }
             }
 
             @Override
             public void unselect() {
-                String _search = search.getText().toString();
+                if (employee_list.getScrollState() != RecyclerView.SCROLL_STATE_DRAGGING) {
+                    String _search = search.getText().toString();
 
-                if (!_search.isEmpty()) {
-                    employee_adapter.reload(_search);
-                } else {
-                    employee_adapter.reload();
+                    if (!_search.isEmpty()) {
+                        employee_adapter.reload(_search);
+                    } else {
+                        employee_adapter.reload();
+                    }
                 }
             }
         });

@@ -22,17 +22,19 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.chat.ChatCreateSelectedAdapter;
 import com.yeungjin.translogic.adapter.chat.ChatCreateUnselectedAdapter;
 import com.yeungjin.translogic.layout.CommonBottomSheetDialogFragment;
-import com.yeungjin.translogic.object.database.EMPLOYEE;
+import com.yeungjin.translogic.object.EMPLOYEE;
+import com.yeungjin.translogic.request.Request;
+import com.yeungjin.translogic.request.chat.InsertChatMemberRequest;
 
 public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
-    private ChatCreateSelectedAdapter selected_adapter;
-    private ChatCreateUnselectedAdapter unselected_adapter;
-
     private TextView create;
     private EditText search;
     private ImageButton clear;
     private RecyclerView selected_list;
     private RecyclerView unselected_list;
+
+    private ChatCreateSelectedAdapter selected_adapter;
+    private ChatCreateUnselectedAdapter unselected_adapter;
 
     private OnLoadListener listener;
 
@@ -73,7 +75,25 @@ public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
             @Override
             public void onClick(View view) {
                 if (selected_adapter.getItemCount() != 0) {
-                    Toast.makeText(view.getContext(), "개발중", Toast.LENGTH_SHORT).show();
+                    ChatCreateCreateLayout dialog = new ChatCreateCreateLayout(view.getContext());
+                    dialog.setOnCreateListener(new ChatCreateCreateLayout.OnCreateListener() {
+                        @Override
+                        public void create(long chat_number) {
+                            for (long employee_number : selected_adapter.getNumbers()) {
+                                Request request = new InsertChatMemberRequest(chat_number, employee_number);
+                                Request.sendRequest(view.getContext(), request);
+                            }
+
+                            Toast.makeText(view.getContext(), "채팅방이 생성되었습니다!", Toast.LENGTH_SHORT).show();
+                            if (listener != null) {
+                                listener.load();
+                            }
+
+                            dismiss();
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.show();
                 } else {
                     Toast.makeText(view.getContext(), "채팅방에 추가할 인원을 선택해주세요.", Toast.LENGTH_SHORT).show();
                 }

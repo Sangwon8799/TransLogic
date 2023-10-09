@@ -61,7 +61,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginBottom="60dp"
-        android:paddingHorizontal="6dp"
+        android:paddingVertical="2dp"
+        android:paddingHorizontal="8dp"
         android:background="@drawable/common_button_ripple"
         android:clickable="true"
         android:focusable="false"
@@ -71,42 +72,78 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/layout_login_login__auto_login"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="10dp"
+                android:paddingVertical="5dp"
+                android:background="@drawable/common_check_background"
+                android:button="@null" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/deep_gray"
+                android:textSize="16sp"
+                android:text="자동 로그인" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/layout_login_login__login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="15dp"
-            android:paddingVertical="10dp"
+            android:paddingVertical="5dp"
+            android:layout_marginVertical="15dp"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:stateListAnimator="@null"
-            android:background="@drawable/common_button_ripple"
-            android:foreground="@drawable/common_button_background"
-            android:textColor="@color/black"
+            android:background="@drawable/layout_login_login__login_background"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:textSize="20sp"
             android:text="로그인" />
 
-        <Button
-            android:id="@+id/layout_login_login__signup"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="15dp"
-            android:paddingVertical="10dp"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:stateListAnimator="@null"
-            android:background="@drawable/common_button_ripple"
-            android:foreground="@drawable/common_button_background"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:text="회원가입" />
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="2dp"
+                android:textColor="@color/deep_gray"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:text="계정이 없다면? " />
+
+            <TextView
+                android:id="@+id/layout_login_login__signup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="2dp"
+                android:paddingHorizontal="8dp"
+                android:background="@drawable/common_button_ripple"
+                android:clickable="true"
+                android:focusable="false"
+                android:textColor="@color/app_color"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:text="회원가입 하러가기" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

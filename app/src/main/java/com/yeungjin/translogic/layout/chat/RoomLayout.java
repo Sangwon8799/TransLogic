@@ -15,43 +15,41 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
 import com.yeungjin.translogic.R;
-import com.yeungjin.translogic.adapter.chat.MessageAdapter;
+import com.yeungjin.translogic.adapter.chat.RoomMessageAdapter;
 import com.yeungjin.translogic.layout.CommonActivity;
-import com.yeungjin.translogic.object.chat.Message;
-import com.yeungjin.translogic.object.chat.Room;
-import com.yeungjin.translogic.object.database.CHAT;
+import com.yeungjin.translogic.object.CHAT;
+import com.yeungjin.translogic.object.MESSAGE;
+import com.yeungjin.translogic.request.Request;
+import com.yeungjin.translogic.request.chat.CreateMessageRequest;
+import com.yeungjin.translogic.request.chat.RefreshLastAccessRequest;
 import com.yeungjin.translogic.utility.BitmapTranslator;
+import com.yeungjin.translogic.utility.Json;
 import com.yeungjin.translogic.utility.Session;
 
-import io.socket.client.IO;
-import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
 public class RoomLayout extends CommonActivity {
-    private DrawerLayout side;        // 메뉴창
-    private RecyclerView messageList; // 메시지 목록
-    private ImageButton previous;     // 뒤로가기
-    private TextView title;           // 채팅방 제목
-    private ImageButton menu;         // 메뉴 버튼
-    private ImageButton upload;       // 업로드 버튼
-    private EditText content;         // 메시지 입력창
-    private ImageButton send;         // 전송 버튼
+    private DrawerLayout side;
+    private RecyclerView message_list;
+    private ImageButton previous;
+    private TextView title;
+    private ImageButton menu;
+    private ImageButton upload;
+    private EditText content;
+    private ImageButton send;
 
-    private MessageAdapter messageAdapter; // 메시지 목록 어댑터
+    private RoomMessageAdapter message_adapter;
 
-    private final Gson gson = new Gson(); // JSON 변환용 필드
-    private Socket socket;                // 소켓 통신용 필드
-
-    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia; // 이미지 불러오기 라이브러리
-    private static final int MAX_SIZE = 512;                          // 업로드할 이미지의 가장 긴 부분의 길이
+    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
+    private static final int MAX_SIZE = 512;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,25 +57,37 @@ public class RoomLayout extends CommonActivity {
         setContentView(R.layout.layout_chat_room);
         init();
 
-        title.setText(Session.chat.CHAT_TITLE);
+        title.setText(Session.entered_chat.CHAT_TITLE);
 
-        connect();
+        Session.socket.on("GET_MESSAGE", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                MESSAGE message = Json.from(args[0], MESSAGE.class);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        message_adapter.addMessage(message);
+                    }
+                });
+            }
+        });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        socket.emit("LEAVE", gson.toJson(new Room(Session.user.EMPLOYEE_NAME, Session.chat.CHAT_NUMBER, Session.chat.CHAT_TITLE)));
-        socket.disconnect();
+        Request request = new RefreshLastAccessRequest(Session.entered_chat.CHAT_NUMBER, Session.user.EMPLOYEE_NUMBER);
+        Request.sendRequest(getApplicationContext(), request);
 
-        Session.chat = new CHAT();
+        Session.entered_chat = new CHAT();
     }
 
     @Override
     protected void setId() {
         side = findViewById(R.id.layout_chat_room__layout);
-        messageList = findViewById(R.id.layout_chat_room__message_list);
+        message_list = findViewById(R.id.layout_chat_room__message_list);
         previous = findViewById(R.id.layout_chat_room__previous);
         title = findViewById(R.id.layout_chat_room__title);
         menu = findViewById(R.id.layout_chat_room__menu);
@@ -88,10 +98,10 @@ public class RoomLayout extends CommonActivity {
 
     @Override
     protected void setAdapter() {
-        messageAdapter = new MessageAdapter(getApplicationContext());
+        message_adapter = new RoomMessageAdapter(getApplicationContext());
 
-        messageList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        messageList.setAdapter(messageAdapter);
+        message_list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        message_list.setAdapter(message_adapter);
     }
 
     @Override
@@ -119,12 +129,20 @@ public class RoomLayout extends CommonActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!content.getText().toString().isEmpty()) {
-                    Message message = new Message(Session.chat.CHAT_NUMBER, Session.user.EMPLOYEE_NAME, content.getText().toString());
+                String _content = content.getText().toString();
+
+                if (!_content.isEmpty()) {
+                    MESSAGE message = new MESSAGE(Session.entered_chat.CHAT_NUMBER, Session.user.EMPLOYEE_NUMBER, Session.user.EMPLOYEE_NAME, _content);
                     sendMessage(message);
 
-                    content.setText("");
+                    content.setText(null);
                 }
+            }
+        });
+        message_adapter.setOnScrollListener(new RoomMessageAdapter.OnScrollListener() {
+            @Override
+            public void scroll(int position) {
+                message_list.scrollToPosition(position);
             }
         });
         pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), new ActivityResultCallback<Uri>() {
@@ -143,53 +161,23 @@ public class RoomLayout extends CommonActivity {
                         error.printStackTrace();
                     }
 
+                    assert image != null;
                     Ratio ratio = Ratio.getRatio(image);
                     Bitmap resized = Bitmap.createScaledBitmap(image, ratio.width, ratio.height, true);
 
-                    Message message = new Message(Session.chat.CHAT_NUMBER, Session.user.EMPLOYEE_NAME, BitmapTranslator.toBase64(resized));
+                    MESSAGE message = new MESSAGE(Session.entered_chat.CHAT_NUMBER, Session.user.EMPLOYEE_NUMBER, Session.user.EMPLOYEE_NAME, BitmapTranslator.toBase64(resized));
                     sendMessage(message);
                 }
             }
         });
     }
 
-    private void connect() {
-        try {
-            socket = IO.socket("http://152.70.237.174:5000");
-        } catch (Exception error) {
-            error.printStackTrace();
-        }
+    private void sendMessage(@NonNull MESSAGE message) {
+        Request request = new CreateMessageRequest(message);
+        Request.sendRequest(getApplicationContext(), request);
 
-        socket.connect();
-
-        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                socket.emit("ENTER", gson.toJson(new Room(Session.user.EMPLOYEE_NAME, Session.chat.CHAT_NUMBER, Session.chat.CHAT_TITLE)));
-            }
-        });
-
-        socket.on("UPDATE", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Message message = gson.fromJson(args[0].toString(), Message.class);
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        messageAdapter.addMessage(message);
-                        messageList.scrollToPosition(messageAdapter.getItemCount() - 1);
-                    }
-                });
-            }
-        });
-    }
-
-    private void sendMessage(Message message) {
-        socket.emit("MESSAGE", gson.toJson(message));
-
-        messageAdapter.addMessage(message);
-        messageList.scrollToPosition(messageAdapter.getItemCount() - 1);
+        Session.socket.emit("SEND_MESSAGE", Json.to(message));
+        message_adapter.addMessage(message);
     }
 
     private static class Ratio {
@@ -198,7 +186,8 @@ public class RoomLayout extends CommonActivity {
 
         private Ratio() { }
 
-        public static Ratio getRatio(Bitmap image) {
+        @NonNull
+        public static Ratio getRatio(@NonNull Bitmap image) {
             Ratio ratio = new Ratio();
 
             int result = Math.min(image.getWidth(), image.getHeight()) * MAX_SIZE / Math.max(image.getWidth(), image.getHeight());
