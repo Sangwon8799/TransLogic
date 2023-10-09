@@ -36,7 +36,7 @@ public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
     private ChatCreateSelectedAdapter selected_adapter;
     private ChatCreateUnselectedAdapter unselected_adapter;
 
-    private OnLoadListener listener;
+    public Listener listener;
 
     @Nullable
     @Override
@@ -76,7 +76,7 @@ public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
             public void onClick(View view) {
                 if (selected_adapter.getItemCount() != 0) {
                     ChatCreateCreateLayout dialog = new ChatCreateCreateLayout(view.getContext());
-                    dialog.setOnCreateListener(new ChatCreateCreateLayout.OnCreateListener() {
+                    dialog.listener = new ChatCreateCreateLayout.Listener() {
                         @Override
                         public void create(long chat_number) {
                             for (long employee_number : selected_adapter.getNumbers()) {
@@ -92,7 +92,7 @@ public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
                             dismiss();
                             dialog.dismiss();
                         }
-                    });
+                    };
                     dialog.show();
                 } else {
                     Toast.makeText(view.getContext(), "채팅방에 추가할 인원을 선택해주세요.", Toast.LENGTH_SHORT).show();
@@ -122,22 +122,21 @@ public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
                 search.setText(null);
             }
         });
-        selected_adapter.setOnRemoveListener(new ChatCreateSelectedAdapter.OnRemoveListener() {
+        selected_adapter.listener = new ChatCreateSelectedAdapter.Listener() {
             @Override
-            public void remove(long number) {
+            public void remove(long employee_number) {
                 if (selected_adapter.getItemCount() == 0) {
                     selected_list.setVisibility(View.GONE);
                 }
-                unselected_adapter.remove(number);
+                unselected_adapter.remove(employee_number);
             }
-        });
-        selected_adapter.setOnScrollListener(new ChatCreateSelectedAdapter.OnScrollListener() {
+
             @Override
             public void scroll() {
                 selected_list.scrollToPosition(0);
             }
-        });
-        unselected_adapter.setOnCheckListener(new ChatCreateUnselectedAdapter.OnCheckListener() {
+        };
+        unselected_adapter.listener = new ChatCreateUnselectedAdapter.Listener() {
             @Override
             public void check(EMPLOYEE employee) {
                 if (selected_list.getVisibility() == View.GONE) {
@@ -147,13 +146,13 @@ public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
             }
 
             @Override
-            public void uncheck(long number) {
+            public void uncheck(long employee_number) {
                 if (selected_adapter.getItemCount() == 1) {
                     selected_list.setVisibility(View.GONE);
                 }
-                selected_adapter.uncheck(number);
+                selected_adapter.uncheck(employee_number);
             }
-        });
+        };
         unselected_list.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
@@ -171,11 +170,7 @@ public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
         });
     }
 
-    public void setOnLoadListener(OnLoadListener listener) {
-        this.listener = listener;
-    }
-
-    public interface OnLoadListener {
+    public interface Listener {
         void load();
     }
 }

@@ -28,16 +28,16 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class RoomMessageAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHolder> {
+public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHolder> {
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("a hh:mm", Locale.KOREA);
 
     public static final int NOTICE = 0;
     public static final int OPPONENT = 1;
     public static final int MYSELF = 2;
 
-    private OnScrollListener listener;
+    public Listener listener;
 
-    public RoomMessageAdapter(Context context) {
+    public RoomAdapter(@NonNull Context context) {
         super(context, new GetMessageThread(Session.entered_chat.CHAT_NUMBER));
     }
 
@@ -61,7 +61,7 @@ public class RoomMessageAdapter extends CommonListAdapter<MESSAGE, RecyclerView.
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        MESSAGE message = data.get(position);
+        MESSAGE message = DATA.get(position);
 
         if (holder instanceof NoticeViewHolder) {
             NoticeViewHolder notice = (NoticeViewHolder) holder;
@@ -91,7 +91,7 @@ public class RoomMessageAdapter extends CommonListAdapter<MESSAGE, RecyclerView.
 
     @Override
     public int getItemViewType(int position) {
-        long employee_number = data.get(position).MESSAGE_EMPLOYEE_NUMBER;
+        long employee_number = DATA.get(position).MESSAGE_EMPLOYEE_NUMBER;
 
         if (employee_number == Session.user.EMPLOYEE_NUMBER) {
             return MYSELF;
@@ -101,11 +101,11 @@ public class RoomMessageAdapter extends CommonListAdapter<MESSAGE, RecyclerView.
     }
 
     @Override
-    protected int getResponse(String response) throws Exception {
+    protected int getResponse(@NonNull String response) throws Exception {
         array = new JSONObject(response).getJSONArray("message");
         for (int index = 0; index < array.length(); index++) {
             object = array.getJSONObject(index);
-            data.add(Json.from(object, MESSAGE.class));
+            DATA.add(Json.from(object, MESSAGE.class));
         }
 
         return array.length();
@@ -118,34 +118,29 @@ public class RoomMessageAdapter extends CommonListAdapter<MESSAGE, RecyclerView.
 
     @Override
     public void load() {
-        Request request = new GetMessageRequest(Session.entered_chat.CHAT_NUMBER, data.size(), new LoadListener());
-        Request.sendRequest(context, request);
+        Request request = new GetMessageRequest(Session.entered_chat.CHAT_NUMBER, DATA.size(), new LoadListener());
+        Request.sendRequest(CONTEXT, request);
     }
 
     public void addMessage(MESSAGE message) {
-        data.add(message);
-        notifyItemInserted(data.size() - 1);
+        DATA.add(message);
+        notifyItemInserted(DATA.size() - 1);
 
         if (listener != null) {
-            listener.scroll(data.size() - 1);
+            listener.scroll(DATA.size() - 1);
         }
-    }
-
-    public void setOnScrollListener(OnScrollListener listener) {
-        this.listener = listener;
     }
 
     public static class NoticeViewHolder extends CommonViewHolder {
         public TextView content;
 
-        public NoticeViewHolder(View view) {
+        public NoticeViewHolder(@NonNull View view) {
             super(view);
-            init();
         }
 
         @Override
         protected void setId() {
-            content = view.findViewById(R.id.adapter_chat_message_notice__notice);
+            content = VIEW.findViewById(R.id.adapter_chat_message_notice__notice);
         }
     }
 
@@ -155,19 +150,18 @@ public class RoomMessageAdapter extends CommonListAdapter<MESSAGE, RecyclerView.
         public TextView content;
         public TextView time;
 
-        public OpponentViewHolder(View view) {
+        public OpponentViewHolder(@NonNull View view) {
             super(view);
-            init();
 
             image.setClipToOutline(true);
         }
 
         @Override
         protected void setId() {
-            image = view.findViewById(R.id.adapter_chat_message_opponent__image);
-            name = view.findViewById(R.id.adapter_chat_message_opponent__name);
-            content = view.findViewById(R.id.adapter_chat_message_opponent__message);
-            time = view.findViewById(R.id.adapter_chat_message_opponent__time);
+            image = VIEW.findViewById(R.id.adapter_chat_message_opponent__image);
+            name = VIEW.findViewById(R.id.adapter_chat_message_opponent__name);
+            content = VIEW.findViewById(R.id.adapter_chat_message_opponent__message);
+            time = VIEW.findViewById(R.id.adapter_chat_message_opponent__time);
         }
     }
 
@@ -175,19 +169,18 @@ public class RoomMessageAdapter extends CommonListAdapter<MESSAGE, RecyclerView.
         public TextView content;
         public TextView time;
 
-        public MyselfViewHolder(View view) {
+        public MyselfViewHolder(@NonNull View view) {
             super(view);
-            init();
         }
 
         @Override
         protected void setId() {
-            content = view.findViewById(R.id.adapter_chat_message_myself__message);
-            time = view.findViewById(R.id.adapter_chat_message_myself__time);
+            content = VIEW.findViewById(R.id.adapter_chat_message_myself__message);
+            time = VIEW.findViewById(R.id.adapter_chat_message_myself__time);
         }
     }
 
-    public interface OnScrollListener {
+    public interface Listener {
         void scroll(int position);
     }
 }

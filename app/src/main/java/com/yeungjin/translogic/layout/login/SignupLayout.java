@@ -12,6 +12,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.android.volley.Response;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.layout.CommonActivity;
@@ -25,20 +27,20 @@ public class SignupLayout extends CommonActivity {
     private EditText name;
     private EditText username;
     private EditText password;
-    private EditText passwordConfirm;
-    private EditText contactNumber;
+    private EditText password_confirm;
+    private EditText contact_number;
     private EditText email;
     private EditText company;
-    private TextView usernameNote;
-    private TextView passwordNote;
+    private TextView username_note;
+    private TextView password_note;
     private Button submit;
     private Button cancel;
 
-    private boolean isUnique;
-    private boolean isSame;
+    private boolean is_unique;
+    private boolean is_same;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_login_signup);
         init();
@@ -57,12 +59,12 @@ public class SignupLayout extends CommonActivity {
         name = findViewById(R.id.layout_login_signup__name);
         username = findViewById(R.id.layout_login_signup__username);
         password = findViewById(R.id.layout_login_signup__password);
-        passwordConfirm = findViewById(R.id.layout_login_signup__password_confirm);
-        contactNumber = findViewById(R.id.layout_login_signup__contact_number);
+        password_confirm = findViewById(R.id.layout_login_signup__password_confirm);
+        contact_number = findViewById(R.id.layout_login_signup__contact_number);
         email = findViewById(R.id.layout_login_signup__email);
         company = findViewById(R.id.layout_login_signup__company);
-        usernameNote = findViewById(R.id.layout_login_signup__username_note);
-        passwordNote = findViewById(R.id.layout_login_signup__password_note);
+        username_note = findViewById(R.id.layout_login_signup__username_note);
+        password_note = findViewById(R.id.layout_login_signup__password_note);
         submit = findViewById(R.id.layout_login_signup__submit);
         cancel = findViewById(R.id.layout_login_signup__cancel);
     }
@@ -73,8 +75,8 @@ public class SignupLayout extends CommonActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus && !username.getText().toString().isEmpty()) {
-                    if (usernameNote.getVisibility() == View.GONE) {
-                        usernameNote.setVisibility(View.VISIBLE);
+                    if (username_note.getVisibility() == View.GONE) {
+                        username_note.setVisibility(View.VISIBLE);
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -86,13 +88,13 @@ public class SignupLayout extends CommonActivity {
                         @Override
                         public void onResponse(String response) {
                             if (response.contains("true")) {
-                                usernameNote.setTextColor(getColor(R.color.green));
-                                usernameNote.setText("✓ 사용 가능한 아이디입니다.");
-                                isUnique = true;
+                                username_note.setTextColor(getColor(R.color.green));
+                                username_note.setText("✓ 사용 가능한 아이디입니다.");
+                                is_unique = true;
                             } else {
-                                usernameNote.setTextColor(getColor(R.color.red));
-                                usernameNote.setText("✕ 이미 사용중인 아이디입니다.");
-                                isUnique = false;
+                                username_note.setTextColor(getColor(R.color.red));
+                                username_note.setText("✕ 이미 사용중인 아이디입니다.");
+                                is_unique = false;
                             }
                         }
                     });
@@ -100,38 +102,38 @@ public class SignupLayout extends CommonActivity {
                 }
             }
         });
-        passwordConfirm.addTextChangedListener(new TextWatcher() {
+        password_confirm.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence content, int start, int before, int count) {
                 String _password = password.getText().toString();
-                String _passwordConfirm = content.toString();
+                String _password_confirm = content.toString();
 
-                if (!_passwordConfirm.isEmpty()) {
-                    if (passwordNote.getVisibility() == View.GONE) {
-                        passwordNote.setVisibility(View.VISIBLE);
+                if (!_password_confirm.isEmpty()) {
+                    if (password_note.getVisibility() == View.GONE) {
+                        password_note.setVisibility(View.VISIBLE);
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.WRAP_CONTENT);
                         params.bottomMargin = 0;
-                        passwordConfirm.setLayoutParams(params);
+                        password_confirm.setLayoutParams(params);
                     }
 
-                    if (_password.isEmpty() || !_password.equals(_passwordConfirm)) {
-                        passwordNote.setTextColor(getColor(R.color.red));
-                        isSame = false;
+                    if (_password.isEmpty() || !_password.equals(_password_confirm)) {
+                        password_note.setTextColor(getColor(R.color.red));
+                        is_same = false;
 
                         if (_password.isEmpty()) {
-                            passwordNote.setText("✕ 사용할 비밀번호를 먼저 입력해주세요.");
+                            password_note.setText("✕ 사용할 비밀번호를 먼저 입력해주세요.");
                         } else {
-                            passwordNote.setText("✕ 비밀번호가 일치하지 않습니다.");
+                            password_note.setText("✕ 비밀번호가 일치하지 않습니다.");
                         }
                     } else {
-                        passwordNote.setTextColor(getColor(R.color.green));
-                        passwordNote.setText("✓ 비밀번호가 일치합니다.");
-                        isSame = true;
+                        password_note.setTextColor(getColor(R.color.green));
+                        password_note.setText("✓ 비밀번호가 일치합니다.");
+                        is_same = true;
                     }
                 }
             }
@@ -142,40 +144,40 @@ public class SignupLayout extends CommonActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean nameEmpty = name.getText().toString().isEmpty();
-                boolean usernameEmpty = username.getText().toString().isEmpty();
-                boolean passwordEmpty = password.getText().toString().isEmpty();
-                boolean passwordConfirmEmpty = passwordConfirm.getText().toString().isEmpty();
-                boolean contactNumberEmpty = contactNumber.getText().toString().isEmpty();
-                boolean emailEmpty = email.getText().toString().isEmpty();
-                boolean companyEmpty = company.getText().toString().isEmpty();
+                boolean name_empty = name.getText().toString().isEmpty();
+                boolean username_empty = username.getText().toString().isEmpty();
+                boolean password_empty = password.getText().toString().isEmpty();
+                boolean password_confirm_empty = password_confirm.getText().toString().isEmpty();
+                boolean contact_number_empty = contact_number.getText().toString().isEmpty();
+                boolean email_empty = email.getText().toString().isEmpty();
+                boolean company_empty = company.getText().toString().isEmpty();
 
-                if (nameEmpty || usernameEmpty || passwordEmpty || passwordConfirmEmpty || contactNumberEmpty || emailEmpty || companyEmpty) {
+                if (name_empty || username_empty || password_empty || password_confirm_empty || contact_number_empty || email_empty || company_empty) {
                     Toast.makeText(getApplicationContext(), "비어있는 내용을 채우고 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
 
-                    if (nameEmpty) {
+                    if (name_empty) {
                         name.requestFocus();
-                    } else if (usernameEmpty) {
+                    } else if (username_empty) {
                         username.requestFocus();
-                    } else if (passwordEmpty) {
+                    } else if (password_empty) {
                         password.requestFocus();
-                    } else if (passwordConfirmEmpty) {
-                        passwordConfirm.requestFocus();
-                    } else if (contactNumberEmpty) {
-                        contactNumber.requestFocus();
-                    } else if (emailEmpty) {
+                    } else if (password_confirm_empty) {
+                        password_confirm.requestFocus();
+                    } else if (contact_number_empty) {
+                        contact_number.requestFocus();
+                    } else if (email_empty) {
                         email.requestFocus();
                     } else {
                         company.requestFocus();
                     }
-                } else if (!isUnique) {
+                } else if (!is_unique) {
                     Toast.makeText(getApplicationContext(), "아이디를 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
                     username.requestFocus();
-                } else if (!isSame) {
+                } else if (!is_same) {
                     Toast.makeText(getApplicationContext(), "비밀번호를 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
-                    passwordConfirm.requestFocus();
+                    password_confirm.requestFocus();
                 } else {
-                    SubmitRequest request = new SubmitRequest(name, username, password, contactNumber, email, company, new Response.Listener<String>() {
+                    SubmitRequest request = new SubmitRequest(name, username, password, contact_number, email, company, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             if (response.contains("true")) {

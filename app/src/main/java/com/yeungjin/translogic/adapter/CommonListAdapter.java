@@ -2,6 +2,7 @@ package com.yeungjin.translogic.adapter;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Response;
@@ -14,7 +15,7 @@ public abstract class CommonListAdapter<OBJECT, ViewHolder extends RecyclerView.
     protected JSONObject object;
     protected JSONArray array;
 
-    public CommonListAdapter(Context context, ThreadRequest request) {
+    public CommonListAdapter(@NonNull Context context, @NonNull ThreadRequest request) {
         super(context);
 
         request.start();
@@ -26,7 +27,7 @@ public abstract class CommonListAdapter<OBJECT, ViewHolder extends RecyclerView.
         }
     }
 
-    protected abstract int getResponse(String response) throws Exception;
+    protected abstract int getResponse(@NonNull String response) throws Exception;
 
     public abstract void reload();
 
@@ -35,11 +36,20 @@ public abstract class CommonListAdapter<OBJECT, ViewHolder extends RecyclerView.
     public class ReloadListener implements Response.Listener<String> {
         @Override
         public void onResponse(String response) {
-            notifyItemRangeRemoved(0, data.size());
-            data.clear();
-
             try {
-                notifyItemRangeInserted(0, getResponse(response));
+                int old_size = DATA.size();
+                DATA.clear();
+                int new_size = getResponse(response);
+
+                if (old_size > new_size) {
+                    notifyItemRangeChanged(0, new_size);
+                    notifyItemRangeRemoved(new_size, old_size - new_size);
+                } else if (old_size < new_size) {
+                    notifyItemRangeChanged(0, old_size);
+                    notifyItemRangeInserted(old_size, new_size - old_size);
+                } else {
+                    notifyItemRangeChanged(0, new_size);
+                }
             } catch (Exception error) {
                 error.printStackTrace();
             }
@@ -50,7 +60,7 @@ public abstract class CommonListAdapter<OBJECT, ViewHolder extends RecyclerView.
         @Override
         public void onResponse(String response) {
             try {
-                notifyItemRangeInserted(data.size(), getResponse(response));
+                notifyItemRangeInserted(DATA.size(), getResponse(response));
             } catch (Exception error) {
                 error.printStackTrace();
             }

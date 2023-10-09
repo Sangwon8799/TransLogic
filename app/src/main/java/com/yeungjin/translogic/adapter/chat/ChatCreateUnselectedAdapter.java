@@ -30,9 +30,10 @@ import java.util.Set;
 
 public class ChatCreateUnselectedAdapter extends CommonListAdapter<EMPLOYEE, ChatCreateUnselectedAdapter.ViewHolder> {
     private final Set<Long> checked = new HashSet<>();
-    private OnCheckListener listener;
 
-    public ChatCreateUnselectedAdapter(Context context) {
+    public Listener listener;
+
+    public ChatCreateUnselectedAdapter(@NonNull Context context) {
         super(context, new GetEmployeeThread());
     }
 
@@ -45,9 +46,9 @@ public class ChatCreateUnselectedAdapter extends CommonListAdapter<EMPLOYEE, Cha
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EMPLOYEE employee = data.get(position);
+        EMPLOYEE employee = DATA.get(position);
 
-        Glide.with(holder.image.getContext()).load(Server.ImageURL + employee.EMPLOYEE_IMAGE).into(holder.image);
+        Glide.with(holder.image.getContext()).load(Server.IMAGE_URL + employee.EMPLOYEE_IMAGE).into(holder.image);
         holder.checkbox.setChecked(checked.contains(employee.EMPLOYEE_NUMBER));
         holder.checkbox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,11 +73,11 @@ public class ChatCreateUnselectedAdapter extends CommonListAdapter<EMPLOYEE, Cha
     }
 
     @Override
-    protected int getResponse(String response) throws Exception {
+    protected int getResponse(@NonNull String response) throws Exception {
         array = new JSONObject(response).getJSONArray("employee");
         for (int index = 0; index < array.length(); index++) {
             object = array.getJSONObject(index);
-            data.add(Json.from(object, EMPLOYEE.class));
+            DATA.add(Json.from(object, EMPLOYEE.class));
         }
 
         return array.length();
@@ -85,38 +86,34 @@ public class ChatCreateUnselectedAdapter extends CommonListAdapter<EMPLOYEE, Cha
     @Override
     public void reload() {
         Request request = new GetEmployeeRequest(0, new ReloadListener());
-        Request.sendRequest(context, request);
+        Request.sendRequest(CONTEXT, request);
     }
 
     @Override
     public void load() {
-        Request request = new GetEmployeeRequest(data.size(), new LoadListener());
-        Request.sendRequest(context, request);
+        Request request = new GetEmployeeRequest(DATA.size(), new LoadListener());
+        Request.sendRequest(CONTEXT, request);
     }
 
     public void reload(CharSequence search) {
         Request request = new GetSearchedEmployeeRequest(0, search.toString(), new ReloadListener());
-        Request.sendRequest(context, request);
+        Request.sendRequest(CONTEXT, request);
     }
 
     public void load(CharSequence search) {
-        Request request = new GetSearchedEmployeeRequest(data.size(), search.toString(), new LoadListener());
-        Request.sendRequest(context, request);
+        Request request = new GetSearchedEmployeeRequest(DATA.size(), search.toString(), new LoadListener());
+        Request.sendRequest(CONTEXT, request);
     }
 
     public void remove(long employee_number) {
         checked.remove(employee_number);
 
-        for (int index = 0; index < data.size(); index++) {
-            if (data.get(index).EMPLOYEE_NUMBER == employee_number) {
+        for (int index = 0; index < DATA.size(); index++) {
+            if (DATA.get(index).EMPLOYEE_NUMBER == employee_number) {
                 notifyItemChanged(index);
                 break;
             }
         }
-    }
-
-    public void setOnCheckListener(OnCheckListener listener) {
-        this.listener = listener;
     }
 
     public static class ViewHolder extends CommonViewHolder {
@@ -126,24 +123,23 @@ public class ChatCreateUnselectedAdapter extends CommonListAdapter<EMPLOYEE, Cha
         public TextView company;
         public TextView contact_number;
 
-        public ViewHolder(View view) {
+        public ViewHolder(@NonNull View view) {
             super(view);
-            init();
 
             image.setClipToOutline(true);
         }
 
         @Override
         protected void setId() {
-            checkbox = view.findViewById(R.id.adapter_chat_chat_create_unselected__checkbox);
-            image = view.findViewById(R.id.adapter_chat_chat_create_unselected__image);
-            name = view.findViewById(R.id.adapter_chat_chat_create_unselected__name);
-            company = view.findViewById(R.id.adapter_chat_chat_create_unselected__company);
-            contact_number = view.findViewById(R.id.adapter_chat_chat_create_unselected__contact_number);
+            checkbox = VIEW.findViewById(R.id.adapter_chat_chat_create_unselected__checkbox);
+            image = VIEW.findViewById(R.id.adapter_chat_chat_create_unselected__image);
+            name = VIEW.findViewById(R.id.adapter_chat_chat_create_unselected__name);
+            company = VIEW.findViewById(R.id.adapter_chat_chat_create_unselected__company);
+            contact_number = VIEW.findViewById(R.id.adapter_chat_chat_create_unselected__contact_number);
         }
     }
 
-    public interface OnCheckListener {
+    public interface Listener {
         void check(EMPLOYEE employee);
         void uncheck(long employee_number);
     }

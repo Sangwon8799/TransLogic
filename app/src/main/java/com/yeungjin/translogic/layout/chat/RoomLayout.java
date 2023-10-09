@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yeungjin.translogic.R;
-import com.yeungjin.translogic.adapter.chat.RoomMessageAdapter;
+import com.yeungjin.translogic.adapter.chat.RoomAdapter;
 import com.yeungjin.translogic.layout.CommonActivity;
 import com.yeungjin.translogic.object.CHAT;
 import com.yeungjin.translogic.object.MESSAGE;
@@ -46,7 +46,7 @@ public class RoomLayout extends CommonActivity {
     private EditText content;
     private ImageButton send;
 
-    private RoomMessageAdapter message_adapter;
+    private RoomAdapter adapter;
 
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
     private static final int MAX_SIZE = 512;
@@ -58,6 +58,7 @@ public class RoomLayout extends CommonActivity {
         init();
 
         title.setText(Session.entered_chat.CHAT_TITLE);
+        message_list.scrollToPosition(adapter.getItemCount() - 1);
 
         Session.socket.on("GET_MESSAGE", new Emitter.Listener() {
             @Override
@@ -67,7 +68,7 @@ public class RoomLayout extends CommonActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        message_adapter.addMessage(message);
+                        adapter.addMessage(message);
                     }
                 });
             }
@@ -98,10 +99,10 @@ public class RoomLayout extends CommonActivity {
 
     @Override
     protected void setAdapter() {
-        message_adapter = new RoomMessageAdapter(getApplicationContext());
+        adapter = new RoomAdapter(getApplicationContext());
 
         message_list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        message_list.setAdapter(message_adapter);
+        message_list.setAdapter(adapter);
     }
 
     @Override
@@ -139,12 +140,12 @@ public class RoomLayout extends CommonActivity {
                 }
             }
         });
-        message_adapter.setOnScrollListener(new RoomMessageAdapter.OnScrollListener() {
+        adapter.listener = new RoomAdapter.Listener() {
             @Override
             public void scroll(int position) {
                 message_list.scrollToPosition(position);
             }
-        });
+        };
         pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), new ActivityResultCallback<Uri>() {
             @Override
             public void onActivityResult(Uri uri) {
@@ -177,7 +178,7 @@ public class RoomLayout extends CommonActivity {
         Request.sendRequest(getApplicationContext(), request);
 
         Session.socket.emit("SEND_MESSAGE", Json.to(message));
-        message_adapter.addMessage(message);
+        adapter.addMessage(message);
     }
 
     private static class Ratio {

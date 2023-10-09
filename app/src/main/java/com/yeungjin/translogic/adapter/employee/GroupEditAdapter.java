@@ -35,7 +35,7 @@ public class GroupEditAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupEdi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EMPLOYEE_GROUP group = data.get(position);
+        EMPLOYEE_GROUP group = DATA.get(position);
 
         holder.name.setText(group.EMPLOYEE_GROUP_NAME);
         holder.rename.setOnClickListener(new View.OnClickListener() {
@@ -53,11 +53,11 @@ public class GroupEditAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupEdi
     }
 
     @Override
-    protected int getResponse(String response) throws Exception {
+    protected int getResponse(@NonNull String response) throws Exception {
         array = new JSONObject(response).getJSONArray("group");
         for (int index = 0; index < array.length(); index++) {
             object = array.getJSONObject(index);
-            data.add(Json.from(object, EMPLOYEE_GROUP.class));
+            DATA.add(Json.from(object, EMPLOYEE_GROUP.class));
         }
 
         return array.length();
@@ -66,7 +66,7 @@ public class GroupEditAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupEdi
     @Override
     public void reload() {
         Request request = new GetGroupRequest(Session.user.EMPLOYEE_NUMBER, new ReloadListener());
-        Request.sendRequest(context, request);
+        Request.sendRequest(CONTEXT, request);
     }
 
     @Override
@@ -81,14 +81,13 @@ public class GroupEditAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupEdi
 
         public ViewHolder(View view) {
             super(view);
-            init();
         }
 
         @Override
         protected void setId() {
-            name = view.findViewById(R.id.adapter_employee_group_edit_list__name);
-            rename = view.findViewById(R.id.adapter_employee_group_edit_list__rename);
-            remove = view.findViewById(R.id.adapter_employee_group_edit_list__remove);
+            name = VIEW.findViewById(R.id.adapter_employee_group_edit_list__name);
+            rename = VIEW.findViewById(R.id.adapter_employee_group_edit_list__rename);
+            remove = VIEW.findViewById(R.id.adapter_employee_group_edit_list__remove);
         }
     }
 }

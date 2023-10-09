@@ -113,12 +113,12 @@ public class EmployeeLayout extends CommonFragment {
                                 public void onResponse(String response) {
                                     if (response.contains("true")) {
                                         GroupCreateLayout layout = new GroupCreateLayout();
-                                        layout.setOnLoadListener(new GroupCreateLayout.OnLoadListener() {
+                                        layout.listener = new GroupCreateLayout.Listener() {
                                             @Override
                                             public void load() {
                                                 group_adapter.reload();
                                             }
-                                        });
+                                        };
                                         layout.show(getParentFragmentManager(), layout.getTag());
                                     } else {
                                         Toast.makeText(getContext(), "생성 가능한 그룹 최대 개수(10개)에 도달하여 그룹을 생성할 수 없습니다.", Toast.LENGTH_SHORT).show();
@@ -146,7 +146,7 @@ public class EmployeeLayout extends CommonFragment {
                 refresh.setRefreshing(false);
             }
         });
-        group_adapter.setOnSelectListener(new GroupAdapter.OnSelectListener() {
+        group_adapter.listener = new GroupAdapter.Listener() {
             @Override
             public void select(long group_number) {
                 if (employee_list.getScrollState() != RecyclerView.SCROLL_STATE_DRAGGING) {
@@ -172,6 +172,6 @@ public class EmployeeLayout extends CommonFragment {
                     }
                 }
             }
-        });
+        };
     }
 }

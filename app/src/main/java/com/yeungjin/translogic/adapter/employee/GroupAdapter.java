@@ -22,49 +22,47 @@ import org.json.JSONObject;
 
 public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter.ViewHolder> {
     private static final int UNSELECT = -1;
-    private int currentPosition = UNSELECT;
+    private int current_position = UNSELECT;
 
-    private OnSelectListener selectListener;
+    public Listener listener;
 
-    public GroupAdapter(Context context) {
+    public GroupAdapter(@NonNull Context context) {
         super(context, new GetGroupThread(Session.user.EMPLOYEE_NUMBER));
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_employee_group, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        EMPLOYEE_GROUP group = data.get(position);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        EMPLOYEE_GROUP group = DATA.get(position);
 
         holder.group.setText(group.EMPLOYEE_GROUP_NAME);
-        holder.group.setChecked(position == currentPosition);
+        holder.group.setChecked(position == current_position);
         holder.group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (((RadioButton) view).isChecked()) {
-                    int pastPosition = currentPosition;
+                    int past_position = current_position;
 
-                    if (currentPosition != holder.getAdapterPosition()) {
-                        currentPosition = holder.getAdapterPosition();
-
-                        if (selectListener != null) {
-                            selectListener.select(group.EMPLOYEE_GROUP_NUMBER);
+                    if (current_position != holder.getAdapterPosition()) {
+                        current_position = holder.getAdapterPosition();
+                        if (listener != null) {
+                            listener.select(group.EMPLOYEE_GROUP_NUMBER);
                         }
                     } else {
-                        currentPosition = UNSELECT;
-
-                        if (selectListener != null) {
-                            selectListener.unselect();
+                        current_position = UNSELECT;
+                        if (listener != null) {
+                            listener.unselect();
                         }
                     }
 
-                    if (pastPosition != UNSELECT) {
-                        notifyItemChanged(pastPosition);
+                    if (past_position != UNSELECT) {
+                        notifyItemChanged(past_position);
                     }
                 }
             }
@@ -72,11 +70,11 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
     }
 
     @Override
-    protected int getResponse(String response) throws Exception {
+    protected int getResponse(@NonNull String response) throws Exception {
         array = new JSONObject(response).getJSONArray("group");
         for (int index = 0; index < array.length(); index++) {
             object = array.getJSONObject(index);
-            data.add(Json.from(object, EMPLOYEE_GROUP.class));
+            DATA.add(Json.from(object, EMPLOYEE_GROUP.class));
         }
 
         return array.length();
@@ -84,10 +82,10 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
 
     @Override
     public void reload() {
-        currentPosition = UNSELECT;
+        current_position = UNSELECT;
 
         Request request = new GetGroupRequest(Session.user.EMPLOYEE_NUMBER, new ReloadListener());
-        Request.sendRequest(context, request);
+        Request.sendRequest(CONTEXT, request);
     }
 
     @Override
@@ -96,32 +94,27 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
     }
 
     public boolean isSelected() {
-        return currentPosition != UNSELECT;
+        return current_position != UNSELECT;
     }
 
     public long getNumber() {
-        return data.get(currentPosition).EMPLOYEE_GROUP_NUMBER;
-    }
-
-    public void setOnSelectListener(OnSelectListener listener) {
-        this.selectListener = listener;
+        return DATA.get(current_position).EMPLOYEE_GROUP_NUMBER;
     }
 
     public static class ViewHolder extends CommonViewHolder {
         public RadioButton group;
 
-        public ViewHolder(View view) {
+        public ViewHolder(@NonNull View view) {
             super(view);
-            init();
         }
 
         @Override
         protected void setId() {
-            group = view.findViewById(R.id.adapter_employee_group__name);
+            group = VIEW.findViewById(R.id.adapter_employee_group__name);
         }
     }
 
-    public interface OnSelectListener {
+    public interface Listener {
         void select(long group_number);
         void unselect();
     }

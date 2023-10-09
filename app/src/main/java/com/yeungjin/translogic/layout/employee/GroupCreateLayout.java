@@ -27,16 +27,16 @@ import com.yeungjin.translogic.request.Request;
 import com.yeungjin.translogic.request.employee.InsertGroupMemberRequest;
 
 public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
-    private GroupCreateSelectedAdapter selected_adapter;
-    private GroupCreateUnselectedAdapter unselected_adapter;
-
     private TextView create;
     private EditText search;
     private ImageButton clear;
     private RecyclerView selected_list;
     private RecyclerView unselected_list;
 
-    private OnLoadListener listener;
+    private GroupCreateSelectedAdapter selected_adapter;
+    private GroupCreateUnselectedAdapter unselected_adapter;
+
+    public Listener listener;
 
     @Nullable
     @Override
@@ -76,7 +76,7 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
             public void onClick(View view) {
                 if (selected_adapter.getItemCount() != 0) {
                     GroupCreateCreateLayout dialog = new GroupCreateCreateLayout(view.getContext());
-                    dialog.setOnCreateListener(new GroupCreateCreateLayout.OnCreateListener() {
+                    dialog.listener = new GroupCreateCreateLayout.Listener() {
                         @Override
                         public void create(long group_number) {
                             try {
@@ -96,7 +96,7 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
                                 error.printStackTrace();
                             }
                         }
-                    });
+                    };
                     dialog.show();
                 } else {
                     Toast.makeText(view.getContext(), "그룹으로 추가할 사람을 선택해주세요.", Toast.LENGTH_SHORT).show();
@@ -126,22 +126,21 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
                 search.setText(null);
             }
         });
-        selected_adapter.setOnRemoveListener(new GroupCreateSelectedAdapter.OnRemoveListener() {
+        selected_adapter.listener = new GroupCreateSelectedAdapter.Listener() {
             @Override
-            public void remove(long number) {
+            public void remove(long employee_number) {
                 if (selected_adapter.getItemCount() == 0) {
                     selected_list.setVisibility(View.GONE);
                 }
-                unselected_adapter.remove(number);
+                unselected_adapter.remove(employee_number);
             }
-        });
-        selected_adapter.setOnScrollListener(new GroupCreateSelectedAdapter.OnScrollListener() {
+
             @Override
             public void scroll() {
                 selected_list.scrollToPosition(0);
             }
-        });
-        unselected_adapter.setOnCheckListener(new GroupCreateUnselectedAdapter.OnCheckListener() {
+        };
+        unselected_adapter.listener = new GroupCreateUnselectedAdapter.Listener() {
             @Override
             public void check(EMPLOYEE employee) {
                 if (selected_list.getVisibility() == View.GONE) {
@@ -157,7 +156,7 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
                 }
                 selected_adapter.uncheck(number);
             }
-        });
+        };
         unselected_list.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
@@ -175,11 +174,7 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
         });
     }
 
-    public void setOnLoadListener(OnLoadListener listener) {
-        this.listener = listener;
-    }
-
-    public interface OnLoadListener {
+    public interface Listener {
         void load();
     }
 }

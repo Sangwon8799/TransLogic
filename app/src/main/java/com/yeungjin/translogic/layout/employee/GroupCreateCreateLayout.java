@@ -16,10 +16,10 @@ import com.yeungjin.translogic.request.employee.IsGroupNameUniqueRequest;
 import com.yeungjin.translogic.utility.Session;
 
 public class GroupCreateCreateLayout extends CommonDialog {
-    private OnCreateListener listener;
-
     private TextView create;
     private EditText name;
+
+    public Listener listener;
 
     public GroupCreateCreateLayout(Context context) {
         super(context);
@@ -70,11 +70,7 @@ public class GroupCreateCreateLayout extends CommonDialog {
         });
     }
 
-    public void setOnCreateListener(OnCreateListener listener) {
-        this.listener = listener;
-    }
-
-    public interface OnCreateListener {
+    public interface Listener {
         void create(long group_number);
     }
 }

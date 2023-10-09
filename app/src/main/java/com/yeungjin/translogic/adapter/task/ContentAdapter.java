@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yeungjin.translogic.R;
+import com.yeungjin.translogic.adapter.CommonViewHolder;
 
 public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHolder> {
     @NonNull
@@ -29,15 +30,18 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
         return 0;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends CommonViewHolder {
         public TextView content;
         public Button request;
 
-        public ViewHolder(View view) {
+        public ViewHolder(@NonNull View view) {
             super(view);
+        }
 
-            content = (TextView) view.findViewById(R.id.adapter_task_content__content);
-            request = (Button) view.findViewById(R.id.adapter_task_content__request);
+        @Override
+        protected void setId() {
+            content = VIEW.findViewById(R.id.adapter_task_content__content);
+            request = VIEW.findViewById(R.id.adapter_task_content__request);
         }
     }
 }

@@ -20,10 +20,9 @@ import com.yeungjin.translogic.utility.Server;
 import java.util.ArrayList;
 
 public class ChatCreateSelectedAdapter extends CommonAdapter<EMPLOYEE, ChatCreateSelectedAdapter.ViewHolder> {
-    private OnRemoveListener removeListener;
-    private OnScrollListener scrollListener;
+    public Listener listener;
 
-    public ChatCreateSelectedAdapter(Context context) {
+    public ChatCreateSelectedAdapter(@NonNull Context context) {
         super(context);
     }
 
@@ -36,15 +35,15 @@ public class ChatCreateSelectedAdapter extends CommonAdapter<EMPLOYEE, ChatCreat
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EMPLOYEE employee = data.get(position);
+        EMPLOYEE employee = DATA.get(position);
 
-        Glide.with(holder.image.getContext()).load(Server.ImageURL + employee.EMPLOYEE_IMAGE).into(holder.image);
+        Glide.with(holder.image.getContext()).load(Server.IMAGE_URL + employee.EMPLOYEE_IMAGE).into(holder.image);
         holder.remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (removeListener != null) {
-                    data.remove(employee);
-                    removeListener.remove(employee.EMPLOYEE_NUMBER);
+                if (listener != null) {
+                    DATA.remove(employee);
+                    listener.remove(employee.EMPLOYEE_NUMBER);
 
                     notifyItemRemoved(holder.getAdapterPosition());
                 }
@@ -56,7 +55,7 @@ public class ChatCreateSelectedAdapter extends CommonAdapter<EMPLOYEE, ChatCreat
     public ArrayList<Long> getNumbers() {
         ArrayList<Long> numbers = new ArrayList<>();
 
-        for (EMPLOYEE employee : data) {
+        for (EMPLOYEE employee : DATA) {
             numbers.add(employee.EMPLOYEE_NUMBER);
         }
 
@@ -64,22 +63,22 @@ public class ChatCreateSelectedAdapter extends CommonAdapter<EMPLOYEE, ChatCreat
     }
 
     public void check(EMPLOYEE employee) {
-        data.add(0, employee);
+        DATA.add(0, employee);
 
-        notifyItemInserted(data.size() - 1);
-        for (int index = data.size() - 2; index >= 0; index--) {
+        notifyItemInserted(DATA.size() - 1);
+        for (int index = DATA.size() - 2; index >= 0; index--) {
             notifyItemMoved(index, index + 1);
         }
 
-        if (scrollListener != null) {
-            scrollListener.scroll();
+        if (listener != null) {
+            listener.scroll();
         }
     }
 
     public void uncheck(long employee_number) {
-        for (int index = 0; index < data.size(); index++) {
-            if (data.get(index).EMPLOYEE_NUMBER == employee_number) {
-                data.remove(index);
+        for (int index = 0; index < DATA.size(); index++) {
+            if (DATA.get(index).EMPLOYEE_NUMBER == employee_number) {
+                DATA.remove(index);
 
                 notifyItemRemoved(index);
                 break;
@@ -87,39 +86,27 @@ public class ChatCreateSelectedAdapter extends CommonAdapter<EMPLOYEE, ChatCreat
         }
     }
 
-    public void setOnRemoveListener(OnRemoveListener listener) {
-        this.removeListener = listener;
-    }
-
-    public void setOnScrollListener(OnScrollListener listener) {
-        this.scrollListener = listener;
-    }
-
     public static class ViewHolder extends CommonViewHolder {
         public ImageView image;
         public ImageButton remove;
         public TextView name;
 
-        public ViewHolder(View view) {
+        public ViewHolder(@NonNull View view) {
             super(view);
-            init();
 
             image.setClipToOutline(true);
         }
 
         @Override
         protected void setId() {
-            image = view.findViewById(R.id.adapter_chat_chat_create_selected__image);
-            remove = view.findViewById(R.id.adapter_chat_chat_create_selected__remove);
-            name = view.findViewById(R.id.adapter_chat_chat_create_selected__name);
+            image = VIEW.findViewById(R.id.adapter_chat_chat_create_selected__image);
+            remove = VIEW.findViewById(R.id.adapter_chat_chat_create_selected__remove);
+            name = VIEW.findViewById(R.id.adapter_chat_chat_create_selected__name);
         }
     }
 
-    public interface OnRemoveListener {
+    public interface Listener {
         void remove(long employee_number);
-    }
-
-    public interface OnScrollListener {
         void scroll();
     }
 }

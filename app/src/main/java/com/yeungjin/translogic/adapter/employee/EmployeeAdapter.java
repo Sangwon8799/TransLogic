@@ -40,19 +40,19 @@ public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EMPLOYEE employee = data.get(position);
+        EMPLOYEE employee = DATA.get(position);
 
-        Glide.with(holder.image.getContext()).load(Server.ImageURL + employee.EMPLOYEE_IMAGE).into(holder.image);
+        Glide.with(holder.image.getContext()).load(Server.IMAGE_URL + employee.EMPLOYEE_IMAGE).into(holder.image);
         holder.name.setText(employee.EMPLOYEE_NAME);
-        holder.contactNumber.setText(ContactNumber.parse(employee.EMPLOYEE_CONTACT_NUMBER));
+        holder.contact_number.setText(ContactNumber.parse(employee.EMPLOYEE_CONTACT_NUMBER));
     }
 
     @Override
-    protected int getResponse(String response) throws Exception {
+    protected int getResponse(@NonNull String response) throws Exception {
         array = new JSONObject(response).getJSONArray("employee");
         for (int index = 0; index < array.length(); index++) {
             object = array.getJSONObject(index);
-            data.add(Json.from(object, EMPLOYEE.class));
+            DATA.add(Json.from(object, EMPLOYEE.class));
         }
 
         return array.length();
@@ -61,64 +61,63 @@ public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter
     @Override
     public void reload() {
         Request request = new GetEmployeeRequest(0, new ReloadListener());
-        Request.sendRequest(context, request);
+        Request.sendRequest(CONTEXT, request);
     }
 
     @Override
     public void load() {
-        Request request = new GetEmployeeRequest(data.size(), new LoadListener());
-        Request.sendRequest(context, request);
+        Request request = new GetEmployeeRequest(DATA.size(), new LoadListener());
+        Request.sendRequest(CONTEXT, request);
     }
 
     public void reload(CharSequence search) {
         Request request = new GetSearchedEmployeeRequest(0, search.toString(), new ReloadListener());
-        Request.sendRequest(context, request);
+        Request.sendRequest(CONTEXT, request);
     }
 
     public void load(CharSequence search) {
-        Request request = new GetSearchedEmployeeRequest(data.size(), search.toString(), new LoadListener());
-        Request.sendRequest(context, request);
+        Request request = new GetSearchedEmployeeRequest(DATA.size(), search.toString(), new LoadListener());
+        Request.sendRequest(CONTEXT, request);
     }
 
     public void reload(long group_number) {
         Request request = new GetGroupedEmployeeRequest(group_number, 0, new ReloadListener());
-        Request.sendRequest(context, request);
+        Request.sendRequest(CONTEXT, request);
     }
 
     public void load(long group_number) {
-        Request request = new GetGroupedEmployeeRequest(group_number, data.size(), new LoadListener());
-        Request.sendRequest(context, request);
+        Request request = new GetGroupedEmployeeRequest(group_number, DATA.size(), new LoadListener());
+        Request.sendRequest(CONTEXT, request);
     }
 
     public void reload(long group_number, CharSequence search) {
         Request request = new GetGroupedSearchedEmployeeRequest(group_number, 0, search.toString(), new ReloadListener());
-        Request.sendRequest(context, request);
+        Request.sendRequest(CONTEXT, request);
     }
 
     public void load(long group_number, CharSequence search) {
-        Request request = new GetGroupedSearchedEmployeeRequest(group_number, data.size(), search.toString(), new LoadListener());
-        Request.sendRequest(context, request);
+        Request request = new GetGroupedSearchedEmployeeRequest(group_number, DATA.size(), search.toString(), new LoadListener());
+        Request.sendRequest(CONTEXT, request);
     }
 
     public static class ViewHolder extends CommonViewHolder {
         public ImageView image;
         public TextView name;
         public TextView company;
-        public TextView contactNumber;
+        public TextView contact_number;
 
-        public ViewHolder(View view) {
+        public ViewHolder(@NonNull View view) {
             super(view);
-            init();
 
             image.setClipToOutline(true);
         }
 
         @Override
         protected void setId() {
-            image = view.findViewById(R.id.adapter_employee_employee__image);
-            name = view.findViewById(R.id.adapter_employee_employee__name);
-            company = view.findViewById(R.id.adapter_employee_employee__company);
-            contactNumber = view.findViewById(R.id.adapter_employee_employee__contact_number);
+            image = VIEW.findViewById(R.id.adapter_employee_employee__image);
+            name = VIEW.findViewById(R.id.adapter_employee_employee__name);
+            company = VIEW.findViewById(R.id.adapter_employee_employee__company);
+            contact_number = VIEW.findViewById(R.id.adapter_employee_employee__contact_number);
         }
     }
 }

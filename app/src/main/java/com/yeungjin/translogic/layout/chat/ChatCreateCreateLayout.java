@@ -15,10 +15,10 @@ import com.yeungjin.translogic.request.chat.CreateChatRequest;
 import com.yeungjin.translogic.utility.Session;
 
 public class ChatCreateCreateLayout extends CommonDialog {
-    private OnCreateListener listener;
-
     private TextView create;
     private EditText title;
+
+    public Listener listener;
 
     public ChatCreateCreateLayout(Context context) {
         super(context);
@@ -58,11 +58,7 @@ public class ChatCreateCreateLayout extends CommonDialog {
         });
     }
 
-    public void setOnCreateListener(OnCreateListener listener) {
-        this.listener = listener;
-    }
-
-    public interface OnCreateListener {
+    public interface Listener {
         void create(long chat_number);
     }
 }

@@ -27,7 +27,7 @@ public class SettingLayout extends CommonFragment {
         view = inflater.inflate(R.layout.layout_setting_setting, container, false);
         init();
 
-        Glide.with(image.getContext()).load(Server.ImageURL + Session.user.EMPLOYEE_IMAGE).into(image);
+        Glide.with(image.getContext()).load(Server.IMAGE_URL + Session.user.EMPLOYEE_IMAGE).into(image);
         name.setText(Session.user.EMPLOYEE_NAME);
         username.setText(Session.user.EMPLOYEE_USERNAME);
         contactNumber.setText(ContactNumber.parse(Session.user.EMPLOYEE_CONTACT_NUMBER));

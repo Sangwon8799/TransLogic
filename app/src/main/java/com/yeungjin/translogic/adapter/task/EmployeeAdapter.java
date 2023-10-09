@@ -18,7 +18,7 @@ import com.yeungjin.translogic.object.EMPLOYEE;
 import com.yeungjin.translogic.request.employee.GetEmployeeThread;
 
 public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter.ViewHolder> {
-    public EmployeeAdapter(Context context) {
+    public EmployeeAdapter(@NonNull Context context) {
         super(context, new GetEmployeeThread());
     }
 
@@ -35,7 +35,7 @@ public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter
     }
 
     @Override
-    public int getResponse(String response) throws Exception {
+    public int getResponse(@NonNull String response) throws Exception {
         return 0;
     }
 
@@ -57,17 +57,16 @@ public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter
 
         public ViewHolder(View view) {
             super(view);
-            init();
 
             content.setLayoutManager(new LinearLayoutManager(view.getContext()));
         }
 
         @Override
         protected void setId() {
-            image = view.findViewById(R.id.adapter_task_employee__image);
-            name = view.findViewById(R.id.adapter_task_employee__name);
-            company = view.findViewById(R.id.adapter_task_employee__company);
-            content = view.findViewById(R.id.adapter_task_employee__content);
+            image = VIEW.findViewById(R.id.adapter_task_employee__image);
+            name = VIEW.findViewById(R.id.adapter_task_employee__name);
+            company = VIEW.findViewById(R.id.adapter_task_employee__company);
+            content = VIEW.findViewById(R.id.adapter_task_employee__content);
         }
     }
 }

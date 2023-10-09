@@ -109,12 +109,12 @@ public class ChatLayout extends CommonFragment {
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getItemId() == R.id.layout_chat_chat__menu_icon__create) {
                             ChatCreateLayout layout = new ChatCreateLayout();
-                            layout.setOnLoadListener(new ChatCreateLayout.OnLoadListener() {
+                            layout.listener = new ChatCreateLayout.Listener() {
                                 @Override
                                 public void load() {
                                     chat_adapter.reload();
                                 }
-                            });
+                            };
                             layout.show(getParentFragmentManager(), layout.getTag());
                         } else if (item.getItemId() == R.id.layout_chat_chat__menu_icon__edit) {
                             Toast.makeText(view.getContext(), "개발중", Toast.LENGTH_SHORT).show();
@@ -128,13 +128,13 @@ public class ChatLayout extends CommonFragment {
                 menu.show();
             }
         });
-        chat_adapter.setOnClickListener(new ChatAdapter.OnClickListener() {
+        chat_adapter.listener = new ChatAdapter.Listener() {
             @Override
             public void click(Intent intent, int position) {
                 startActivity(intent);
                 chat_adapter.notifyItemChanged(position);
             }
-        });
+        };
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
