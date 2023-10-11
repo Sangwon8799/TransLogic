@@ -1,4 +1,6 @@
-package com.yeungjin.translogic.request;
+package com.yeungjin.translogic.utility;
+
+import androidx.annotation.NonNull;
 
 import com.yeungjin.translogic.utility.Server;
 
@@ -11,14 +13,24 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ThreadRequest extends Thread {
-    protected final Map<String, Object> parameters = new HashMap<>();
-
+public class DBThread extends Thread {
+    private final Map<String, Object> parameters = new HashMap<>();
     private final String URI;
     private String response;
 
-    public ThreadRequest(String URI) {
+    public DBThread(String URI, @NonNull Map<String, Object> parameters) {
         this.URI = URI;
+
+        for (Map.Entry<String, Object> parameter : parameters.entrySet()) {
+            this.parameters.put(parameter.getKey(), String.valueOf(parameter.getValue()));
+        }
+
+        start();
+        try {
+            join();
+        } catch (Exception error) {
+            error.printStackTrace();
+        }
     }
 
     @Override
@@ -56,7 +68,7 @@ public class ThreadRequest extends Thread {
 
                     String line;
                     while ((line = http.readLine()) != null) {
-                        if (line.length() != 0) {
+                        if (!line.isEmpty()) {
                             response.append(line);
                         }
                     }

@@ -1,17 +1,20 @@
 package com.yeungjin.translogic.layout.setting;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.layout.CommonFragment;
-import com.yeungjin.translogic.utility.Server;
+import com.yeungjin.translogic.layout.login.LoginLayout;
 import com.yeungjin.translogic.utility.ContactNumber;
+import com.yeungjin.translogic.utility.Server;
 import com.yeungjin.translogic.utility.Session;
 
 public class SettingLayout extends CommonFragment {
@@ -19,8 +22,11 @@ public class SettingLayout extends CommonFragment {
     private TextView name;
     private TextView username;
     private TextView company;
-    private TextView contactNumber;
+    private TextView contact_number;
     private TextView email;
+    private LinearLayout logout;
+
+    public Listener listener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -30,7 +36,7 @@ public class SettingLayout extends CommonFragment {
         Glide.with(image.getContext()).load(Server.IMAGE_URL + Session.user.EMPLOYEE_IMAGE).into(image);
         name.setText(Session.user.EMPLOYEE_NAME);
         username.setText(Session.user.EMPLOYEE_USERNAME);
-        contactNumber.setText(ContactNumber.parse(Session.user.EMPLOYEE_CONTACT_NUMBER));
+        contact_number.setText(ContactNumber.parse(Session.user.EMPLOYEE_CONTACT_NUMBER));
         email.setText(Session.user.EMPLOYEE_EMAIL);
 
         image.setClipToOutline(true);
@@ -44,12 +50,28 @@ public class SettingLayout extends CommonFragment {
         name = view.findViewById(R.id.layout_setting_setting__name);
         username = view.findViewById(R.id.layout_setting_setting__username);
         company = view.findViewById(R.id.layout_setting_setting__company);
-        contactNumber = view.findViewById(R.id.layout_setting_setting__contact_number);
+        contact_number = view.findViewById(R.id.layout_setting_setting__contact_number);
         email = view.findViewById(R.id.layout_setting_setting__email);
+        logout = view.findViewById(R.id.layout_setting_setting__logout);
     }
 
     @Override
     protected void setListener() {
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), LoginLayout.class);
+                intent.putExtra("logout", true);
+                startActivity(intent);
 
+                if (listener != null) {
+                    listener.exit();
+                }
+            }
+        });
+    }
+
+    public interface Listener {
+        void exit();
     }
 }

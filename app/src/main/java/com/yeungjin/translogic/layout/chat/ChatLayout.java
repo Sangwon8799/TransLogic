@@ -68,7 +68,7 @@ public class ChatLayout extends CommonFragment {
 
     @Override
     protected void setAdapter() {
-        chat_adapter = new ChatAdapter(requireActivity().getApplicationContext());
+        chat_adapter = new ChatAdapter(requireContext());
 
         chat_list.setLayoutManager(new LinearLayoutManager(view.getContext()));
         chat_list.setAdapter(chat_adapter);

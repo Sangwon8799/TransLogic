@@ -9,23 +9,24 @@ import android.util.TypedValue;
 import androidx.annotation.NonNull;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BitmapTranslator {
-    private BitmapTranslator() { }
+public class Image {
+    private Image() { }
 
     public static String toBase64(@NonNull Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
-
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 60, outputStream);
         byte[] bytes = outputStream.toByteArray();
+
         return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
     @NonNull
     public static Bitmap toBitmap(@NonNull String base64) {
-        byte[] bytes = new byte[0];
+        byte[] bytes = null;
 
         try {
             bytes = Base64.decode(base64, Base64.DEFAULT);
@@ -33,7 +34,7 @@ public class BitmapTranslator {
             error.printStackTrace();
         }
 
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        return BitmapFactory.decodeByteArray(bytes, 0, Objects.requireNonNull(bytes).length);
     }
 
     public static boolean isImage(@NonNull String content) {

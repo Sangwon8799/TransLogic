@@ -13,17 +13,17 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.object.EMPLOYEE_GROUP;
-import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.employee.GetGroupRequest;
-import com.yeungjin.translogic.request.employee.GetGroupThread;
-import com.yeungjin.translogic.utility.Json;
+import com.yeungjin.translogic.utility.DBVolley;
+import com.yeungjin.translogic.utility.DBThread;
 import com.yeungjin.translogic.utility.Session;
 
-import org.json.JSONObject;
+import java.util.HashMap;
 
 public class GroupEditAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupEditAdapter.ViewHolder> {
-    public GroupEditAdapter(Context context) {
-        super(context, new GetGroupThread(Session.user.EMPLOYEE_NUMBER));
+    public GroupEditAdapter(@NonNull Context context) {
+        super(context, new DBThread("GetGroup", new HashMap<String, Object>() {{
+            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+        }}));
     }
 
     @NonNull
@@ -35,7 +35,7 @@ public class GroupEditAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupEdi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EMPLOYEE_GROUP group = DATA.get(position);
+        EMPLOYEE_GROUP group = data.get(position);
 
         holder.name.setText(group.EMPLOYEE_GROUP_NAME);
         holder.rename.setOnClickListener(new View.OnClickListener() {
@@ -53,20 +53,10 @@ public class GroupEditAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupEdi
     }
 
     @Override
-    protected int getResponse(@NonNull String response) throws Exception {
-        array = new JSONObject(response).getJSONArray("group");
-        for (int index = 0; index < array.length(); index++) {
-            object = array.getJSONObject(index);
-            DATA.add(Json.from(object, EMPLOYEE_GROUP.class));
-        }
-
-        return array.length();
-    }
-
-    @Override
     public void reload() {
-        Request request = new GetGroupRequest(Session.user.EMPLOYEE_NUMBER, new ReloadListener());
-        Request.sendRequest(CONTEXT, request);
+        new DBVolley(context, "GetGroup", new HashMap<String, Object>() {{
+            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+        }}, new ReloadListener());
     }
 
     @Override
@@ -85,9 +75,9 @@ public class GroupEditAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupEdi
 
         @Override
         protected void setId() {
-            name = VIEW.findViewById(R.id.adapter_employee_group_edit_list__name);
-            rename = VIEW.findViewById(R.id.adapter_employee_group_edit_list__rename);
-            remove = VIEW.findViewById(R.id.adapter_employee_group_edit_list__remove);
+            name = view.findViewById(R.id.adapter_employee_group_edit_list__name);
+            rename = view.findViewById(R.id.adapter_employee_group_edit_list__rename);
+            remove = view.findViewById(R.id.adapter_employee_group_edit_list__remove);
         }
     }
 }

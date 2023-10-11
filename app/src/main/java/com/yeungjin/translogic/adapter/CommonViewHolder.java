@@ -6,11 +6,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class CommonViewHolder extends RecyclerView.ViewHolder {
-    protected final View VIEW;
+    protected final View view;
 
-    public CommonViewHolder(@NonNull View VIEW) {
-        super(VIEW);
-        this.VIEW = VIEW;
+    public CommonViewHolder(@NonNull View view) {
+        super(view);
+        this.view = view;
 
         setId();
         setAdapter();

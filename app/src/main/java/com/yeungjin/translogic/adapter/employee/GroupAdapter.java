@@ -12,13 +12,11 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.object.EMPLOYEE_GROUP;
-import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.employee.GetGroupThread;
-import com.yeungjin.translogic.request.employee.GetGroupRequest;
-import com.yeungjin.translogic.utility.Json;
+import com.yeungjin.translogic.utility.DBVolley;
+import com.yeungjin.translogic.utility.DBThread;
 import com.yeungjin.translogic.utility.Session;
 
-import org.json.JSONObject;
+import java.util.HashMap;
 
 public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter.ViewHolder> {
     private static final int UNSELECT = -1;
@@ -27,7 +25,9 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
     public Listener listener;
 
     public GroupAdapter(@NonNull Context context) {
-        super(context, new GetGroupThread(Session.user.EMPLOYEE_NUMBER));
+        super(context, new DBThread("GetGroup", new HashMap<String, Object>() {{
+            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+        }}));
     }
 
     @NonNull
@@ -39,7 +39,7 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EMPLOYEE_GROUP group = DATA.get(position);
+        EMPLOYEE_GROUP group = data.get(position);
 
         holder.group.setText(group.EMPLOYEE_GROUP_NAME);
         holder.group.setChecked(position == current_position);
@@ -70,22 +70,12 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
     }
 
     @Override
-    protected int getResponse(@NonNull String response) throws Exception {
-        array = new JSONObject(response).getJSONArray("group");
-        for (int index = 0; index < array.length(); index++) {
-            object = array.getJSONObject(index);
-            DATA.add(Json.from(object, EMPLOYEE_GROUP.class));
-        }
-
-        return array.length();
-    }
-
-    @Override
     public void reload() {
-        current_position = UNSELECT;
+        new DBVolley(context, "GetGroup", new HashMap<String, Object>() {{
+            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+        }}, new ReloadListener());
 
-        Request request = new GetGroupRequest(Session.user.EMPLOYEE_NUMBER, new ReloadListener());
-        Request.sendRequest(CONTEXT, request);
+        current_position = UNSELECT;
     }
 
     @Override
@@ -98,7 +88,7 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
     }
 
     public long getNumber() {
-        return DATA.get(current_position).EMPLOYEE_GROUP_NUMBER;
+        return data.get(current_position).EMPLOYEE_GROUP_NUMBER;
     }
 
     public static class ViewHolder extends CommonViewHolder {
@@ -110,7 +100,7 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
 
         @Override
         protected void setId() {
-            group = VIEW.findViewById(R.id.adapter_employee_group__name);
+            group = view.findViewById(R.id.adapter_employee_group__name);
         }
     }
 

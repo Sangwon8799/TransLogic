@@ -18,18 +18,13 @@ import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.layout.chat.RoomLayout;
 import com.yeungjin.translogic.object.CHAT;
 import com.yeungjin.translogic.object.MESSAGE;
-import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.chat.GetChatRequest;
-import com.yeungjin.translogic.request.chat.GetChatThread;
-import com.yeungjin.translogic.request.chat.GetSearchedChatRequest;
-import com.yeungjin.translogic.request.chat.GetUnreadCountRequest;
-import com.yeungjin.translogic.utility.Json;
+import com.yeungjin.translogic.utility.DBVolley;
+import com.yeungjin.translogic.utility.DBThread;
 import com.yeungjin.translogic.utility.Server;
 import com.yeungjin.translogic.utility.Session;
 
-import org.json.JSONObject;
-
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder> {
@@ -38,7 +33,10 @@ public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder>
     public Listener listener;
 
     public ChatAdapter(@NonNull Context context) {
-        super(context, new GetChatThread(Session.user.EMPLOYEE_NUMBER));
+        super(context, new DBThread("GetChat", new HashMap<String, Object>() {{
+            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+            put("index", 0);
+        }}));
     }
 
     @NonNull
@@ -50,13 +48,16 @@ public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CHAT chat = DATA.get(position);
+        CHAT chat = data.get(position);
 
         Glide.with(holder.image.getContext()).load(Server.IMAGE_URL + chat.CHAT_IMAGE).into(holder.image);
         holder.title.setText(chat.CHAT_TITLE);
         holder.content.setText(chat.CHAT_LAST_CONTENT.equals("null") ? null : chat.CHAT_LAST_CONTENT);
         holder.time.setText(FORMAT.format(chat.CHAT_LAST_CONTENT_ENROLL_DATE));
-        Request request = new GetUnreadCountRequest(chat.CHAT_NUMBER, Session.user.EMPLOYEE_NUMBER, new Response.Listener<String>() {
+        new DBVolley(context, "GetUnreadCount", new HashMap<String, Object>() {{
+            put("chat_number", chat.CHAT_NUMBER);
+            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+        }}, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 int unread_count = Integer.parseInt(response.trim());
@@ -69,51 +70,50 @@ public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder>
                 holder.unread_count.setText(response.trim());
             }
         });
-        Request.sendRequest(CONTEXT, request);
         // (10.09 22:45) 채팅목록에서 검색시 VolleyRequest 응답 대기로 인한 데이터 갱신이 느려지므로 코드 수정이 필요
     }
 
     @Override
-    protected int getResponse(@NonNull String response) throws Exception {
-        array = new JSONObject(response).getJSONArray("chat");
-        for (int index = 0; index < array.length(); index++) {
-            object = array.getJSONObject(index);
-            DATA.add(Json.from(object, CHAT.class));
-        }
-        return array.length();
-    }
-
-    @Override
     public void reload() {
-        Request request = new GetChatRequest(Session.user.EMPLOYEE_NUMBER, 0, new ReloadListener());
-        Request.sendRequest(CONTEXT, request);
+        new DBVolley(context, "GetChat", new HashMap<String, Object>() {{
+            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+            put("index", 0);
+        }}, new ReloadListener());
     }
 
     @Override
     public void load() {
-        Request request = new GetChatRequest(Session.user.EMPLOYEE_NUMBER, DATA.size(), new LoadListener());
-        Request.sendRequest(CONTEXT, request);
+        new DBVolley(context, "GetChat", new HashMap<String, Object>() {{
+            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+            put("index", data.size());
+        }}, new LoadListener());
     }
 
     public void reload(CharSequence search) {
-        Request request = new GetSearchedChatRequest(Session.user.EMPLOYEE_NUMBER, 0, search.toString(), new ReloadListener());
-        Request.sendRequest(CONTEXT, request);
+        new DBVolley(context, "GetSearchedChat", new HashMap<String, Object>() {{
+            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+            put("index", 0);
+            put("search", search);
+        }}, new ReloadListener());
     }
 
     public void load(CharSequence search) {
-        Request request = new GetSearchedChatRequest(Session.user.EMPLOYEE_NUMBER, DATA.size(), search.toString(), new LoadListener());
-        Request.sendRequest(CONTEXT, request);
+        new DBVolley(context, "GetSearchedChat", new HashMap<String, Object>() {{
+            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+            put("index", data.size());
+            put("search", search);
+        }}, new LoadListener());
     }
 
     public void refresh(MESSAGE message) {
-        for (int index = 0; index < DATA.size(); index++) {
-            if (DATA.get(index).CHAT_NUMBER == message.MESSAGE_CHAT_NUMBER) {
-                CHAT chat = DATA.get(index);
+        for (int index = 0; index < data.size(); index++) {
+            if (data.get(index).CHAT_NUMBER == message.MESSAGE_CHAT_NUMBER) {
+                CHAT chat = data.get(index);
                 chat.CHAT_LAST_CONTENT = message.MESSAGE_CONTENT;
                 chat.CHAT_LAST_CONTENT_ENROLL_DATE = message.MESSAGE_ENROLL_DATE;
 
-                DATA.remove(index);
-                DATA.add(0, chat);
+                data.remove(index);
+                data.add(0, chat);
 
                 notifyItemMoved(index, 0);
                 notifyItemChanged(0);
@@ -137,23 +137,23 @@ public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder>
 
         @Override
         protected void setId() {
-            image = VIEW.findViewById(R.id.adapter_chat_chat__image);
-            title = VIEW.findViewById(R.id.adapter_chat_chat__title);
-            content = VIEW.findViewById(R.id.adapter_chat_chat__content);
-            time = VIEW.findViewById(R.id.adapter_chat_chat__time);
-            unread_count = VIEW.findViewById(R.id.adapter_chat_chat__unread_count);
+            image = view.findViewById(R.id.adapter_chat_chat__image);
+            title = view.findViewById(R.id.adapter_chat_chat__title);
+            content = view.findViewById(R.id.adapter_chat_chat__content);
+            time = view.findViewById(R.id.adapter_chat_chat__time);
+            unread_count = view.findViewById(R.id.adapter_chat_chat__unread_count);
         }
 
         @Override
         protected void setListener() {
-            VIEW.setOnClickListener(new View.OnClickListener() {
+            view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
-                        Session.entered_chat.CHAT_NUMBER = DATA.get(getAdapterPosition()).CHAT_NUMBER;
-                        Session.entered_chat.CHAT_TITLE = DATA.get(getAdapterPosition()).CHAT_TITLE;
+                        Session.entered_chat.CHAT_NUMBER = data.get(getAdapterPosition()).CHAT_NUMBER;
+                        Session.entered_chat.CHAT_TITLE = data.get(getAdapterPosition()).CHAT_TITLE;
 
-                        Intent intent = new Intent(VIEW.getContext(), RoomLayout.class);
+                        Intent intent = new Intent(view.getContext(), RoomLayout.class);
                         listener.click(intent, getAdapterPosition());
                     }
                 }

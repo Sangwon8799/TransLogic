@@ -6,28 +6,38 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Response;
-import com.yeungjin.translogic.request.ThreadRequest;
+import com.yeungjin.translogic.utility.DBThread;
+import com.yeungjin.translogic.utility.Json;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
+
+import java.lang.reflect.ParameterizedType;
+import java.util.Objects;
 
 public abstract class CommonListAdapter<OBJECT, ViewHolder extends RecyclerView.ViewHolder> extends CommonAdapter<OBJECT, ViewHolder> {
-    protected JSONObject object;
-    protected JSONArray array;
+    private final Class<OBJECT> type;
 
-    public CommonListAdapter(@NonNull Context context, @NonNull ThreadRequest request) {
+    @SuppressWarnings("unchecked")
+    public CommonListAdapter(@NonNull Context context, @NonNull DBThread request) {
         super(context);
+        this.type = (Class<OBJECT>) ((ParameterizedType) Objects.requireNonNull(getClass().getGenericSuperclass())).getActualTypeArguments()[0];
 
-        request.start();
+        notifyItemRangeInserted(0, addData(request.getResponse()));
+    }
+
+    private int addData(String response) {
+        JSONArray json = null;
         try {
-            request.join();
-            notifyItemRangeInserted(0, getResponse(request.getResponse()));
+            json = new JSONArray(response);
+            for (int index = 0; index < json.length(); index++) {
+                data.add(Json.from(json.getJSONObject(index), type));
+            }
         } catch (Exception error) {
             error.printStackTrace();
         }
-    }
 
-    protected abstract int getResponse(@NonNull String response) throws Exception;
+        return Objects.requireNonNull(json).length();
+    }
 
     public abstract void reload();
 
@@ -36,22 +46,18 @@ public abstract class CommonListAdapter<OBJECT, ViewHolder extends RecyclerView.
     public class ReloadListener implements Response.Listener<String> {
         @Override
         public void onResponse(String response) {
-            try {
-                int old_size = DATA.size();
-                DATA.clear();
-                int new_size = getResponse(response);
+            int old_size = data.size();
+            data.clear();
+            int new_size = addData(response);
 
-                if (old_size > new_size) {
-                    notifyItemRangeChanged(0, new_size);
-                    notifyItemRangeRemoved(new_size, old_size - new_size);
-                } else if (old_size < new_size) {
-                    notifyItemRangeChanged(0, old_size);
-                    notifyItemRangeInserted(old_size, new_size - old_size);
-                } else {
-                    notifyItemRangeChanged(0, new_size);
-                }
-            } catch (Exception error) {
-                error.printStackTrace();
+            if (old_size > new_size) {
+                notifyItemRangeChanged(0, new_size);
+                notifyItemRangeRemoved(new_size, old_size - new_size);
+            } else if (old_size < new_size) {
+                notifyItemRangeChanged(0, old_size);
+                notifyItemRangeInserted(old_size, new_size - old_size);
+            } else {
+                notifyItemRangeChanged(0, new_size);
             }
         }
     }
@@ -59,11 +65,7 @@ public abstract class CommonListAdapter<OBJECT, ViewHolder extends RecyclerView.
     public class LoadListener implements Response.Listener<String> {
         @Override
         public void onResponse(String response) {
-            try {
-                notifyItemRangeInserted(DATA.size(), getResponse(response));
-            } catch (Exception error) {
-                error.printStackTrace();
-            }
+            notifyItemRangeInserted(data.size(), addData(response));
         }
     }
 }

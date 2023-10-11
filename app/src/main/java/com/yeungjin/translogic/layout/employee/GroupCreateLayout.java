@@ -23,8 +23,9 @@ import com.yeungjin.translogic.adapter.employee.GroupCreateSelectedAdapter;
 import com.yeungjin.translogic.adapter.employee.GroupCreateUnselectedAdapter;
 import com.yeungjin.translogic.layout.CommonBottomSheetDialogFragment;
 import com.yeungjin.translogic.object.EMPLOYEE;
-import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.employee.InsertGroupMemberRequest;
+import com.yeungjin.translogic.utility.DBVolley;
+
+import java.util.HashMap;
 
 public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
     private TextView create;
@@ -81,8 +82,10 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
                         public void create(long group_number) {
                             try {
                                 for (long employee_number : selected_adapter.getNumbers()) {
-                                    Request request = new InsertGroupMemberRequest(group_number, employee_number);
-                                    Request.sendRequest(view.getContext(), request);
+                                    new DBVolley(view.getContext(), "InsertGroupMember", new HashMap<String, Object>() {{
+                                        put("group_number", group_number);
+                                        put("employee_number", employee_number);
+                                    }});
                                 }
 
                                 Toast.makeText(view.getContext(), "그룹이 생성되었습니다!", Toast.LENGTH_SHORT).show();

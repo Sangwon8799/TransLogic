@@ -17,10 +17,10 @@ import androidx.annotation.Nullable;
 import com.android.volley.Response;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.layout.CommonActivity;
-import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.login.IsUsernameUniqueRequest;
-import com.yeungjin.translogic.request.login.SubmitRequest;
+import com.yeungjin.translogic.utility.DBVolley;
 import com.yeungjin.translogic.utility.Session;
+
+import java.util.HashMap;
 
 public class SignupLayout extends CommonActivity {
     private ScrollView information;
@@ -84,7 +84,9 @@ public class SignupLayout extends CommonActivity {
                         username.setLayoutParams(params);
                     }
 
-                    IsUsernameUniqueRequest request = new IsUsernameUniqueRequest(username, new Response.Listener<String>() {
+                    new DBVolley(getApplicationContext(), "IsUsernameUnique", new HashMap<String, Object>() {{
+                        put("username", username);
+                    }}, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             if (response.contains("true")) {
@@ -98,7 +100,6 @@ public class SignupLayout extends CommonActivity {
                             }
                         }
                     });
-                    Request.sendRequest(getApplicationContext(), request);
                 }
             }
         });
@@ -177,7 +178,14 @@ public class SignupLayout extends CommonActivity {
                     Toast.makeText(getApplicationContext(), "비밀번호를 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
                     password_confirm.requestFocus();
                 } else {
-                    SubmitRequest request = new SubmitRequest(name, username, password, contact_number, email, company, new Response.Listener<String>() {
+                    new DBVolley(getApplicationContext(), "Submit", new HashMap<String, Object>() {{
+                        put("name", name);
+                        put("username", username);
+                        put("password", password);
+                        put("contact_number", contact_number);
+                        put("email", email);
+                        put("company", company);
+                    }}, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             if (response.contains("true")) {
@@ -188,7 +196,6 @@ public class SignupLayout extends CommonActivity {
                             }
                         }
                     });
-                    Request.sendRequest(getApplicationContext(), request);
                 }
             }
         });

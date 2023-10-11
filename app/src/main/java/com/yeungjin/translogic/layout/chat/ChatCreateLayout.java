@@ -23,8 +23,10 @@ import com.yeungjin.translogic.adapter.chat.ChatCreateSelectedAdapter;
 import com.yeungjin.translogic.adapter.chat.ChatCreateUnselectedAdapter;
 import com.yeungjin.translogic.layout.CommonBottomSheetDialogFragment;
 import com.yeungjin.translogic.object.EMPLOYEE;
-import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.chat.InsertChatMemberRequest;
+import com.yeungjin.translogic.utility.DBVolley;
+import com.yeungjin.translogic.utility.Session;
+
+import java.util.HashMap;
 
 public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
     private TextView create;
@@ -80,14 +82,20 @@ public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
                         @Override
                         public void create(long chat_number) {
                             for (long employee_number : selected_adapter.getNumbers()) {
-                                Request request = new InsertChatMemberRequest(chat_number, employee_number);
-                                Request.sendRequest(view.getContext(), request);
+                                new DBVolley(view.getContext(), "InsertChatMember", new HashMap<String, Object>() {{
+                                    put("chat_number", chat_number);
+                                    put("employee_number", employee_number);
+                                }});
                             }
+
+                            Session.socket.emit("JOIN", chat_number);
 
                             Toast.makeText(view.getContext(), "채팅방이 생성되었습니다!", Toast.LENGTH_SHORT).show();
                             if (listener != null) {
                                 listener.load();
                             }
+
+                            Session.socket.emit("JOIN", chat_number);
 
                             dismiss();
                             dialog.dismiss();

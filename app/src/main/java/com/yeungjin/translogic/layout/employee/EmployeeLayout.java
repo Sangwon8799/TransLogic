@@ -21,9 +21,10 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.employee.EmployeeAdapter;
 import com.yeungjin.translogic.adapter.employee.GroupAdapter;
 import com.yeungjin.translogic.layout.CommonFragment;
-import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.employee.IsGroupMaxRequest;
+import com.yeungjin.translogic.utility.DBVolley;
 import com.yeungjin.translogic.utility.Session;
+
+import java.util.HashMap;
 
 public class EmployeeLayout extends CommonFragment {
     private EditText search;
@@ -59,8 +60,8 @@ public class EmployeeLayout extends CommonFragment {
 
     @Override
     protected void setAdapter() {
-        employee_adapter = new EmployeeAdapter(requireActivity().getApplicationContext());
-        group_adapter = new GroupAdapter(requireActivity().getApplicationContext());
+        employee_adapter = new EmployeeAdapter(requireContext());
+        group_adapter = new GroupAdapter(requireContext());
 
         employee_list.setLayoutManager(new LinearLayoutManager(view.getContext()));
         employee_list.setAdapter(employee_adapter);
@@ -108,7 +109,9 @@ public class EmployeeLayout extends CommonFragment {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getItemId() == R.id.layout_employee_employee__menu_icon__create) {
-                            Request request = new IsGroupMaxRequest(Session.user.EMPLOYEE_NUMBER, new Response.Listener<String>() {
+                            new DBVolley(getContext(), "IsGroupMax", new HashMap<String, Object>() {{
+                                put("employee_number", Session.user.EMPLOYEE_NUMBER);
+                            }}, new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
                                     if (response.contains("true")) {
@@ -117,6 +120,9 @@ public class EmployeeLayout extends CommonFragment {
                                             @Override
                                             public void load() {
                                                 group_adapter.reload();
+                                                if (group_list.getVisibility() == View.GONE) {
+                                                    group_list.setVisibility(View.VISIBLE);
+                                                }
                                             }
                                         };
                                         layout.show(getParentFragmentManager(), layout.getTag());
@@ -125,7 +131,6 @@ public class EmployeeLayout extends CommonFragment {
                                     }
                                 }
                             });
-                            Request.sendRequest(getContext(), request);
                         } else if (item.getItemId() == R.id.layout_employee_employee__menu_icon__edit) {
                             GroupEditLayout dialog = new GroupEditLayout(getContext());
                             dialog.show();

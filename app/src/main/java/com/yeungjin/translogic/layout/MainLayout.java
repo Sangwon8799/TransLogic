@@ -5,7 +5,6 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -19,7 +18,7 @@ import com.yeungjin.translogic.layout.setting.SettingLayout;
 import com.yeungjin.translogic.layout.task.TaskLayout;
 import com.yeungjin.translogic.utility.Session;
 
-public class MainLayout extends AppCompatActivity {
+public class MainLayout extends CommonActivity {
     private final Layout[] layouts = {
             new Layout(new EmployeeLayout(), R.id.layout_main__menu_icon__user),
             new Layout(new ChatLayout(), R.id.layout_main__menu_icon__chat),
@@ -28,6 +27,8 @@ public class MainLayout extends AppCompatActivity {
     };
     private final FragmentManager manager = getSupportFragmentManager();
     private FragmentTransaction transaction = manager.beginTransaction();
+
+    private BottomNavigationView menu;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,7 +41,25 @@ public class MainLayout extends AppCompatActivity {
         }
         transaction.show(layouts[0].layout).commit();
 
-        BottomNavigationView menu = (BottomNavigationView) findViewById(R.id.layout_main__menu);
+        init();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        for (long chat_number : Session.joined_chat) {
+            Session.socket.emit("LEAVE", chat_number);
+        }
+    }
+
+    @Override
+    protected void setId() {
+        menu = findViewById(R.id.layout_main__menu);
+    }
+
+    @Override
+    protected void setListener() {
         menu.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -58,15 +77,12 @@ public class MainLayout extends AppCompatActivity {
                 return true;
             }
         });
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        for (long chat_number : Session.joined_chat) {
-            Session.socket.emit("LEAVE", chat_number);
-        }
+        ((SettingLayout) layouts[3].layout).listener = new SettingLayout.Listener() {
+            @Override
+            public void exit() {
+                finish();
+            }
+        };
     }
 
     private static class Layout {

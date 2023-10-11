@@ -15,11 +15,15 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.object.EMPLOYEE;
-import com.yeungjin.translogic.request.employee.GetEmployeeThread;
+import com.yeungjin.translogic.utility.DBThread;
+
+import java.util.HashMap;
 
 public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter.ViewHolder> {
     public EmployeeAdapter(@NonNull Context context) {
-        super(context, new GetEmployeeThread());
+        super(context, new DBThread("GetEmployee", new HashMap<String, Object>() {{
+            put("index", 0);
+        }}));
     }
 
     @NonNull
@@ -32,11 +36,6 @@ public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-    }
-
-    @Override
-    public int getResponse(@NonNull String response) throws Exception {
-        return 0;
     }
 
     @Override
@@ -63,10 +62,10 @@ public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter
 
         @Override
         protected void setId() {
-            image = VIEW.findViewById(R.id.adapter_task_employee__image);
-            name = VIEW.findViewById(R.id.adapter_task_employee__name);
-            company = VIEW.findViewById(R.id.adapter_task_employee__company);
-            content = VIEW.findViewById(R.id.adapter_task_employee__content);
+            image = view.findViewById(R.id.adapter_task_employee__image);
+            name = view.findViewById(R.id.adapter_task_employee__name);
+            company = view.findViewById(R.id.adapter_task_employee__company);
+            content = view.findViewById(R.id.adapter_task_employee__content);
         }
     }
 }

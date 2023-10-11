@@ -2,6 +2,8 @@ package com.yeungjin.translogic.adapter.chat;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,16 +18,16 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.object.MESSAGE;
-import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.chat.GetMessageRequest;
-import com.yeungjin.translogic.request.chat.GetMessageThread;
-import com.yeungjin.translogic.utility.BitmapTranslator;
-import com.yeungjin.translogic.utility.Json;
+import com.yeungjin.translogic.utility.DBVolley;
+import com.yeungjin.translogic.utility.DBThread;
+import com.yeungjin.translogic.utility.Image;
+import com.yeungjin.translogic.utility.Server;
 import com.yeungjin.translogic.utility.Session;
 
-import org.json.JSONObject;
-
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHolder> {
@@ -38,7 +40,9 @@ public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHol
     public Listener listener;
 
     public RoomAdapter(@NonNull Context context) {
-        super(context, new GetMessageThread(Session.entered_chat.CHAT_NUMBER));
+        super(context, new DBThread("GetMessage", new HashMap<String, Object>() {{
+            put("chat_number", Session.entered_chat.CHAT_NUMBER);
+        }}));
     }
 
     @NonNull
@@ -61,7 +65,7 @@ public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        MESSAGE message = DATA.get(position);
+        MESSAGE message = data.get(position);
 
         if (holder instanceof NoticeViewHolder) {
             NoticeViewHolder notice = (NoticeViewHolder) holder;
@@ -71,19 +75,83 @@ public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHol
             OpponentViewHolder opponent = (OpponentViewHolder) holder;
 
             opponent.name.setText(message.MESSAGE_EMPLOYEE_NAME);
-            if (BitmapTranslator.isImage(message.MESSAGE_CONTENT)) {
-                opponent.content.setBackground(new BitmapDrawable(Resources.getSystem(), BitmapTranslator.toBitmap(message.MESSAGE_CONTENT)));
+            if (message.MESSAGE_CONTENT.startsWith("message_")) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            HttpURLConnection connection = (HttpURLConnection) new URL(Server.IMAGE_URL + message.MESSAGE_CONTENT).openConnection();
+
+                            if (connection != null) {
+                                connection.setConnectTimeout(10000);
+                                connection.setDoInput(true);
+
+                                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                                    Bitmap bitmap = BitmapFactory.decodeStream(connection.getInputStream());
+                                    opponent.content.setBackground(new BitmapDrawable(Resources.getSystem(), bitmap));
+                                    opponent.content.setText(null);
+                                    opponent.content.setOnClickListener(null);
+                                }
+                            }
+                        } catch (Exception error) {
+                            error.printStackTrace();
+                        }
+                    }
+                }).start();
+            } else if (Image.isImage(message.MESSAGE_CONTENT)) {
+                opponent.content.setBackground(new BitmapDrawable(Resources.getSystem(), Image.toBitmap(message.MESSAGE_CONTENT)));
+                opponent.content.setText(null);
+                opponent.content.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // 추후 추가
+                    }
+                });
             } else {
+                opponent.content.setBackgroundResource(R.drawable.adapter_chat_room_opponent__message_background);
                 opponent.content.setText(message.MESSAGE_CONTENT);
+                opponent.content.setOnClickListener(null);
             }
             opponent.time.setText(FORMAT.format(message.MESSAGE_ENROLL_DATE));
         } else {
             MyselfViewHolder myself = (MyselfViewHolder) holder;
 
-            if (BitmapTranslator.isImage(message.MESSAGE_CONTENT)) {
-                myself.content.setBackground(new BitmapDrawable(Resources.getSystem(), BitmapTranslator.toBitmap(message.MESSAGE_CONTENT)));
+            if (message.MESSAGE_CONTENT.startsWith("message_")) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            HttpURLConnection connection = (HttpURLConnection) new URL(Server.IMAGE_URL + message.MESSAGE_CONTENT).openConnection();
+
+                            if (connection != null) {
+                                connection.setConnectTimeout(10000);
+                                connection.setDoInput(true);
+
+                                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                                    Bitmap bitmap = BitmapFactory.decodeStream(connection.getInputStream());
+                                    myself.content.setBackground(new BitmapDrawable(Resources.getSystem(), bitmap));
+                                    myself.content.setText(null);
+                                    myself.content.setOnClickListener(null);
+                                }
+                            }
+                        } catch (Exception error) {
+                            error.printStackTrace();
+                        }
+                    }
+                }).start();
+            } else if (Image.isImage(message.MESSAGE_CONTENT)) {
+                myself.content.setBackground(new BitmapDrawable(Resources.getSystem(), Image.toBitmap(message.MESSAGE_CONTENT)));
+                myself.content.setText(null);
+                myself.content.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // 추후 추가
+                    }
+                });
             } else {
+                myself.content.setBackgroundResource(R.drawable.adapter_chat_room_myself__message_background);
                 myself.content.setText(message.MESSAGE_CONTENT);
+                myself.content.setOnClickListener(null);
             }
             myself.time.setText(FORMAT.format(message.MESSAGE_ENROLL_DATE));
         }
@@ -91,7 +159,7 @@ public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-        long employee_number = DATA.get(position).MESSAGE_EMPLOYEE_NUMBER;
+        long employee_number = data.get(position).MESSAGE_EMPLOYEE_NUMBER;
 
         if (employee_number == Session.user.EMPLOYEE_NUMBER) {
             return MYSELF;
@@ -101,33 +169,24 @@ public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHol
     }
 
     @Override
-    protected int getResponse(@NonNull String response) throws Exception {
-        array = new JSONObject(response).getJSONArray("message");
-        for (int index = 0; index < array.length(); index++) {
-            object = array.getJSONObject(index);
-            DATA.add(Json.from(object, MESSAGE.class));
-        }
-
-        return array.length();
-    }
-
-    @Override
     public void reload() {
         load();
     }
 
     @Override
     public void load() {
-        Request request = new GetMessageRequest(Session.entered_chat.CHAT_NUMBER, DATA.size(), new LoadListener());
-        Request.sendRequest(CONTEXT, request);
+        new DBVolley(context, "GetMessage", new HashMap<String, Object>() {{
+            put("chat_number", Session.entered_chat.CHAT_NUMBER);
+            put("index", data.size());
+        }}, new LoadListener());
     }
 
     public void addMessage(MESSAGE message) {
-        DATA.add(message);
-        notifyItemInserted(DATA.size() - 1);
+        data.add(message);
+        notifyItemInserted(data.size() - 1);
 
         if (listener != null) {
-            listener.scroll(DATA.size() - 1);
+            listener.scroll(data.size() - 1);
         }
     }
 
@@ -140,7 +199,7 @@ public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHol
 
         @Override
         protected void setId() {
-            content = VIEW.findViewById(R.id.adapter_chat_message_notice__notice);
+            content = view.findViewById(R.id.adapter_chat_message_notice__notice);
         }
     }
 
@@ -158,10 +217,10 @@ public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHol
 
         @Override
         protected void setId() {
-            image = VIEW.findViewById(R.id.adapter_chat_message_opponent__image);
-            name = VIEW.findViewById(R.id.adapter_chat_message_opponent__name);
-            content = VIEW.findViewById(R.id.adapter_chat_message_opponent__message);
-            time = VIEW.findViewById(R.id.adapter_chat_message_opponent__time);
+            image = view.findViewById(R.id.adapter_chat_message_opponent__image);
+            name = view.findViewById(R.id.adapter_chat_message_opponent__name);
+            content = view.findViewById(R.id.adapter_chat_message_opponent__message);
+            time = view.findViewById(R.id.adapter_chat_message_opponent__time);
         }
     }
 
@@ -175,8 +234,8 @@ public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHol
 
         @Override
         protected void setId() {
-            content = VIEW.findViewById(R.id.adapter_chat_message_myself__message);
-            time = VIEW.findViewById(R.id.adapter_chat_message_myself__time);
+            content = view.findViewById(R.id.adapter_chat_message_myself__message);
+            time = view.findViewById(R.id.adapter_chat_message_myself__time);
         }
     }
 

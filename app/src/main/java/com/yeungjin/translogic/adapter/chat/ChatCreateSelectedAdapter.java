@@ -35,14 +35,14 @@ public class ChatCreateSelectedAdapter extends CommonAdapter<EMPLOYEE, ChatCreat
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EMPLOYEE employee = DATA.get(position);
+        EMPLOYEE employee = data.get(position);
 
         Glide.with(holder.image.getContext()).load(Server.IMAGE_URL + employee.EMPLOYEE_IMAGE).into(holder.image);
         holder.remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    DATA.remove(employee);
+                    data.remove(employee);
                     listener.remove(employee.EMPLOYEE_NUMBER);
 
                     notifyItemRemoved(holder.getAdapterPosition());
@@ -55,7 +55,7 @@ public class ChatCreateSelectedAdapter extends CommonAdapter<EMPLOYEE, ChatCreat
     public ArrayList<Long> getNumbers() {
         ArrayList<Long> numbers = new ArrayList<>();
 
-        for (EMPLOYEE employee : DATA) {
+        for (EMPLOYEE employee : data) {
             numbers.add(employee.EMPLOYEE_NUMBER);
         }
 
@@ -63,10 +63,10 @@ public class ChatCreateSelectedAdapter extends CommonAdapter<EMPLOYEE, ChatCreat
     }
 
     public void check(EMPLOYEE employee) {
-        DATA.add(0, employee);
+        data.add(0, employee);
 
-        notifyItemInserted(DATA.size() - 1);
-        for (int index = DATA.size() - 2; index >= 0; index--) {
+        notifyItemInserted(data.size() - 1);
+        for (int index = data.size() - 2; index >= 0; index--) {
             notifyItemMoved(index, index + 1);
         }
 
@@ -76,9 +76,9 @@ public class ChatCreateSelectedAdapter extends CommonAdapter<EMPLOYEE, ChatCreat
     }
 
     public void uncheck(long employee_number) {
-        for (int index = 0; index < DATA.size(); index++) {
-            if (DATA.get(index).EMPLOYEE_NUMBER == employee_number) {
-                DATA.remove(index);
+        for (int index = 0; index < data.size(); index++) {
+            if (data.get(index).EMPLOYEE_NUMBER == employee_number) {
+                data.remove(index);
 
                 notifyItemRemoved(index);
                 break;
@@ -99,9 +99,9 @@ public class ChatCreateSelectedAdapter extends CommonAdapter<EMPLOYEE, ChatCreat
 
         @Override
         protected void setId() {
-            image = VIEW.findViewById(R.id.adapter_chat_chat_create_selected__image);
-            remove = VIEW.findViewById(R.id.adapter_chat_chat_create_selected__remove);
-            name = VIEW.findViewById(R.id.adapter_chat_chat_create_selected__name);
+            image = view.findViewById(R.id.adapter_chat_chat_create_selected__image);
+            remove = view.findViewById(R.id.adapter_chat_chat_create_selected__remove);
+            name = view.findViewById(R.id.adapter_chat_chat_create_selected__name);
         }
     }
 

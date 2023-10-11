@@ -27,12 +27,12 @@ import com.yeungjin.translogic.adapter.chat.RoomAdapter;
 import com.yeungjin.translogic.layout.CommonActivity;
 import com.yeungjin.translogic.object.CHAT;
 import com.yeungjin.translogic.object.MESSAGE;
-import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.chat.CreateMessageRequest;
-import com.yeungjin.translogic.request.chat.RefreshLastAccessRequest;
-import com.yeungjin.translogic.utility.BitmapTranslator;
+import com.yeungjin.translogic.utility.DBVolley;
+import com.yeungjin.translogic.utility.Image;
 import com.yeungjin.translogic.utility.Json;
 import com.yeungjin.translogic.utility.Session;
+
+import java.util.HashMap;
 
 import io.socket.emitter.Emitter;
 
@@ -49,7 +49,6 @@ public class RoomLayout extends CommonActivity {
     private RoomAdapter adapter;
 
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
-    private static final int MAX_SIZE = 512;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,8 +78,10 @@ public class RoomLayout extends CommonActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        Request request = new RefreshLastAccessRequest(Session.entered_chat.CHAT_NUMBER, Session.user.EMPLOYEE_NUMBER);
-        Request.sendRequest(getApplicationContext(), request);
+        new DBVolley(getApplicationContext(), "RefreshLastAccess", new HashMap<String, Object>() {{
+            put("chat_number", Session.entered_chat.CHAT_NUMBER);
+            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+        }});
 
         Session.entered_chat = new CHAT();
     }
@@ -125,6 +126,7 @@ public class RoomLayout extends CommonActivity {
             @Override
             public void onClick(View v) {
                 pickMedia.launch(new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build());
+                content.clearFocus();
             }
         });
         send.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +137,13 @@ public class RoomLayout extends CommonActivity {
                 if (!_content.isEmpty()) {
                     MESSAGE message = new MESSAGE(Session.entered_chat.CHAT_NUMBER, Session.user.EMPLOYEE_NUMBER, Session.user.EMPLOYEE_NAME, _content);
                     sendMessage(message);
+
+                    new DBVolley(getApplicationContext(), "CreateMessage", new HashMap<String, Object>() {{
+                        put("chat_number", message.MESSAGE_CHAT_NUMBER);
+                        put("employee_number", message.MESSAGE_EMPLOYEE_NUMBER);
+                        put("employee_name", message.MESSAGE_EMPLOYEE_NAME);
+                        put("content", message.MESSAGE_CONTENT);
+                    }});
 
                     content.setText(null);
                 }
@@ -166,17 +175,21 @@ public class RoomLayout extends CommonActivity {
                     Ratio ratio = Ratio.getRatio(image);
                     Bitmap resized = Bitmap.createScaledBitmap(image, ratio.width, ratio.height, true);
 
-                    MESSAGE message = new MESSAGE(Session.entered_chat.CHAT_NUMBER, Session.user.EMPLOYEE_NUMBER, Session.user.EMPLOYEE_NAME, BitmapTranslator.toBase64(resized));
+                    MESSAGE message = new MESSAGE(Session.entered_chat.CHAT_NUMBER, Session.user.EMPLOYEE_NUMBER, Session.user.EMPLOYEE_NAME, Image.toBase64(resized));
                     sendMessage(message);
+
+                    new DBVolley(getApplicationContext(), "InsertChatImage", new HashMap<String, Object>() {{
+                        put("chat_number", Session.entered_chat.CHAT_NUMBER);
+                        put("employee_number", Session.user.EMPLOYEE_NUMBER);
+                        put("employee_name", Session.user.EMPLOYEE_NAME);
+                        put("base64", Image.toBase64(resized));
+                    }});
                 }
             }
         });
     }
 
     private void sendMessage(@NonNull MESSAGE message) {
-        Request request = new CreateMessageRequest(message);
-        Request.sendRequest(getApplicationContext(), request);
-
         Session.socket.emit("SEND_MESSAGE", Json.to(message));
         adapter.addMessage(message);
     }
@@ -191,6 +204,7 @@ public class RoomLayout extends CommonActivity {
         public static Ratio getRatio(@NonNull Bitmap image) {
             Ratio ratio = new Ratio();
 
+            final int MAX_SIZE = Math.min(Math.max(image.getWidth(), image.getHeight()), image.getWidth() > image.getHeight() ? 512 : 1024);
             int result = Math.min(image.getWidth(), image.getHeight()) * MAX_SIZE / Math.max(image.getWidth(), image.getHeight());
 
             if (image.getWidth() >= image.getHeight()) {

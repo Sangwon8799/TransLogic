@@ -10,9 +10,10 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.layout.CommonDialog;
-import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.chat.CreateChatRequest;
+import com.yeungjin.translogic.utility.DBVolley;
 import com.yeungjin.translogic.utility.Session;
+
+import java.util.HashMap;
 
 public class ChatCreateCreateLayout extends CommonDialog {
     private TextView create;
@@ -40,7 +41,10 @@ public class ChatCreateCreateLayout extends CommonDialog {
                 String _title = title.getText().toString();
 
                 if (!_title.isEmpty()) {
-                    Request request = new CreateChatRequest(_title, Session.user.EMPLOYEE_NUMBER, new Response.Listener<String>() {
+                    new DBVolley(context, "CreateChat", new HashMap<String, Object>() {{
+                        put("title", _title);
+                        put("employee_number", Session.user.EMPLOYEE_NUMBER);
+                    }}, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             if (!response.contains("null")) {
@@ -52,7 +56,6 @@ public class ChatCreateCreateLayout extends CommonDialog {
                             }
                         }
                     });
-                    Request.sendRequest(context, request);
                 }
             }
         });

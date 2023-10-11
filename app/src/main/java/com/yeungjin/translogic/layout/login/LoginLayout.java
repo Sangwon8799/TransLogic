@@ -19,15 +19,14 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.layout.CommonActivity;
 import com.yeungjin.translogic.layout.MainLayout;
 import com.yeungjin.translogic.object.EMPLOYEE;
-import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.ThreadRequest;
-import com.yeungjin.translogic.request.chat.GetJoinedChatRequest;
-import com.yeungjin.translogic.request.login.GetSessionRequest;
-import com.yeungjin.translogic.request.login.LoginRequest;
+import com.yeungjin.translogic.utility.DBVolley;
+import com.yeungjin.translogic.utility.DBThread;
 import com.yeungjin.translogic.utility.Json;
 import com.yeungjin.translogic.utility.Session;
 
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class LoginLayout extends CommonActivity {
     private EditText username;
@@ -50,11 +49,16 @@ public class LoginLayout extends CommonActivity {
         Session.height = metrics.heightPixels;
 
         preferences = getSharedPreferences("auto_login", Activity.MODE_PRIVATE);
-        String _username = preferences.getString("username", null);
-        String _password = preferences.getString("password", null);
 
-        if (_username != null && _password != null) {
-            login(_username, _password);
+        if (getIntent().getBooleanExtra("logout", false)) {
+            preferences.edit().clear().apply();
+        } else {
+            String _username = preferences.getString("username", null);
+            String _password = preferences.getString("password", null);
+
+            if (_username != null && _password != null) {
+                login(_username, _password);
+            }
         }
     }
 
@@ -118,29 +122,24 @@ public class LoginLayout extends CommonActivity {
     }
 
     private void login(String username, String password) {
-        Request request = new LoginRequest(username, password, new Response.Listener<String>() {
+        new DBVolley(getApplicationContext(), "Login", new HashMap<String, Object>() {{
+            put("username", username);
+            put("password", password);
+        }}, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (response.contains("true")) {
                     Toast.makeText(getApplicationContext(), "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show();
 
-                    ThreadRequest request = new GetSessionRequest(username);
-                    request.start();
                     try {
-                        request.join();
-
-                        JSONObject object = new JSONObject(request.getResponse()).getJSONObject("user");
+                        JSONObject object = new JSONObject(new DBThread("GetSession", new HashMap<String, Object>() {{
+                            put("username", username);
+                        }}).getResponse());
                         Session.user = Json.from(object, EMPLOYEE.class);
-                    } catch (Exception error) {
-                        error.printStackTrace();
-                    }
 
-                    request = new GetJoinedChatRequest(Session.user.EMPLOYEE_NUMBER);
-                    request.start();
-                    try {
-                        request.join();
-
-                        String[] chat_numbers = request.getResponse().trim().split(",");
+                        String[] chat_numbers = new DBThread("GetJoinedChat", new HashMap<String, Object>() {{
+                            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+                        }}).getResponse().trim().split(",");
                         for (String chat_number : chat_numbers) {
                             long _chat_number = Long.parseLong(chat_number.trim());
 
@@ -159,6 +158,5 @@ public class LoginLayout extends CommonActivity {
                 }
             }
         });
-        Request.sendRequest(getApplicationContext(), request);
     }
 }

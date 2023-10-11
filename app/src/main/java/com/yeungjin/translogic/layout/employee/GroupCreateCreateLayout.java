@@ -10,10 +10,10 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.layout.CommonDialog;
-import com.yeungjin.translogic.request.Request;
-import com.yeungjin.translogic.request.employee.CreateGroupRequest;
-import com.yeungjin.translogic.request.employee.IsGroupNameUniqueRequest;
+import com.yeungjin.translogic.utility.DBVolley;
 import com.yeungjin.translogic.utility.Session;
+
+import java.util.HashMap;
 
 public class GroupCreateCreateLayout extends CommonDialog {
     private TextView create;
@@ -41,11 +41,17 @@ public class GroupCreateCreateLayout extends CommonDialog {
                 String _name = name.getText().toString();
 
                 if (!_name.isEmpty()) {
-                    Request request = new IsGroupNameUniqueRequest(_name, Session.user.EMPLOYEE_NUMBER, new Response.Listener<String>() {
+                    new DBVolley(context, "IsGroupNameUnique", new HashMap<String, Object>() {{
+                        put("name", _name);
+                        put("employee_number", Session.user.EMPLOYEE_NUMBER);
+                    }}, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             if (response.contains("true")) {
-                                Request request = new CreateGroupRequest(_name, Session.user.EMPLOYEE_NUMBER, new Response.Listener<String>() {
+                                new DBVolley(context, "CreateGroup", new HashMap<String, Object>() {{
+                                    put("name", _name);
+                                    put("employee_number", Session.user.EMPLOYEE_NUMBER);
+                                }}, new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
                                         if (!response.contains("null")) {
@@ -57,14 +63,12 @@ public class GroupCreateCreateLayout extends CommonDialog {
                                         }
                                     }
                                 });
-                                Request.sendRequest(context, request);
                             } else {
                                 Toast.makeText(view.getContext(), "이미 존재하는 그룹명입니다. 다른 이름으로 변경해주세요.", Toast.LENGTH_SHORT).show();
                                 name.requestFocus();
                             }
                         }
                     });
-                    Request.sendRequest(context, request);
                 }
             }
         });

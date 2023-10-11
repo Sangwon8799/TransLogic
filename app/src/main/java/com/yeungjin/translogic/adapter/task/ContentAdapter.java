@@ -40,8 +40,8 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
 
         @Override
         protected void setId() {
-            content = VIEW.findViewById(R.id.adapter_task_content__content);
-            request = VIEW.findViewById(R.id.adapter_task_content__request);
+            content = view.findViewById(R.id.adapter_task_content__content);
+            request = view.findViewById(R.id.adapter_task_content__request);
         }
     }
 }
