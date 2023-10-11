@@ -15,7 +15,7 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.object.EMPLOYEE;
-import com.yeungjin.translogic.utility.DBThread;
+import com.yeungjin.translogic.server.DBThread;
 
 import java.util.HashMap;
 

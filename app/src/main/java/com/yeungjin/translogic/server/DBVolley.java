@@ -1,4 +1,4 @@
-package com.yeungjin.translogic.utility;
+package com.yeungjin.translogic.server;
 
 import android.content.Context;
 

@@ -18,9 +18,9 @@ import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.layout.chat.RoomLayout;
 import com.yeungjin.translogic.object.CHAT;
 import com.yeungjin.translogic.object.MESSAGE;
-import com.yeungjin.translogic.utility.DBVolley;
-import com.yeungjin.translogic.utility.DBThread;
-import com.yeungjin.translogic.utility.Server;
+import com.yeungjin.translogic.server.DBVolley;
+import com.yeungjin.translogic.server.DBThread;
+import com.yeungjin.translogic.server.Server;
 import com.yeungjin.translogic.utility.Session;
 
 import java.text.SimpleDateFormat;

@@ -23,7 +23,7 @@ import com.yeungjin.translogic.adapter.chat.ChatCreateSelectedAdapter;
 import com.yeungjin.translogic.adapter.chat.ChatCreateUnselectedAdapter;
 import com.yeungjin.translogic.layout.CommonBottomSheetDialogFragment;
 import com.yeungjin.translogic.object.EMPLOYEE;
-import com.yeungjin.translogic.utility.DBVolley;
+import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.utility.Session;
 
 import java.util.HashMap;

@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.layout.CommonDialog;
-import com.yeungjin.translogic.utility.DBVolley;
+import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.utility.Session;
 
 import java.util.HashMap;

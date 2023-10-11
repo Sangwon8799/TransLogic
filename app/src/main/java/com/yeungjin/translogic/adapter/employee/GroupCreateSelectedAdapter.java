@@ -15,7 +15,7 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.CommonAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.object.EMPLOYEE;
-import com.yeungjin.translogic.utility.Server;
+import com.yeungjin.translogic.server.Server;
 
 import java.util.ArrayList;
 

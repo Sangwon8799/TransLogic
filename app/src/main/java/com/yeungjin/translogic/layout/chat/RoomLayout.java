@@ -27,7 +27,7 @@ import com.yeungjin.translogic.adapter.chat.RoomAdapter;
 import com.yeungjin.translogic.layout.CommonActivity;
 import com.yeungjin.translogic.object.CHAT;
 import com.yeungjin.translogic.object.MESSAGE;
-import com.yeungjin.translogic.utility.DBVolley;
+import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.utility.Image;
 import com.yeungjin.translogic.utility.Json;
 import com.yeungjin.translogic.utility.Session;

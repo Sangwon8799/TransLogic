@@ -1,8 +1,6 @@
-package com.yeungjin.translogic.utility;
+package com.yeungjin.translogic.server;
 
 import androidx.annotation.NonNull;
-
-import com.yeungjin.translogic.utility.Server;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

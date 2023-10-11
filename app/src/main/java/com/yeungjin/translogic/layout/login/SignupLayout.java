@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import com.android.volley.Response;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.layout.CommonActivity;
-import com.yeungjin.translogic.utility.DBVolley;
+import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.utility.Session;
 
 import java.util.HashMap;

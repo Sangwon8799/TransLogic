@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Response;
-import com.yeungjin.translogic.utility.DBThread;
+import com.yeungjin.translogic.server.DBThread;
 import com.yeungjin.translogic.utility.Json;
 
 import org.json.JSONArray;
