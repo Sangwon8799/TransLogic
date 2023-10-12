@@ -15,22 +15,22 @@ import com.yeungjin.translogic.utility.Session;
 
 import java.util.HashMap;
 
-public class GroupCreateCreateLayout extends CommonDialog {
+public class GroupCreateSubmitLayout extends CommonDialog {
     private TextView create;
     private EditText name;
 
     public Listener listener;
 
-    public GroupCreateCreateLayout(Context context) {
+    public GroupCreateSubmitLayout(Context context) {
         super(context);
-        setContentView(R.layout.layout_employee_group_create_create);
+        setContentView(R.layout.layout_employee_group_create_submit);
         init(8, WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
     @Override
     protected void setId() {
-        create = findViewById(R.id.layout_employee_group_create_create__create);
-        name = findViewById(R.id.layout_employee_group_create_create__name);
+        create = findViewById(R.id.layout_employee_group_create_submit__create);
+        name = findViewById(R.id.layout_employee_group_create_submit__name);
     }
 
     @Override

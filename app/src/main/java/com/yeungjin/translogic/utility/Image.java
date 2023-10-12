@@ -14,6 +14,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Image {
+    private static final String JPEG = "/9j/4AAQSkZJRgABAQAAAQABAAD/[A-Za-z0-9]";
+
     private Image() { }
 
     public static String toBase64(@NonNull Bitmap bitmap) {
@@ -38,7 +40,7 @@ public class Image {
     }
 
     public static boolean isImage(@NonNull String content) {
-        Pattern pattern = Pattern.compile("/9j/4AAQSkZJRgABAQAAAQABAAD/[A-Za-z0-9]", Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile(JPEG, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(content);
 
         return matcher.find();

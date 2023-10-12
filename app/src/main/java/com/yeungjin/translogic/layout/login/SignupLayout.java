@@ -178,13 +178,13 @@ public class SignupLayout extends CommonActivity {
                     Toast.makeText(getApplicationContext(), "비밀번호를 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
                     password_confirm.requestFocus();
                 } else {
-                    new DBVolley(getApplicationContext(), "Submit", new HashMap<String, Object>() {{
-                        put("name", name);
-                        put("username", username);
-                        put("password", password);
-                        put("contact_number", contact_number);
-                        put("email", email);
-                        put("company", company);
+                    new DBVolley(getApplicationContext(), "Signup", new HashMap<String, Object>() {{
+                        put("name", name.getText());
+                        put("username", username.getText());
+                        put("password", password.getText());
+                        put("contact_number", contact_number.getText());
+                        put("email", email.getText());
+                        put("company", company.getText());
                     }}, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {

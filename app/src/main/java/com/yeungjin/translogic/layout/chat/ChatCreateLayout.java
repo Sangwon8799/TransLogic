@@ -19,8 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yeungjin.translogic.R;
-import com.yeungjin.translogic.adapter.chat.ChatCreateSelectedAdapter;
-import com.yeungjin.translogic.adapter.chat.ChatCreateUnselectedAdapter;
+import com.yeungjin.translogic.adapter.chat.ChatCreateAdapter;
 import com.yeungjin.translogic.layout.CommonBottomSheetDialogFragment;
 import com.yeungjin.translogic.object.EMPLOYEE;
 import com.yeungjin.translogic.server.DBVolley;
@@ -35,8 +34,8 @@ public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
     private RecyclerView selected_list;
     private RecyclerView unselected_list;
 
-    private ChatCreateSelectedAdapter selected_adapter;
-    private ChatCreateUnselectedAdapter unselected_adapter;
+    private ChatCreateAdapter.SelectedAdapter selected_adapter;
+    private ChatCreateAdapter.UnselectedAdapter unselected_adapter;
 
     public Listener listener;
 
@@ -60,8 +59,8 @@ public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
 
     @Override
     protected void setAdapter() {
-        selected_adapter = new ChatCreateSelectedAdapter(requireActivity().getApplicationContext());
-        unselected_adapter = new ChatCreateUnselectedAdapter(requireActivity().getApplicationContext());
+        selected_adapter = new ChatCreateAdapter.SelectedAdapter(requireContext());
+        unselected_adapter = new ChatCreateAdapter.UnselectedAdapter(requireContext());
 
         selected_list.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         selected_list.setAdapter(selected_adapter);
@@ -77,11 +76,11 @@ public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
             @Override
             public void onClick(View view) {
                 if (selected_adapter.getItemCount() != 0) {
-                    ChatCreateCreateLayout dialog = new ChatCreateCreateLayout(view.getContext());
-                    dialog.listener = new ChatCreateCreateLayout.Listener() {
+                    ChatCreateSubmitLayout dialog = new ChatCreateSubmitLayout(view.getContext());
+                    dialog.listener = new ChatCreateSubmitLayout.Listener() {
                         @Override
                         public void create(long chat_number) {
-                            for (long employee_number : selected_adapter.getNumbers()) {
+                            for (long employee_number : selected_adapter.getNumber()) {
                                 new DBVolley(view.getContext(), "InsertChatMember", new HashMap<String, Object>() {{
                                     put("chat_number", chat_number);
                                     put("employee_number", employee_number);
@@ -130,7 +129,7 @@ public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
                 search.setText(null);
             }
         });
-        selected_adapter.listener = new ChatCreateSelectedAdapter.Listener() {
+        selected_adapter.listener = new ChatCreateAdapter.SelectedAdapter.Listener() {
             @Override
             public void remove(long employee_number) {
                 if (selected_adapter.getItemCount() == 0) {
@@ -144,7 +143,7 @@ public class ChatCreateLayout extends CommonBottomSheetDialogFragment {
                 selected_list.scrollToPosition(0);
             }
         };
-        unselected_adapter.listener = new ChatCreateUnselectedAdapter.Listener() {
+        unselected_adapter.listener = new ChatCreateAdapter.UnselectedAdapter.Listener() {
             @Override
             public void check(EMPLOYEE employee) {
                 if (selected_list.getVisibility() == View.GONE) {

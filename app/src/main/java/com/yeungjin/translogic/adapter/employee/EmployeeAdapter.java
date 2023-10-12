@@ -59,35 +59,35 @@ public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter
     }
 
     public void reload(CharSequence search) {
-        new DBVolley(context, "GetSearchedEmployee", new HashMap<String, Object>() {{
+        new DBVolley(context, "GetEmployee", new HashMap<String, Object>() {{
             put("index", 0);
             put("search", search);
         }}, new ReloadListener());
     }
 
     public void load(CharSequence search) {
-        new DBVolley(context, "GetSearchedEmployee", new HashMap<String, Object>() {{
+        new DBVolley(context, "GetEmployee", new HashMap<String, Object>() {{
             put("index", data.size());
             put("search", search);
         }}, new LoadListener());
     }
 
     public void reload(long group_number) {
-        new DBVolley(context, "GetGroupedEmployee", new HashMap<String, Object>() {{
+        new DBVolley(context, "GetEmployee", new HashMap<String, Object>() {{
             put("group_number", group_number);
             put("index", 0);
         }}, new ReloadListener());
     }
 
     public void load(long group_number) {
-        new DBVolley(context, "GetGroupedEmployee", new HashMap<String, Object>() {{
+        new DBVolley(context, "GetEmployee", new HashMap<String, Object>() {{
             put("group_number", group_number);
             put("index", data.size());
         }}, new LoadListener());
     }
 
     public void reload(long group_number, CharSequence search) {
-        new DBVolley(context, "GetGroupedSearchedEmployee", new HashMap<String, Object>() {{
+        new DBVolley(context, "GetEmployee", new HashMap<String, Object>() {{
             put("group_number", group_number);
             put("index", 0);
             put("search", search);
@@ -95,7 +95,7 @@ public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter
     }
 
     public void load(long group_number, CharSequence search) {
-        new DBVolley(context, "GetGroupedSearchedEmployee", new HashMap<String, Object>() {{
+        new DBVolley(context, "GetEmployee", new HashMap<String, Object>() {{
             put("group_number", group_number);
             put("index", data.size());
             put("search", search);

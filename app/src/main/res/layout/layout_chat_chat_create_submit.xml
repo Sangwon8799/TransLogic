@@ -17,10 +17,10 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="20sp"
-            android:text="그룹명 설정" />
+            android:text="채팅방 이름 설정" />
 
         <TextView
-            android:id="@+id/layout_employee_group_create_create__create"
+            android:id="@+id/layout_chat_chat_create_submit__create"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -46,11 +46,11 @@
         android:text="이름" />
 
     <EditText
-        android:id="@+id/layout_employee_group_create_create__name"
+        android:id="@+id/layout_chat_chat_create_submit__title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="14sp"
-        android:hint="생성할 그룹명을 설정해주세요." />
+        android:hint="생성할 채팅방 이름을 설정해주세요." />
 
 </LinearLayout>

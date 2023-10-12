@@ -15,22 +15,22 @@ import com.yeungjin.translogic.utility.Session;
 
 import java.util.HashMap;
 
-public class ChatCreateCreateLayout extends CommonDialog {
+public class ChatCreateSubmitLayout extends CommonDialog {
     private TextView create;
     private EditText title;
 
     public Listener listener;
 
-    public ChatCreateCreateLayout(Context context) {
+    public ChatCreateSubmitLayout(Context context) {
         super(context);
-        setContentView(R.layout.layout_chat_chat_create_create);
+        setContentView(R.layout.layout_chat_chat_create_submit);
         init(8, WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
     @Override
     protected void setId() {
-        create = findViewById(R.id.layout_chat_chat_create_create__create);
-        title = findViewById(R.id.layout_chat_chat_create_create__title);
+        create = findViewById(R.id.layout_chat_chat_create_submit__create);
+        title = findViewById(R.id.layout_chat_chat_create_submit__title);
     }
 
     @Override

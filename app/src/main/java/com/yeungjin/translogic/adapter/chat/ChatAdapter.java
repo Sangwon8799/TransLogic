@@ -90,7 +90,7 @@ public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder>
     }
 
     public void reload(CharSequence search) {
-        new DBVolley(context, "GetSearchedChat", new HashMap<String, Object>() {{
+        new DBVolley(context, "GetChat", new HashMap<String, Object>() {{
             put("employee_number", Session.user.EMPLOYEE_NUMBER);
             put("index", 0);
             put("search", search);
@@ -98,7 +98,7 @@ public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder>
     }
 
     public void load(CharSequence search) {
-        new DBVolley(context, "GetSearchedChat", new HashMap<String, Object>() {{
+        new DBVolley(context, "GetChat", new HashMap<String, Object>() {{
             put("employee_number", Session.user.EMPLOYEE_NUMBER);
             put("index", data.size());
             put("search", search);

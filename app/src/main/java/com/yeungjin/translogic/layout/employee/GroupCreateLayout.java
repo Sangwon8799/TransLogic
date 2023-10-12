@@ -19,8 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yeungjin.translogic.R;
-import com.yeungjin.translogic.adapter.employee.GroupCreateSelectedAdapter;
-import com.yeungjin.translogic.adapter.employee.GroupCreateUnselectedAdapter;
+import com.yeungjin.translogic.adapter.employee.GroupCreateAdapter;
 import com.yeungjin.translogic.layout.CommonBottomSheetDialogFragment;
 import com.yeungjin.translogic.object.EMPLOYEE;
 import com.yeungjin.translogic.server.DBVolley;
@@ -34,8 +33,8 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
     private RecyclerView selected_list;
     private RecyclerView unselected_list;
 
-    private GroupCreateSelectedAdapter selected_adapter;
-    private GroupCreateUnselectedAdapter unselected_adapter;
+    private GroupCreateAdapter.SelectedAdapter selected_adapter;
+    private GroupCreateAdapter.UnselectedAdapter unselected_adapter;
 
     public Listener listener;
 
@@ -59,8 +58,8 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
 
     @Override
     protected void setAdapter() {
-        selected_adapter = new GroupCreateSelectedAdapter(requireActivity().getApplicationContext());
-        unselected_adapter = new GroupCreateUnselectedAdapter(requireActivity().getApplicationContext());
+        selected_adapter = new GroupCreateAdapter.SelectedAdapter(requireContext());
+        unselected_adapter = new GroupCreateAdapter.UnselectedAdapter(requireContext());
 
         selected_list.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         selected_list.setAdapter(selected_adapter);
@@ -76,12 +75,12 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
             @Override
             public void onClick(View view) {
                 if (selected_adapter.getItemCount() != 0) {
-                    GroupCreateCreateLayout dialog = new GroupCreateCreateLayout(view.getContext());
-                    dialog.listener = new GroupCreateCreateLayout.Listener() {
+                    GroupCreateSubmitLayout dialog = new GroupCreateSubmitLayout(view.getContext());
+                    dialog.listener = new GroupCreateSubmitLayout.Listener() {
                         @Override
                         public void create(long group_number) {
                             try {
-                                for (long employee_number : selected_adapter.getNumbers()) {
+                                for (long employee_number : selected_adapter.getNumber()) {
                                     new DBVolley(view.getContext(), "InsertGroupMember", new HashMap<String, Object>() {{
                                         put("group_number", group_number);
                                         put("employee_number", employee_number);
@@ -129,7 +128,7 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
                 search.setText(null);
             }
         });
-        selected_adapter.listener = new GroupCreateSelectedAdapter.Listener() {
+        selected_adapter.listener = new GroupCreateAdapter.SelectedAdapter.Listener() {
             @Override
             public void remove(long employee_number) {
                 if (selected_adapter.getItemCount() == 0) {
@@ -143,7 +142,7 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
                 selected_list.scrollToPosition(0);
             }
         };
-        unselected_adapter.listener = new GroupCreateUnselectedAdapter.Listener() {
+        unselected_adapter.listener = new GroupCreateAdapter.UnselectedAdapter.Listener() {
             @Override
             public void check(EMPLOYEE employee) {
                 if (selected_list.getVisibility() == View.GONE) {
