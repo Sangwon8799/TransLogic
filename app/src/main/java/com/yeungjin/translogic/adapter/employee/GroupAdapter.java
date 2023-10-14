@@ -26,7 +26,7 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
 
     public GroupAdapter(@NonNull Context context) {
         super(context, new DBThread("GetGroup", new HashMap<String, Object>() {{
-            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+            put("employee_number", Session.USER.EMPLOYEE_NUMBER);
         }}));
     }
 
@@ -72,7 +72,7 @@ public class GroupAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupAdapter
     @Override
     public void reload() {
         new DBVolley(context, "GetGroup", new HashMap<String, Object>() {{
-            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+            put("employee_number", Session.USER.EMPLOYEE_NUMBER);
         }}, new ReloadListener());
 
         current_position = UNSELECT;

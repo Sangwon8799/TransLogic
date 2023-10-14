@@ -25,6 +25,7 @@ import com.yeungjin.translogic.object.EMPLOYEE;
 import com.yeungjin.translogic.server.DBVolley;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
     private TextView create;
@@ -88,9 +89,7 @@ public class GroupCreateLayout extends CommonBottomSheetDialogFragment {
                                 }
 
                                 Toast.makeText(view.getContext(), "그룹이 생성되었습니다!", Toast.LENGTH_SHORT).show();
-                                if (listener != null) {
-                                    listener.load();
-                                }
+                                Objects.requireNonNull(listener).load();
 
                                 dismiss();
                                 dialog.dismiss();

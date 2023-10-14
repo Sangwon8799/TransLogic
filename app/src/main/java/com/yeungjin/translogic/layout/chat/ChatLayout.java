@@ -21,8 +21,11 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.chat.ChatAdapter;
 import com.yeungjin.translogic.layout.CommonFragment;
 import com.yeungjin.translogic.object.MESSAGE;
+import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.utility.Json;
 import com.yeungjin.translogic.utility.Session;
+
+import java.util.HashMap;
 
 import io.socket.emitter.Emitter;
 
@@ -40,7 +43,7 @@ public class ChatLayout extends CommonFragment {
         view = inflater.inflate(R.layout.layout_chat_chat, container, false);
         init();
 
-        Session.socket.on("GET_MESSAGE", new Emitter.Listener() {
+        Session.socket.on("get_message", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 MESSAGE message = Json.from(args[0], MESSAGE.class);
@@ -51,6 +54,14 @@ public class ChatLayout extends CommonFragment {
                         chat_adapter.refresh(message);
                     }
                 });
+            }
+        });
+        Session.socket.on("invite_chat", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Session.socket.emit("joined_chat", args[0]);
+                chat_adapter.getUnreadCount(Long.parseLong(String.valueOf(args[0])));
+                chat_adapter.reload();
             }
         });
 
@@ -132,6 +143,12 @@ public class ChatLayout extends CommonFragment {
             @Override
             public void click(Intent intent, int position) {
                 startActivity(intent);
+
+                new DBVolley(requireContext(), "RefreshLastAccess", new HashMap<String, Object>() {{
+                    put("chat_number", Session.CHAT.CHAT_NUMBER);
+                    put("employee_number", Session.USER.EMPLOYEE_NUMBER);
+                }});
+
                 chat_adapter.notifyItemChanged(position);
             }
         };

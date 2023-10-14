@@ -12,7 +12,7 @@
         android:paddingVertical="10dp">
 
         <ImageView
-            android:id="@+id/adapter_chat_message_opponent__image"
+            android:id="@+id/adapter_chat_room_opponent__image"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="10dp"
@@ -22,11 +22,11 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/adapter_chat_message_opponent__image"
+            android:layout_toEndOf="@id/adapter_chat_room_opponent__image"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/adapter_chat_message_opponent__name"
+                android:id="@+id/adapter_chat_room_opponent__name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
@@ -36,23 +36,24 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/adapter_chat_message_opponent__message"
+                android:id="@+id/adapter_chat_room_opponent__message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/adapter_chat_message_opponent__name"
+                android:layout_below="@id/adapter_chat_room_opponent__name"
                 android:background="@drawable/adapter_chat_room_opponent__message_background"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="6dp"
                 android:textColor="@color/black"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:text="내용" />
 
             <TextView
-                android:id="@+id/adapter_chat_message_opponent__time"
+                android:id="@+id/adapter_chat_room_opponent__time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/adapter_chat_message_opponent__message"
+                android:layout_alignBottom="@id/adapter_chat_room_opponent__message"
                 android:layout_marginStart="4dp"
-                android:layout_toEndOf="@id/adapter_chat_message_opponent__message"
+                android:layout_toEndOf="@id/adapter_chat_room_opponent__message"
                 android:text="10:00"
                 android:textColor="@color/white"
                 android:textSize="12sp" />

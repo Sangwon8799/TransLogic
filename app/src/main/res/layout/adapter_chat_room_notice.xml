@@ -7,12 +7,12 @@
     android:gravity="center">
 
     <TextView
-        android:id="@+id/adapter_chat_message_notice__notice"
+        android:id="@+id/adapter_chat_room_notice__notice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingVertical="2dp"
         android:paddingHorizontal="12dp"
-        android:background="@drawable/adapter_chat_message_notice__notice_background"
+        android:background="@drawable/adapter_chat_room_notice__notice_background"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:textSize="13sp"

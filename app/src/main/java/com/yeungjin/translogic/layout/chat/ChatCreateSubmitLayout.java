@@ -14,6 +14,7 @@ import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.utility.Session;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class ChatCreateSubmitLayout extends CommonDialog {
     private TextView create;
@@ -43,14 +44,12 @@ public class ChatCreateSubmitLayout extends CommonDialog {
                 if (!_title.isEmpty()) {
                     new DBVolley(context, "CreateChat", new HashMap<String, Object>() {{
                         put("title", _title);
-                        put("employee_number", Session.user.EMPLOYEE_NUMBER);
+                        put("employee_number", Session.USER.EMPLOYEE_NUMBER);
                     }}, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             if (!response.contains("null")) {
-                                if (listener != null) {
-                                    listener.create(Long.parseLong(response.trim()));
-                                }
+                                Objects.requireNonNull(listener).create(Long.parseLong(response.trim()));
                             } else {
                                 Toast.makeText(view.getContext(), "채팅 만들기에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                             }

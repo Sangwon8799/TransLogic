@@ -3,20 +3,17 @@ package com.yeungjin.translogic.utility;
 import com.yeungjin.translogic.object.CHAT;
 import com.yeungjin.translogic.object.EMPLOYEE;
 
-import java.util.ArrayList;
-
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
 public class Session {
-    public static EMPLOYEE user;
-    public static CHAT entered_chat = new CHAT();
-    public static ArrayList<Long> joined_chat = new ArrayList<>();
-
-    public static Socket socket;
+    public static EMPLOYEE USER;
+    public static CHAT CHAT;
 
     public static int width;
     public static int height;
+
+    public static Socket socket;
 
     static {
         try {

@@ -19,21 +19,22 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/adapter_chat_message_myself__message"
+                android:id="@+id/adapter_chat_room_myself__message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/adapter_chat_message_myself__time"
+                android:layout_toEndOf="@id/adapter_chat_room_myself__time"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="6dp"
                 android:background="@drawable/adapter_chat_room_myself__message_background"
                 android:textColor="@color/white"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:text="내용" />
 
             <TextView
-                android:id="@+id/adapter_chat_message_myself__time"
+                android:id="@+id/adapter_chat_room_myself__time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/adapter_chat_message_myself__message"
+                android:layout_alignBottom="@id/adapter_chat_room_myself__message"
                 android:layout_marginEnd="4dp"
                 android:textColor="@color/white"
                 android:textSize="12sp"

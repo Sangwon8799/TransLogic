@@ -43,14 +43,14 @@ public class GroupCreateSubmitLayout extends CommonDialog {
                 if (!_name.isEmpty()) {
                     new DBVolley(context, "IsGroupNameUnique", new HashMap<String, Object>() {{
                         put("name", _name);
-                        put("employee_number", Session.user.EMPLOYEE_NUMBER);
+                        put("employee_number", Session.USER.EMPLOYEE_NUMBER);
                     }}, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             if (response.contains("true")) {
                                 new DBVolley(context, "CreateGroup", new HashMap<String, Object>() {{
                                     put("name", _name);
-                                    put("employee_number", Session.user.EMPLOYEE_NUMBER);
+                                    put("employee_number", Session.USER.EMPLOYEE_NUMBER);
                                 }}, new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {

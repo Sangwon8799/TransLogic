@@ -22,14 +22,14 @@ import java.util.HashMap;
 public class GroupEditAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupEditAdapter.ViewHolder> {
     public GroupEditAdapter(@NonNull Context context) {
         super(context, new DBThread("GetGroup", new HashMap<String, Object>() {{
-            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+            put("employee_number", Session.USER.EMPLOYEE_NUMBER);
         }}));
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_employee_group_edit_list, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_employee_group_edit, parent, false);
         return new ViewHolder(view);
     }
 
@@ -55,7 +55,7 @@ public class GroupEditAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupEdi
     @Override
     public void reload() {
         new DBVolley(context, "GetGroup", new HashMap<String, Object>() {{
-            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+            put("employee_number", Session.USER.EMPLOYEE_NUMBER);
         }}, new ReloadListener());
     }
 
@@ -75,9 +75,9 @@ public class GroupEditAdapter extends CommonListAdapter<EMPLOYEE_GROUP, GroupEdi
 
         @Override
         protected void setId() {
-            name = view.findViewById(R.id.adapter_employee_group_edit_list__name);
-            rename = view.findViewById(R.id.adapter_employee_group_edit_list__rename);
-            remove = view.findViewById(R.id.adapter_employee_group_edit_list__remove);
+            name = view.findViewById(R.id.adapter_employee_group_edit__name);
+            rename = view.findViewById(R.id.adapter_employee_group_edit__rename);
+            remove = view.findViewById(R.id.adapter_employee_group_edit__remove);
         }
     }
 }

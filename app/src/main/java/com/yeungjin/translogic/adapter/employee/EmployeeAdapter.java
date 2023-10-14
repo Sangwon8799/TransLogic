@@ -18,12 +18,14 @@ import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.server.DBThread;
 import com.yeungjin.translogic.utility.ContactNumber;
 import com.yeungjin.translogic.server.Server;
+import com.yeungjin.translogic.utility.Session;
 
 import java.util.HashMap;
 
 public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter.ViewHolder> {
     public EmployeeAdapter(@NonNull Context context) {
         super(context, new DBThread("GetEmployee", new HashMap<String, Object>() {{
+            put("employee_number", Session.USER.EMPLOYEE_NUMBER);
             put("index", 0);
         }}));
     }
@@ -47,6 +49,7 @@ public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter
     @Override
     public void reload() {
         new DBVolley(context, "GetEmployee", new HashMap<String, Object>() {{
+            put("employee_number", Session.USER.EMPLOYEE_NUMBER);
             put("index", 0);
         }}, new ReloadListener());
     }
@@ -54,12 +57,14 @@ public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter
     @Override
     public void load() {
         new DBVolley(context, "GetEmployee", new HashMap<String, Object>() {{
+            put("employee_number", Session.USER.EMPLOYEE_NUMBER);
             put("index", data.size());
         }}, new LoadListener());
     }
 
     public void reload(CharSequence search) {
         new DBVolley(context, "GetEmployee", new HashMap<String, Object>() {{
+            put("employee_number", Session.USER.EMPLOYEE_NUMBER);
             put("index", 0);
             put("search", search);
         }}, new ReloadListener());
@@ -67,6 +72,7 @@ public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter
 
     public void load(CharSequence search) {
         new DBVolley(context, "GetEmployee", new HashMap<String, Object>() {{
+            put("employee_number", Session.USER.EMPLOYEE_NUMBER);
             put("index", data.size());
             put("search", search);
         }}, new LoadListener());

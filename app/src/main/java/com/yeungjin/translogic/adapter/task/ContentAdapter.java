@@ -1,5 +1,6 @@
 package com.yeungjin.translogic.adapter.task;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,12 +8,17 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.yeungjin.translogic.R;
+import com.yeungjin.translogic.adapter.CommonAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
+import com.yeungjin.translogic.object.TASK;
 
-public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHolder> {
+public class ContentAdapter extends CommonAdapter<TASK, ContentAdapter.ViewHolder> {
+    public ContentAdapter(@NonNull Context context) {
+        super(context);
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -23,11 +29,6 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-    }
-
-    @Override
-    public int getItemCount() {
-        return 0;
     }
 
     public static class ViewHolder extends CommonViewHolder {

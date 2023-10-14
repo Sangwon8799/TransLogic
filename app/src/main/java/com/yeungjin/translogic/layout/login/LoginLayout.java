@@ -19,8 +19,8 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.layout.CommonActivity;
 import com.yeungjin.translogic.layout.MainLayout;
 import com.yeungjin.translogic.object.EMPLOYEE;
-import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.server.DBThread;
+import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.utility.Json;
 import com.yeungjin.translogic.utility.Session;
 
@@ -135,16 +135,14 @@ public class LoginLayout extends CommonActivity {
                         JSONObject object = new JSONObject(new DBThread("GetSession", new HashMap<String, Object>() {{
                             put("username", username);
                         }}).getResponse());
-                        Session.user = Json.from(object, EMPLOYEE.class);
+                        Session.USER = Json.from(object, EMPLOYEE.class);
+                        Session.socket.emit("login", Session.USER.EMPLOYEE_NUMBER);
 
                         String[] chat_numbers = new DBThread("GetJoinedChat", new HashMap<String, Object>() {{
-                            put("employee_number", Session.user.EMPLOYEE_NUMBER);
-                        }}).getResponse().trim().split(",");
+                            put("employee_number", Session.USER.EMPLOYEE_NUMBER);
+                        }}).getResponse().split(",");
                         for (String chat_number : chat_numbers) {
-                            long _chat_number = Long.parseLong(chat_number.trim());
-
-                            Session.socket.emit("JOIN", _chat_number);
-                            Session.joined_chat.add(_chat_number);
+                            Session.socket.emit("joined_chat", Long.parseLong(chat_number.trim()));
                         }
                     } catch (Exception error) {
                         error.printStackTrace();

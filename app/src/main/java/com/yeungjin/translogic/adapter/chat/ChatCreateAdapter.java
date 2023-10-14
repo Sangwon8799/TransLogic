@@ -21,10 +21,12 @@ import com.yeungjin.translogic.server.DBThread;
 import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.server.Server;
 import com.yeungjin.translogic.utility.ContactNumber;
+import com.yeungjin.translogic.utility.Session;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class ChatCreateAdapter {
@@ -52,12 +54,9 @@ public class ChatCreateAdapter {
             holder.remove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (listener != null) {
-                        data.remove(employee);
-                        listener.remove(employee.EMPLOYEE_NUMBER);
-
-                        notifyItemRemoved(holder.getAdapterPosition());
-                    }
+                    data.remove(employee);
+                    Objects.requireNonNull(listener).remove(employee.EMPLOYEE_NUMBER);
+                    notifyItemRemoved(holder.getAdapterPosition());
                 }
             });
             holder.name.setText(employee.EMPLOYEE_NAME);
@@ -66,6 +65,7 @@ public class ChatCreateAdapter {
         public ArrayList<Long> getNumber() {
             ArrayList<Long> numbers = new ArrayList<>();
 
+            numbers.add(Session.USER.EMPLOYEE_NUMBER);
             for (EMPLOYEE employee : data) {
                 numbers.add(employee.EMPLOYEE_NUMBER);
             }
@@ -81,9 +81,7 @@ public class ChatCreateAdapter {
                 notifyItemMoved(index, index + 1);
             }
 
-            if (listener != null) {
-                listener.scroll();
-            }
+            Objects.requireNonNull(listener).scroll();
         }
 
         public void uncheck(long employee_number) {
@@ -129,6 +127,7 @@ public class ChatCreateAdapter {
 
         public UnselectedAdapter(@NonNull Context context) {
             super(context, new DBThread("GetEmployee", new HashMap<String, Object>() {{
+                put("employee_number", Session.USER.EMPLOYEE_NUMBER);
                 put("index", 0);
             }}));
         }
@@ -151,16 +150,10 @@ public class ChatCreateAdapter {
                 public void onClick(View view) {
                     if (((CheckBox) view).isChecked()) {
                         checked.add(employee.EMPLOYEE_NUMBER);
-
-                        if (listener != null) {
-                            listener.check(employee);
-                        }
+                        Objects.requireNonNull(listener).check(employee);
                     } else {
                         checked.remove(employee.EMPLOYEE_NUMBER);
-
-                        if (listener != null) {
-                            listener.uncheck(employee.EMPLOYEE_NUMBER);
-                        }
+                        Objects.requireNonNull(listener).uncheck(employee.EMPLOYEE_NUMBER);
                     }
                 }
             });
@@ -171,6 +164,7 @@ public class ChatCreateAdapter {
         @Override
         public void reload() {
             new DBVolley(context, "GetEmployee", new HashMap<String, Object>() {{
+                put("employee_number", Session.USER.EMPLOYEE_NUMBER);
                 put("index", 0);
             }}, new ReloadListener());
         }
@@ -178,12 +172,14 @@ public class ChatCreateAdapter {
         @Override
         public void load() {
             new DBVolley(context, "GetEmployee", new HashMap<String, Object>() {{
+                put("employee_number", Session.USER.EMPLOYEE_NUMBER);
                 put("index", 0);
             }}, new LoadListener());
         }
 
         public void reload(CharSequence search) {
             new DBVolley(context, "GetEmployee", new HashMap<String, Object>() {{
+                put("employee_number", Session.USER.EMPLOYEE_NUMBER);
                 put("index", 0);
                 put("search", search);
             }}, new ReloadListener());
@@ -191,6 +187,7 @@ public class ChatCreateAdapter {
 
         public void load(CharSequence search) {
             new DBVolley(context, "GetEmployee",new HashMap<String, Object>() {{
+                put("employee_number", Session.USER.EMPLOYEE_NUMBER);
                 put("index", 0);
                 put("search", search);
             }}, new ReloadListener());

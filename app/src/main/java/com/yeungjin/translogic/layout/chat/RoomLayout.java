@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.chat.RoomAdapter;
 import com.yeungjin.translogic.layout.CommonActivity;
-import com.yeungjin.translogic.object.CHAT;
 import com.yeungjin.translogic.object.MESSAGE;
 import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.utility.Image;
@@ -33,6 +32,7 @@ import com.yeungjin.translogic.utility.Json;
 import com.yeungjin.translogic.utility.Session;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 import io.socket.emitter.Emitter;
 
@@ -56,20 +56,22 @@ public class RoomLayout extends CommonActivity {
         setContentView(R.layout.layout_chat_room);
         init();
 
-        title.setText(Session.entered_chat.CHAT_TITLE);
+        title.setText(Session.CHAT.CHAT_TITLE);
         message_list.scrollToPosition(adapter.getItemCount() - 1);
 
-        Session.socket.on("GET_MESSAGE", new Emitter.Listener() {
+        Session.socket.on("get_message", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 MESSAGE message = Json.from(args[0], MESSAGE.class);
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.addMessage(message);
-                    }
-                });
+                if (message.MESSAGE_EMPLOYEE_NUMBER != Session.USER.EMPLOYEE_NUMBER) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.addMessage(message);
+                        }
+                    });
+                }
             }
         });
     }
@@ -79,11 +81,11 @@ public class RoomLayout extends CommonActivity {
         super.onDestroy();
 
         new DBVolley(getApplicationContext(), "RefreshLastAccess", new HashMap<String, Object>() {{
-            put("chat_number", Session.entered_chat.CHAT_NUMBER);
-            put("employee_number", Session.user.EMPLOYEE_NUMBER);
+            put("chat_number", Session.CHAT.CHAT_NUMBER);
+            put("employee_number", Session.USER.EMPLOYEE_NUMBER);
         }});
 
-        Session.entered_chat = new CHAT();
+        Session.CHAT = null;
     }
 
     @Override
@@ -135,7 +137,7 @@ public class RoomLayout extends CommonActivity {
                 String _content = content.getText().toString();
 
                 if (!_content.isEmpty()) {
-                    MESSAGE message = new MESSAGE(Session.entered_chat.CHAT_NUMBER, Session.user.EMPLOYEE_NUMBER, Session.user.EMPLOYEE_NAME, _content);
+                    MESSAGE message = new MESSAGE(Session.CHAT.CHAT_NUMBER, Session.USER.EMPLOYEE_NUMBER, Session.USER.EMPLOYEE_NAME, _content);
                     sendMessage(message);
 
                     new DBVolley(getApplicationContext(), "CreateMessage", new HashMap<String, Object>() {{
@@ -171,18 +173,17 @@ public class RoomLayout extends CommonActivity {
                         error.printStackTrace();
                     }
 
-                    assert image != null;
-                    Ratio ratio = Ratio.getRatio(image);
+                    Ratio ratio = Ratio.getRatio(Objects.requireNonNull(image));
                     Bitmap resized = Bitmap.createScaledBitmap(image, ratio.width, ratio.height, true);
 
-                    MESSAGE message = new MESSAGE(Session.entered_chat.CHAT_NUMBER, Session.user.EMPLOYEE_NUMBER, Session.user.EMPLOYEE_NAME, Image.toBase64(resized));
+                    MESSAGE message = new MESSAGE(Session.CHAT.CHAT_NUMBER, Session.USER.EMPLOYEE_NUMBER, Session.USER.EMPLOYEE_NAME, Image.toBase64(resized));
                     sendMessage(message);
 
-                    new DBVolley(getApplicationContext(), "InsertChatImage", new HashMap<String, Object>() {{
-                        put("chat_number", Session.entered_chat.CHAT_NUMBER);
-                        put("employee_number", Session.user.EMPLOYEE_NUMBER);
-                        put("employee_name", Session.user.EMPLOYEE_NAME);
-                        put("base64", Image.toBase64(resized));
+                    new DBVolley(getApplicationContext(), "CreateMessage", new HashMap<String, Object>() {{
+                        put("chat_number", message.MESSAGE_CHAT_NUMBER);
+                        put("employee_number", message.MESSAGE_EMPLOYEE_NUMBER);
+                        put("employee_name", message.MESSAGE_EMPLOYEE_NAME);
+                        put("base64", message.MESSAGE_CONTENT);
                     }});
                 }
             }
@@ -190,11 +191,13 @@ public class RoomLayout extends CommonActivity {
     }
 
     private void sendMessage(@NonNull MESSAGE message) {
-        Session.socket.emit("SEND_MESSAGE", Json.to(message));
+        Session.socket.emit("send_message", Json.to(message));
         adapter.addMessage(message);
     }
 
     private static class Ratio {
+        private static final int MAX_SIZE = 512;
+
         public int width;
         public int height;
 
@@ -204,15 +207,18 @@ public class RoomLayout extends CommonActivity {
         public static Ratio getRatio(@NonNull Bitmap image) {
             Ratio ratio = new Ratio();
 
-            final int MAX_SIZE = Math.min(Math.max(image.getWidth(), image.getHeight()), image.getWidth() > image.getHeight() ? 512 : 1024);
-            int result = Math.min(image.getWidth(), image.getHeight()) * MAX_SIZE / Math.max(image.getWidth(), image.getHeight());
+            int width = image.getWidth();
+            int height = image.getHeight();
 
-            if (image.getWidth() >= image.getHeight()) {
-                ratio.width = MAX_SIZE;
+            int max_size = Math.min(Math.max(width, height), width > height ? MAX_SIZE : MAX_SIZE * 2);
+            int result = Math.min(width, height) * max_size / Math.max(width, height);
+
+            if (width >= height) {
+                ratio.width = max_size;
                 ratio.height = result;
             } else {
                 ratio.width = result;
-                ratio.height = MAX_SIZE;
+                ratio.height = max_size;
             }
 
             return ratio;

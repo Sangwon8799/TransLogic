@@ -12,6 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        tools:listitem="@layout/adapter_employee_group_edit_list" />
+        tools:listitem="@layout/adapter_employee_group_edit" />
 
 </RelativeLayout>

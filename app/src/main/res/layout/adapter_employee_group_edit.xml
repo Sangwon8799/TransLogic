@@ -6,7 +6,7 @@
     android:paddingHorizontal="20dp">
 
     <TextView
-        android:id="@+id/adapter_employee_group_edit_list__name"
+        android:id="@+id/adapter_employee_group_edit__name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -16,22 +16,22 @@
         android:text="이름" />
 
     <ImageButton
-        android:id="@+id/adapter_employee_group_edit_list__rename"
+        android:id="@+id/adapter_employee_group_edit__rename"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toStartOf="@id/adapter_employee_group_edit_list__remove"
+        android:layout_toStartOf="@id/adapter_employee_group_edit__remove"
         android:layout_marginEnd="30dp"
         android:background="@android:color/transparent"
-        android:src="@drawable/adapter_employee_group_edit_list__rename_background" />
+        android:src="@drawable/adapter_employee_group_edit__rename_background" />
 
     <ImageButton
-        android:id="@+id/adapter_employee_group_edit_list__remove"
+        android:id="@+id/adapter_employee_group_edit__remove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:background="@android:color/transparent"
-        android:src="@drawable/adapter_employee_group_edit_list__remove_background" />
+        android:src="@drawable/adapter_employee_group_edit__remove_background" />
 
 </RelativeLayout>
