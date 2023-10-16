@@ -13,13 +13,10 @@ public abstract class CommonViewHolder extends RecyclerView.ViewHolder {
         this.view = view;
 
         setId();
-        setAdapter();
         setListener();
     }
 
     protected abstract void setId();
-
-    protected void setAdapter() { }
 
     protected void setListener() { }
 }

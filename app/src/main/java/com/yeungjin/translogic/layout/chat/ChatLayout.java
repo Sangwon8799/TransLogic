@@ -20,7 +20,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.chat.ChatAdapter;
 import com.yeungjin.translogic.layout.CommonFragment;
-import com.yeungjin.translogic.object.MESSAGE;
+import com.yeungjin.translogic.object.table.MESSAGE;
 import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.utility.Json;
 import com.yeungjin.translogic.utility.Session;

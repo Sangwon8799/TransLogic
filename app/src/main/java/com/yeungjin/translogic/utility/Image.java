@@ -49,4 +49,34 @@ public class Image {
     public static int dpToPx(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, Resources.getSystem().getDisplayMetrics());
     }
+
+    public static class Ratio {
+        public static final int MAX_SIZE = 512;
+
+        public int width;
+        public int height;
+
+        private Ratio() { }
+
+        @NonNull
+        public static Ratio getRatio(@NonNull Bitmap image) {
+            Ratio ratio = new Ratio();
+
+            int width = image.getWidth();
+            int height = image.getHeight();
+
+            int max_size = Math.min(Math.max(width, height), width > height ? MAX_SIZE : MAX_SIZE * 2);
+            int result = Math.min(width, height) * max_size / Math.max(width, height);
+
+            if (width >= height) {
+                ratio.width = max_size;
+                ratio.height = result;
+            } else {
+                ratio.width = result;
+                ratio.height = max_size;
+            }
+
+            return ratio;
+        }
+    }
 }

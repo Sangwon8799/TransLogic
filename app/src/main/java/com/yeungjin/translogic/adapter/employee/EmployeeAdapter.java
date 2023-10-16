@@ -13,16 +13,16 @@ import com.bumptech.glide.Glide;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
-import com.yeungjin.translogic.object.EMPLOYEE;
-import com.yeungjin.translogic.server.DBVolley;
+import com.yeungjin.translogic.object.view.EMPLOYEE_INFO;
 import com.yeungjin.translogic.server.DBThread;
-import com.yeungjin.translogic.utility.ContactNumber;
+import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.server.Server;
+import com.yeungjin.translogic.utility.ContactNumber;
 import com.yeungjin.translogic.utility.Session;
 
 import java.util.HashMap;
 
-public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter.ViewHolder> {
+public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE_INFO, EmployeeAdapter.ViewHolder> {
     public EmployeeAdapter(@NonNull Context context) {
         super(context, new DBThread("GetEmployee", new HashMap<String, Object>() {{
             put("employee_number", Session.USER.EMPLOYEE_NUMBER);
@@ -39,10 +39,11 @@ public class EmployeeAdapter extends CommonListAdapter<EMPLOYEE, EmployeeAdapter
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EMPLOYEE employee = data.get(position);
+        EMPLOYEE_INFO employee = data.get(position);
 
         Glide.with(holder.image.getContext()).load(Server.IMAGE_URL + employee.EMPLOYEE_IMAGE).into(holder.image);
         holder.name.setText(employee.EMPLOYEE_NAME);
+        holder.company.setText(employee.EMPLOYEE_COMPANY_NAME);
         holder.contact_number.setText(ContactNumber.parse(employee.EMPLOYEE_CONTACT_NUMBER));
     }
 

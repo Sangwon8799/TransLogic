@@ -15,7 +15,7 @@ public class DBVolley extends StringRequest {
     private final Map<String, String> parameters = new HashMap<>();
 
     public DBVolley(@NonNull Context context, String URI, @NonNull Map<String, Object> parameters, Response.Listener<String> listener) {
-        super(Method.POST, Server.URL + URI + ".db", listener != null ? listener : (String) -> { }, Throwable::printStackTrace);
+        super(Method.POST, Server.URL + URI + ".db", listener != null ? listener : String -> { }, Throwable::printStackTrace);
 
         for (Map.Entry<String, Object> parameter : parameters.entrySet()) {
             this.parameters.put(parameter.getKey(), String.valueOf(parameter.getValue()));

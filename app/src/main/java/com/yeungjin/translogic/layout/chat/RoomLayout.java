@@ -25,7 +25,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.chat.RoomAdapter;
 import com.yeungjin.translogic.layout.CommonActivity;
-import com.yeungjin.translogic.object.MESSAGE;
+import com.yeungjin.translogic.object.view.MESSAGE_INFO;
+import com.yeungjin.translogic.server.DBThread;
 import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.utility.Image;
 import com.yeungjin.translogic.utility.Json;
@@ -37,16 +38,18 @@ import java.util.Objects;
 import io.socket.emitter.Emitter;
 
 public class RoomLayout extends CommonActivity {
-    private DrawerLayout side;
+    private DrawerLayout menu;
+    private RecyclerView menu_list;
     private RecyclerView message_list;
     private ImageButton previous;
     private TextView title;
-    private ImageButton menu;
+    private ImageButton open_menu;
     private ImageButton upload;
     private EditText content;
     private ImageButton send;
 
-    private RoomAdapter adapter;
+    private RoomAdapter.MenuAdapter menu_adapter;
+    private RoomAdapter message_adapter;
 
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
 
@@ -57,18 +60,18 @@ public class RoomLayout extends CommonActivity {
         init();
 
         title.setText(Session.CHAT.CHAT_TITLE);
-        message_list.scrollToPosition(adapter.getItemCount() - 1);
+        message_list.scrollToPosition(message_adapter.getItemCount() - 1);
 
         Session.socket.on("get_message", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                MESSAGE message = Json.from(args[0], MESSAGE.class);
+                MESSAGE_INFO message = Json.from(args[0], MESSAGE_INFO.class);
 
                 if (message.MESSAGE_EMPLOYEE_NUMBER != Session.USER.EMPLOYEE_NUMBER) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            adapter.addMessage(message);
+                            message_adapter.addMessage(message);
                         }
                     });
                 }
@@ -80,21 +83,21 @@ public class RoomLayout extends CommonActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        new DBVolley(getApplicationContext(), "RefreshLastAccess", new HashMap<String, Object>() {{
+        new DBThread("RefreshLastAccess", new HashMap<String, Object>() {{
             put("chat_number", Session.CHAT.CHAT_NUMBER);
             put("employee_number", Session.USER.EMPLOYEE_NUMBER);
         }});
-
         Session.CHAT = null;
     }
 
     @Override
     protected void setId() {
-        side = findViewById(R.id.layout_chat_room__layout);
+        menu = findViewById(R.id.layout_chat_room__menu);
+        menu_list = findViewById(R.id.layout_chat_room_menu__list);
         message_list = findViewById(R.id.layout_chat_room__message_list);
         previous = findViewById(R.id.layout_chat_room__previous);
         title = findViewById(R.id.layout_chat_room__title);
-        menu = findViewById(R.id.layout_chat_room__menu);
+        open_menu = findViewById(R.id.layout_chat_room__open_menu);
         upload = findViewById(R.id.layout_chat_room__upload);
         content = findViewById(R.id.layout_chat_room__content);
         send = findViewById(R.id.layout_chat_room__send);
@@ -102,10 +105,14 @@ public class RoomLayout extends CommonActivity {
 
     @Override
     protected void setAdapter() {
-        adapter = new RoomAdapter(getApplicationContext());
+        menu_adapter = new RoomAdapter.MenuAdapter(getApplicationContext());
+        message_adapter = new RoomAdapter(getApplicationContext());
+
+        menu_list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        menu_list.setAdapter(menu_adapter);
 
         message_list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        message_list.setAdapter(adapter);
+        message_list.setAdapter(message_adapter);
     }
 
     @Override
@@ -116,11 +123,11 @@ public class RoomLayout extends CommonActivity {
                 finish();
             }
         });
-        menu.setOnClickListener(new View.OnClickListener() {
+        open_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!side.isDrawerOpen(GravityCompat.END)) {
-                    side.openDrawer(GravityCompat.END);
+                if (!menu.isDrawerOpen(GravityCompat.END)) {
+                    menu.openDrawer(GravityCompat.END);
                 }
             }
         });
@@ -137,13 +144,12 @@ public class RoomLayout extends CommonActivity {
                 String _content = content.getText().toString();
 
                 if (!_content.isEmpty()) {
-                    MESSAGE message = new MESSAGE(Session.CHAT.CHAT_NUMBER, Session.USER.EMPLOYEE_NUMBER, Session.USER.EMPLOYEE_NAME, _content);
+                    MESSAGE_INFO message = new MESSAGE_INFO(Session.CHAT.CHAT_NUMBER, Session.USER.EMPLOYEE_NUMBER, Session.USER.EMPLOYEE_NAME, _content);
                     sendMessage(message);
 
                     new DBVolley(getApplicationContext(), "CreateMessage", new HashMap<String, Object>() {{
                         put("chat_number", message.MESSAGE_CHAT_NUMBER);
                         put("employee_number", message.MESSAGE_EMPLOYEE_NUMBER);
-                        put("employee_name", message.MESSAGE_EMPLOYEE_NAME);
                         put("content", message.MESSAGE_CONTENT);
                     }});
 
@@ -151,7 +157,7 @@ public class RoomLayout extends CommonActivity {
                 }
             }
         });
-        adapter.listener = new RoomAdapter.Listener() {
+        message_adapter.listener = new RoomAdapter.Listener() {
             @Override
             public void scroll(int position) {
                 message_list.scrollToPosition(position);
@@ -173,16 +179,15 @@ public class RoomLayout extends CommonActivity {
                         error.printStackTrace();
                     }
 
-                    Ratio ratio = Ratio.getRatio(Objects.requireNonNull(image));
+                    Image.Ratio ratio = Image.Ratio.getRatio(Objects.requireNonNull(image));
                     Bitmap resized = Bitmap.createScaledBitmap(image, ratio.width, ratio.height, true);
 
-                    MESSAGE message = new MESSAGE(Session.CHAT.CHAT_NUMBER, Session.USER.EMPLOYEE_NUMBER, Session.USER.EMPLOYEE_NAME, Image.toBase64(resized));
+                    MESSAGE_INFO message = new MESSAGE_INFO(Session.CHAT.CHAT_NUMBER, Session.USER.EMPLOYEE_NUMBER, Session.USER.EMPLOYEE_NAME, Image.toBase64(resized));
                     sendMessage(message);
 
                     new DBVolley(getApplicationContext(), "CreateMessage", new HashMap<String, Object>() {{
                         put("chat_number", message.MESSAGE_CHAT_NUMBER);
                         put("employee_number", message.MESSAGE_EMPLOYEE_NUMBER);
-                        put("employee_name", message.MESSAGE_EMPLOYEE_NAME);
                         put("base64", message.MESSAGE_CONTENT);
                     }});
                 }
@@ -190,38 +195,8 @@ public class RoomLayout extends CommonActivity {
         });
     }
 
-    private void sendMessage(@NonNull MESSAGE message) {
+    private void sendMessage(@NonNull MESSAGE_INFO message) {
         Session.socket.emit("send_message", Json.to(message));
-        adapter.addMessage(message);
-    }
-
-    private static class Ratio {
-        private static final int MAX_SIZE = 512;
-
-        public int width;
-        public int height;
-
-        private Ratio() { }
-
-        @NonNull
-        public static Ratio getRatio(@NonNull Bitmap image) {
-            Ratio ratio = new Ratio();
-
-            int width = image.getWidth();
-            int height = image.getHeight();
-
-            int max_size = Math.min(Math.max(width, height), width > height ? MAX_SIZE : MAX_SIZE * 2);
-            int result = Math.min(width, height) * max_size / Math.max(width, height);
-
-            if (width >= height) {
-                ratio.width = max_size;
-                ratio.height = result;
-            } else {
-                ratio.width = result;
-                ratio.height = max_size;
-            }
-
-            return ratio;
-        }
+        message_adapter.addMessage(message);
     }
 }

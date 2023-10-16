@@ -15,8 +15,9 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
 import com.yeungjin.translogic.layout.chat.RoomLayout;
-import com.yeungjin.translogic.object.CHAT;
-import com.yeungjin.translogic.object.MESSAGE;
+import com.yeungjin.translogic.object.table.CHAT;
+import com.yeungjin.translogic.object.table.MESSAGE;
+import com.yeungjin.translogic.object.view.CHAT_INFO;
 import com.yeungjin.translogic.server.DBThread;
 import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.server.Server;
@@ -29,7 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder> {
+public class ChatAdapter extends CommonListAdapter<CHAT_INFO, ChatAdapter.ViewHolder> {
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("a hh:mm", Locale.KOREA);
     private final Map<Long, Integer> unread_counts = new HashMap<>();
 
@@ -40,7 +41,7 @@ public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder>
             put("employee_number", Session.USER.EMPLOYEE_NUMBER);
             put("index", 0);
         }}));
-        for (CHAT chat : data) {
+        for (CHAT_INFO chat : data) {
             getUnreadCount(chat.CHAT_NUMBER);
         }
     }
@@ -54,7 +55,7 @@ public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CHAT chat = data.get(position);
+        CHAT_INFO chat = data.get(position);
 
         Glide.with(holder.image.getContext()).load(Server.IMAGE_URL + chat.CHAT_IMAGE).into(holder.image);
         holder.title.setText(chat.CHAT_TITLE);
@@ -169,7 +170,7 @@ public class ChatAdapter extends CommonListAdapter<CHAT, ChatAdapter.ViewHolder>
                     Session.CHAT.CHAT_TITLE = data.get(position).CHAT_TITLE;
                     unread_counts.put(data.get(position).CHAT_NUMBER, 0);
 
-                    new DBVolley(context, "RefreshLastAccess", new HashMap<String, Object>() {{
+                    new DBThread("RefreshLastAccess", new HashMap<String, Object>() {{
                         put("chat_number", Session.CHAT.CHAT_NUMBER);
                         put("employee_number", Session.USER.EMPLOYEE_NUMBER);
                     }});

@@ -13,16 +13,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yeungjin.translogic.R;
-import com.yeungjin.translogic.adapter.task.EmployeeAdapter;
+import com.yeungjin.translogic.adapter.task.TaskAdapter;
 import com.yeungjin.translogic.layout.CommonFragment;
 
 public class TaskLayout extends CommonFragment {
     private EditText search;           // 검색창
     private ImageButton clear;         // 검색어 지우기
-    private ImageButton setFilter;     // 필터창
-    private RecyclerView employeeList; // 직원 목록
+    private ImageButton filter;     // 필터창
+    private RecyclerView task_list; // 직원 목록
 
-    private EmployeeAdapter employeeAdapter; // 직원 목록 어댑터
+    private TaskAdapter task_adapter; // 직원 목록 어댑터
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,18 +34,18 @@ public class TaskLayout extends CommonFragment {
 
     @Override
     protected void setId() {
-        setFilter = view.findViewById(R.id.layout_task_task__set_filter);
+        filter = view.findViewById(R.id.layout_task_task__filter);
         search = view.findViewById(R.id.layout_task_task__search);
         clear = view.findViewById(R.id.layout_task_task__clear);
-        employeeList = view.findViewById(R.id.layout_task_task__employee_list);
+        task_list = view.findViewById(R.id.layout_task_task__task_list);
     }
 
     @Override
     protected void setAdapter() {
-        employeeAdapter = new EmployeeAdapter(getActivity().getApplicationContext());
+        task_adapter = new TaskAdapter(requireContext());
 
-        employeeList.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        employeeList.setAdapter(employeeAdapter);
+        task_list.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        task_list.setAdapter(task_adapter);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class TaskLayout extends CommonFragment {
                 search.setText("");
             }
         });
-        setFilter.setOnClickListener(new View.OnClickListener() {
+        filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FilterLayout dialog = new FilterLayout(v.getContext());

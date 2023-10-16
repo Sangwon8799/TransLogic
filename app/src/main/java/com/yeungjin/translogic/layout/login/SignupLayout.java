@@ -184,7 +184,7 @@ public class SignupLayout extends CommonActivity {
                         put("password", password.getText());
                         put("contact_number", contact_number.getText());
                         put("email", email.getText());
-                        put("company", company.getText());
+                        put("company_name", company.getText());
                     }}, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {

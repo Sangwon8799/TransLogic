@@ -36,7 +36,7 @@ public abstract class CommonListAdapter<OBJECT, ViewHolder extends RecyclerView.
             error.printStackTrace();
         }
 
-        return Objects.requireNonNull(json).length();
+        return json != null ? json.length() : 0;
     }
 
     public abstract void reload();

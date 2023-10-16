@@ -3,7 +3,6 @@ package com.yeungjin.translogic.layout.employee;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,7 +60,6 @@ public class EmployeeLayout extends CommonFragment {
 
     @Override
     protected void setAdapter() {
-        Log.d("Session User", String.valueOf(Session.USER != null));
         employee_adapter = new EmployeeAdapter(requireContext());
         group_adapter = new GroupAdapter(requireContext());
 
@@ -111,7 +109,7 @@ public class EmployeeLayout extends CommonFragment {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getItemId() == R.id.layout_employee_employee__menu_icon__create) {
-                            new DBVolley(getContext(), "IsGroupMax", new HashMap<String, Object>() {{
+                            new DBVolley(requireContext(), "IsGroupMax", new HashMap<String, Object>() {{
                                 put("employee_number", Session.USER.EMPLOYEE_NUMBER);
                             }}, new Response.Listener<String>() {
                                 @Override
@@ -157,10 +155,8 @@ public class EmployeeLayout extends CommonFragment {
             @Override
             public void select(long group_number) {
                 if (employee_list.getScrollState() != RecyclerView.SCROLL_STATE_DRAGGING) {
-                    String _search = search.getText().toString();
-
-                    if (!_search.isEmpty()) {
-                        employee_adapter.reload(group_number, _search);
+                    if (!search.getText().toString().isEmpty()) {
+                        employee_adapter.reload(group_number, search.getText().toString());
                     } else {
                         employee_adapter.reload(group_number);
                     }
@@ -170,10 +166,8 @@ public class EmployeeLayout extends CommonFragment {
             @Override
             public void unselect() {
                 if (employee_list.getScrollState() != RecyclerView.SCROLL_STATE_DRAGGING) {
-                    String _search = search.getText().toString();
-
-                    if (!_search.isEmpty()) {
-                        employee_adapter.reload(_search);
+                    if (!search.getText().toString().isEmpty()) {
+                        employee_adapter.reload(search.getText().toString());
                     } else {
                         employee_adapter.reload();
                     }

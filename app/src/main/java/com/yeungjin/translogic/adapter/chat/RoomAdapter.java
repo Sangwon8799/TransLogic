@@ -14,10 +14,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
-import com.yeungjin.translogic.object.MESSAGE;
+import com.yeungjin.translogic.object.view.EMPLOYEE_INFO;
+import com.yeungjin.translogic.object.view.MESSAGE_INFO;
 import com.yeungjin.translogic.server.DBThread;
 import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.server.Server;
@@ -31,7 +33,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
-public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHolder> {
+public class RoomAdapter extends CommonListAdapter<MESSAGE_INFO, RecyclerView.ViewHolder> {
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("a hh:mm", Locale.KOREA);
 
     public static final int NOTICE = 0;
@@ -67,7 +69,7 @@ public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        MESSAGE message = data.get(position);
+        MESSAGE_INFO message = data.get(position);
 
         if (holder instanceof NoticeViewHolder) {
             NoticeViewHolder instance = (NoticeViewHolder) holder;
@@ -76,13 +78,16 @@ public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHol
         } else if (holder instanceof OpponentViewHolder) {
             OpponentViewHolder instance = (OpponentViewHolder) holder;
 
+            Glide.with(instance.image.getContext()).load(Server.IMAGE_URL + new DBThread("GetEmployeeImage", new HashMap<String, Object>() {{
+                put("employee_number", message.MESSAGE_EMPLOYEE_NUMBER);
+            }}).getResponse()).into(instance.image);
             instance.name.setText(message.MESSAGE_EMPLOYEE_NAME);
-            setMessage(instance, message);
+            setContent(instance, message);
             instance.time.setText(FORMAT.format(message.MESSAGE_ENROLL_DATE));
         } else {
             MyselfViewHolder instance = (MyselfViewHolder) holder;
 
-            setMessage(instance, message);
+            setContent(instance, message);
             instance.time.setText(FORMAT.format(message.MESSAGE_ENROLL_DATE));
         }
     }
@@ -113,13 +118,13 @@ public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHol
         }}, new LoadListener());
     }
 
-    public void addMessage(MESSAGE message) {
+    public void addMessage(MESSAGE_INFO message) {
         data.add(message);
         notifyItemInserted(data.size() - 1);
         Objects.requireNonNull(listener).scroll(data.size() - 1);
     }
 
-    private <ViewHolder extends MessageViewHolder> void setMessage(ViewHolder holder, MESSAGE message) {
+    private <ViewHolder extends MessageViewHolder> void setContent(ViewHolder holder, MESSAGE_INFO message) {
         if (message.MESSAGE_CONTENT.startsWith("message_")) {
             Thread thread = new Thread(new Runnable() {
                 @Override
@@ -192,7 +197,7 @@ public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHol
         protected void setId() {
             image = view.findViewById(R.id.adapter_chat_room_opponent__image);
             name = view.findViewById(R.id.adapter_chat_room_opponent__name);
-            content = view.findViewById(R.id.adapter_chat_room_opponent__message);
+            content = view.findViewById(R.id.adapter_chat_room_opponent__content);
             time = view.findViewById(R.id.adapter_chat_room_opponent__time);
         }
     }
@@ -228,5 +233,65 @@ public class RoomAdapter extends CommonListAdapter<MESSAGE, RecyclerView.ViewHol
 
     public interface Listener {
         void scroll(int position);
+    }
+
+    public static class MenuAdapter extends CommonListAdapter<EMPLOYEE_INFO, MenuAdapter.ViewHolder> {
+        public MenuAdapter(@NonNull Context context) {
+            super(context, new DBThread("GetChatMember", new HashMap<String, Object>() {{
+                put("chat_number", Session.CHAT.CHAT_NUMBER);
+                put("index", 0);
+            }}));
+        }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_chat_room_menu, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            EMPLOYEE_INFO employee = data.get(position);
+
+            Glide.with(holder.image.getContext()).load(Server.IMAGE_URL + employee.EMPLOYEE_IMAGE).into(holder.image);
+            holder.name.setText(employee.EMPLOYEE_NAME);
+            holder.company.setText(employee.EMPLOYEE_COMPANY_NAME);
+        }
+
+        @Override
+        public void reload() {
+            new DBVolley(context, "GetChatMember", new HashMap<String, Object>() {{
+                put("chat_number", Session.CHAT.CHAT_NUMBER);
+                put("index", 0);
+            }}, new ReloadListener());
+        }
+
+        @Override
+        public void load() {
+            new DBVolley(context, "GetChatMember", new HashMap<String, Object>() {{
+                put("chat_number", Session.CHAT.CHAT_NUMBER);
+                put("index", data.size());
+            }}, new LoadListener());
+        }
+
+        public static class ViewHolder extends CommonViewHolder {
+            public ImageView image;
+            public TextView name;
+            public TextView company;
+
+            public ViewHolder(@NonNull View view) {
+                super(view);
+
+                image.setClipToOutline(true);
+            }
+
+            @Override
+            protected void setId() {
+                image = view.findViewById(R.id.adapter_chat_room_menu__image);
+                name = view.findViewById(R.id.adapter_chat_room_menu__name);
+                company = view.findViewById(R.id.adapter_chat_room_menu__company);
+            }
+        }
     }
 }

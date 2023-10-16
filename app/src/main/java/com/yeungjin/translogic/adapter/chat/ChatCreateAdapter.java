@@ -16,7 +16,7 @@ import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.adapter.CommonAdapter;
 import com.yeungjin.translogic.adapter.CommonListAdapter;
 import com.yeungjin.translogic.adapter.CommonViewHolder;
-import com.yeungjin.translogic.object.EMPLOYEE;
+import com.yeungjin.translogic.object.view.EMPLOYEE_INFO;
 import com.yeungjin.translogic.server.DBThread;
 import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.server.Server;
@@ -32,7 +32,7 @@ import java.util.Set;
 public class ChatCreateAdapter {
     private ChatCreateAdapter() { }
 
-    public static class SelectedAdapter extends CommonAdapter<EMPLOYEE, SelectedAdapter.ViewHolder> {
+    public static class SelectedAdapter extends CommonAdapter<EMPLOYEE_INFO, SelectedAdapter.ViewHolder> {
         public Listener listener;
 
         public SelectedAdapter(@NonNull Context context) {
@@ -48,7 +48,7 @@ public class ChatCreateAdapter {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            EMPLOYEE employee = data.get(position);
+            EMPLOYEE_INFO employee = data.get(position);
 
             Glide.with(holder.image.getContext()).load(Server.IMAGE_URL + employee.EMPLOYEE_IMAGE).into(holder.image);
             holder.remove.setOnClickListener(new View.OnClickListener() {
@@ -66,14 +66,14 @@ public class ChatCreateAdapter {
             ArrayList<Long> numbers = new ArrayList<>();
 
             numbers.add(Session.USER.EMPLOYEE_NUMBER);
-            for (EMPLOYEE employee : data) {
+            for (EMPLOYEE_INFO employee : data) {
                 numbers.add(employee.EMPLOYEE_NUMBER);
             }
 
             return numbers;
         }
 
-        public void check(EMPLOYEE employee) {
+        public void check(EMPLOYEE_INFO employee) {
             data.add(0, employee);
 
             notifyItemInserted(data.size() - 1);
@@ -120,7 +120,7 @@ public class ChatCreateAdapter {
         }
     }
 
-    public static class UnselectedAdapter extends CommonListAdapter<EMPLOYEE, UnselectedAdapter.ViewHolder> {
+    public static class UnselectedAdapter extends CommonListAdapter<EMPLOYEE_INFO, UnselectedAdapter.ViewHolder> {
         private final Set<Long> checked = new HashSet<>();
 
         public Listener listener;
@@ -141,7 +141,7 @@ public class ChatCreateAdapter {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            EMPLOYEE employee = data.get(position);
+            EMPLOYEE_INFO employee = data.get(position);
 
             Glide.with(holder.image.getContext()).load(Server.IMAGE_URL + employee.EMPLOYEE_IMAGE).into(holder.image);
             holder.checkbox.setChecked(checked.contains(employee.EMPLOYEE_NUMBER));
@@ -228,7 +228,7 @@ public class ChatCreateAdapter {
         }
 
         public interface Listener {
-            void check(EMPLOYEE employee);
+            void check(EMPLOYEE_INFO employee);
             void uncheck(long employee_number);
         }
     }

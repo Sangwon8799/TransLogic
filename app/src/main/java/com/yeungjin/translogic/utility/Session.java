@@ -1,13 +1,13 @@
 package com.yeungjin.translogic.utility;
 
-import com.yeungjin.translogic.object.CHAT;
-import com.yeungjin.translogic.object.EMPLOYEE;
+import com.yeungjin.translogic.object.table.CHAT;
+import com.yeungjin.translogic.object.view.EMPLOYEE_INFO;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
 public class Session {
-    public static EMPLOYEE USER;
+    public static EMPLOYEE_INFO USER;
     public static CHAT CHAT;
 
     public static int width;

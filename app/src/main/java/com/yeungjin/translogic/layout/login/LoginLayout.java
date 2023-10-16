@@ -18,7 +18,7 @@ import com.android.volley.Response;
 import com.yeungjin.translogic.R;
 import com.yeungjin.translogic.layout.CommonActivity;
 import com.yeungjin.translogic.layout.MainLayout;
-import com.yeungjin.translogic.object.EMPLOYEE;
+import com.yeungjin.translogic.object.view.EMPLOYEE_INFO;
 import com.yeungjin.translogic.server.DBThread;
 import com.yeungjin.translogic.server.DBVolley;
 import com.yeungjin.translogic.utility.Json;
@@ -135,7 +135,7 @@ public class LoginLayout extends CommonActivity {
                         JSONObject object = new JSONObject(new DBThread("GetSession", new HashMap<String, Object>() {{
                             put("username", username);
                         }}).getResponse());
-                        Session.USER = Json.from(object, EMPLOYEE.class);
+                        Session.USER = Json.from(object, EMPLOYEE_INFO.class);
                         Session.socket.emit("login", Session.USER.EMPLOYEE_NUMBER);
 
                         String[] chat_numbers = new DBThread("GetJoinedChat", new HashMap<String, Object>() {{
